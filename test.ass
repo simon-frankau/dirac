@@ -1,0 +1,263 @@
+; Basic test program to exercise my simple Z80-based computer.
+;
+; TODO: Currently just a copy of the cylon thing. Needs fleshing out
+;
+; PLAN:
+; X Do a few flashing lights initially
+; X Enable memory banking for the ROM location
+; X Flash a few more lights to show still working
+; X Map RAM in for stack space
+; X Flash a few more lights, making use of stack
+; * Then we want to test the banking hardware, specifically:
+; ** Can write and read all values to all locations (skip top and bottom)
+; ** Can map all locations into one of the slots, and fill with data...
+; ** Then map all locations into another slot, and read all the data
+; ** Probably want to check that read-only mappings allow reading, do not
+;    allow writing.
+; * Should also have an NMI-tester
+
+; Need some kind of assumption about where the LEDs and banking are
+; mapped...
+
+; Banking    is at port 0x00.
+; LED output is at port 0x70.
+
+; Banked memory map:
+; 0x00000 - 0x07FFF - ROM (top 4 bits inverted when programming the EEPROM)
+; 0x80000 - 0x9FFFF - RAM - Read-only
+; 0xC0000 - 0xDFFFF - RAM - Read-write
+
+; Simple cylon/knightrider thing
+; Dumbest possible implementation - no dependency on RAM, can just be dropped
+; in at 0x0000.
+
+#target     rom
+
+#code       0,$4000
+
+; Initial wipe across, no hardware enabled
+
+top:        ld a,$1
+            out ($70),a
+
+            ld de,0
+l1:         dec de
+            ld a, d
+            or e
+            jp nz, l1
+
+            ld a,$2
+            out ($70),a
+
+            ld de,0
+l2:         dec de
+            ld a, d
+            or e
+            jp nz, l2
+
+            ld a,$4
+            out ($70),a
+
+            ld de,0
+l3:         dec de
+            ld a, d
+            or e
+            jp nz, l3
+
+            ld a,$8
+            out ($70),a
+
+            ld de,0
+l4:         dec de
+            ld a, d
+            or e
+            jp nz, l4
+
+            ld a,$10
+            out ($70),a
+
+            ld de,0
+l5:         dec de
+            ld a, d
+            or e
+            jp nz, l5
+
+            ld a,$20
+            out ($70),a
+
+            ld de,0
+l6:         dec de
+            ld a, d
+            or e
+            jp nz, l6
+
+            ld a,$40
+            out ($70),a
+
+            ld de,0
+l7:         dec de
+            ld a, d
+            or e
+            jp nz, l7
+
+            ld a,$80
+            out ($70),a
+
+; Enable banking
+
+            ld bc, $0000
+            ld a, $00 ; Inverted, selects the default $FF page
+            out (bc), a
+
+; And do a few more LEDs
+
+            ld de,0
+l8:         dec de
+            ld a, d
+            or e
+            jp nz, l8
+
+            ld a,$40
+            out ($70),a
+
+            ld de,0
+l9:         dec de
+            ld a, d
+            or e
+            jp nz, l9
+
+            ld a,$20
+            out ($70),a
+
+            ld de,0
+l10:        dec de
+            ld a, d
+            or e
+            jp nz, l10
+
+            ld a,$10
+            out ($70),a
+
+            ld de,0
+l11:        dec de
+            ld a, d
+            or e
+            jp nz, l11
+
+            ld a,$8
+            out ($70),a
+
+            ld de,0
+l12:        dec de
+            ld a, d
+            or e
+            jp nz, l12
+
+            ld a,$4
+            out ($70),a
+
+            ld de,0
+l13:        dec de
+            ld a, d
+            or e
+            jp nz, l13
+
+            ld a,$2
+            out ($70),a
+
+            ld de,0
+l14:        dec de
+            ld a, d
+            or e
+            jp nz, l14
+
+; Map in some RAM, set SP, and do a pattern with using subroutines
+
+            ld bc, $f000
+            ld a, $c0 ; Inverted, selects a RAM page, RW
+            out (bc), a
+
+            ld sp, $0000
+
+loop:       ld a, $03
+            call disp
+            ld a, $06
+            call disp
+            ld a, $0c
+            call disp
+            ld a, $18
+            call disp
+            ld a, $30
+            call disp
+            ld a, $60
+            call disp
+            ld a, $c0
+            call disp
+            ld a, $81
+            call disp
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Right, the basics work: ROM mapped in page 0x0, RAM mapped in page 0xf
+;
+; Now, check the mapping slots we can:
+; For each value, write different values to all available slots,
+; then read them back.
+
+; For each number:
+            ld d, 0
+blah0:
+
+; Write a different number to each slot
+            ld a, d     ; Base value to write
+            ld b, $e    ; Last page to write
+blah1:      out (bc), a ; Write page thing
+            inc a       ; Write next value to next page
+            dec b       ; Next page
+            jpnz blah1  ; Don't write page zero
+; Read back numbers and check it's ok
+            ld e, d     ; Thing to compare against
+            ld b, $e    ; Last page to write
+blah2:      in a, (bc)  ; Read page thing
+            cmp e
+            jpnz fail
+            inc e       ; Read next value to next page
+            dec b       ; Next page
+            jpnz blah2  ; Don't write page zero
+
+            dec d
+            jpnz blah0
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Slots all work. Let's assume the ROM works, as a I don't want
+; to bother testing it, beyond showing that we're reading the test ok.
+; Let's map a single slot, and use it to write over all of RAM, then
+; read it all back.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; FIXME: Things not otherwise checked:
+;  * Read-only RAM
+;  * ROM access
+;  * NMI
+
+success:    ld a, $ff
+            call disp
+            ld 0, $ff
+            call disp
+            jp success
+
+fail:       ld a, 0xaa
+            call disp
+            jp fail
+
+disp:       out ($70),a
+
+            ld de,0
+disp_loop:  dec de
+            ld a, d
+            or e
+            jp nz, disp_loop
+            ret
+
+#end
