@@ -205,35 +205,64 @@ loop:       ld a, $03
 
 ; For each number:
             ld d, 0
-blah0:
+blah0:      ld c, 0      ; Lower part of port.
 
 ; Write a different number to each slot
-            ld a, d     ; Base value to write
-            ld b, $e    ; Last page to write
-blah1:      out (bc), a ; Write page thing
-            inc a       ; Write next value to next page
-            dec b       ; Next page
-            jpnz blah1  ; Don't write page zero
+            ld l, d      ; Base value to write
+            ld b, $e0    ; Last page to write
+blah1:      out (bc), l  ; Write page thing
+            inc l        ; Write next value to next page
+            ld a, b
+            sub a, $10   ; Next page
+            ld b, a
+            jp nz, blah1 ; Don't write page zero
 ; Read back numbers and check it's ok
-            ld e, d     ; Thing to compare against
-            ld b, $e    ; Last page to write
-blah2:      in a, (bc)  ; Read page thing
-            cmp e
-            jpnz fail
-            inc e       ; Read next value to next page
-            dec b       ; Next page
-            jpnz blah2  ; Don't write page zero
+            ld l, d      ; Thing to compare against
+            ld b, $e0    ; Last page to write
+blah2:      in a, (c)    ; Read page thing (NB: Really 'in a, (bc)')
+            cp l
+            jp nz, fail
+            inc l        ; Read next value from next page
+            ld a, b
+            sub a, $10   ; Next page
+            ld b, a
+            jp nz, blah2 ; Don't read page zero
 
             dec d
-            jpnz blah0
-
-
+            jp nz, blah0
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Slots all work. Let's assume the ROM works, as a I don't want
 ; to bother testing it, beyond showing that we're reading the test ok.
 ; Let's map a single slot, and use it to write over all of RAM, then
 ; read it all back.
+
+; NB: This corrupts stack. Fortunately, not actually using it...
+
+            ld l, 23         ; Magic modulo.
+; Map physical pages C0-DF into slot 1.
+            ld h, $c0
+ramwouter:  ld bc, $1000
+            out (bc), h
+; Loop from $2000 to $1000, scribbling values in as we go.
+            ld de,$2000
+ramwinner:  ld a, l
+            ld (de), a
+            dec l
+            jp nz, rwiskip
+            ld l,23
+rwiskip:    dec de
+            ld a, d
+            sub 1
+            or e
+            jp nz, ramwinner
+; Written this page, go to next.
+            inc h
+            ld a, h
+            cp a, $e0
+            jp nz, ramwouter
+            
+; TODO: Having written, read back.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; FIXME: Things not otherwise checked:
@@ -243,11 +272,11 @@ blah2:      in a, (bc)  ; Read page thing
 
 success:    ld a, $ff
             call disp
-            ld 0, $ff
+            ld a, $ff
             call disp
             jp success
 
-fail:       ld a, 0xaa
+fail:       ld a, $aa
             call disp
             jp fail
 
