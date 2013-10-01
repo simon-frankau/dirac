@@ -40,7 +40,7 @@
 top:        ld a,$1
             out ($70),a
 
-            ld de,0
+            ld de,$4000
 l1:         dec de
             ld a, d
             or e
@@ -49,7 +49,7 @@ l1:         dec de
             ld a,$2
             out ($70),a
 
-            ld de,0
+            ld de,$4000
 l2:         dec de
             ld a, d
             or e
@@ -58,7 +58,7 @@ l2:         dec de
             ld a,$4
             out ($70),a
 
-            ld de,0
+            ld de,$4000
 l3:         dec de
             ld a, d
             or e
@@ -67,7 +67,7 @@ l3:         dec de
             ld a,$8
             out ($70),a
 
-            ld de,0
+            ld de,$4000
 l4:         dec de
             ld a, d
             or e
@@ -76,7 +76,7 @@ l4:         dec de
             ld a,$10
             out ($70),a
 
-            ld de,0
+            ld de,$4000
 l5:         dec de
             ld a, d
             or e
@@ -85,7 +85,7 @@ l5:         dec de
             ld a,$20
             out ($70),a
 
-            ld de,0
+            ld de,$4000
 l6:         dec de
             ld a, d
             or e
@@ -94,7 +94,7 @@ l6:         dec de
             ld a,$40
             out ($70),a
 
-            ld de,0
+            ld de,$4000
 l7:         dec de
             ld a, d
             or e
@@ -111,7 +111,7 @@ l7:         dec de
 
 ; And do a few more LEDs
 
-            ld de,0
+            ld de,$4000
 l8:         dec de
             ld a, d
             or e
@@ -120,7 +120,7 @@ l8:         dec de
             ld a,$40
             out ($70),a
 
-            ld de,0
+            ld de,$4000
 l9:         dec de
             ld a, d
             or e
@@ -129,7 +129,7 @@ l9:         dec de
             ld a,$20
             out ($70),a
 
-            ld de,0
+            ld de,$4000
 l10:        dec de
             ld a, d
             or e
@@ -138,7 +138,7 @@ l10:        dec de
             ld a,$10
             out ($70),a
 
-            ld de,0
+            ld de,$4000
 l11:        dec de
             ld a, d
             or e
@@ -147,7 +147,7 @@ l11:        dec de
             ld a,$8
             out ($70),a
 
-            ld de,0
+            ld de,$4000
 l12:        dec de
             ld a, d
             or e
@@ -156,7 +156,7 @@ l12:        dec de
             ld a,$4
             out ($70),a
 
-            ld de,0
+            ld de,$4000
 l13:        dec de
             ld a, d
             or e
@@ -165,7 +165,7 @@ l13:        dec de
             ld a,$2
             out ($70),a
 
-            ld de,0
+            ld de,$4000
 l14:        dec de
             ld a, d
             or e
@@ -304,7 +304,7 @@ fail:       ld a, $aa
 
 disp:       out ($70),a
 
-            ld de,0
+            ld de,$4000
 disp_loop:  dec de
             ld a, d
             or e
