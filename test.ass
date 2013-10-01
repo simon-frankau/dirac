@@ -244,16 +244,16 @@ blah2:      in a, (c)    ; Read page thing (NB: Really 'in a, (bc)')
             ld h, $c0
 ramwouter:  ld bc, $1000
             out (bc), h
-; Loop from $2000 to $1000, scribbling values in as we go.
-            ld de,$2000
+; Loop from $1000 to $2000, scribbling values in as we go.
+            ld de,$1000
 ramwinner:  ld a, l
             ld (de), a
             dec l
             jp nz, rwiskip
             ld l,23
-rwiskip:    dec de
+rwiskip:    inc de
             ld a, d
-            sub 1
+            sub $20
             or e
             jp nz, ramwinner
 ; Written this page, go to next.
@@ -262,7 +262,29 @@ rwiskip:    dec de
             cp a, $e0
             jp nz, ramwouter
             
-; TODO: Having written, read back.
+; Having written, read.
+            ld l, 23
+            ld h, $c0
+ramrouter:  ld bc, $1000
+            out (bc), h
+; Loop from $1000 to $2000, reading values as we go.
+            ld de,$1000
+ramrinner:  ld a, (de)
+            cp a, l
+            jp nz, fail
+            dec l
+            jp nz, rriskip
+            ld l,23
+rriskip:    inc de
+            ld a, d
+            sub $20
+            or e
+            jp nz, ramrinner
+; Written this page, go to next.
+            inc h
+            ld a, h
+            cp a, $e0
+            jp nz, ramrouter
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; FIXME: Things not otherwise checked:
@@ -272,7 +294,7 @@ rwiskip:    dec de
 
 success:    ld a, $ff
             call disp
-            ld a, $ff
+            ld a, $00
             call disp
             jp success
 
