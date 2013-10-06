@@ -237,12 +237,15 @@ blah2:      in a, (c)    ; Read page thing (NB: Really 'in a, (bc)')
             jp nz, blah0
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Slots all work. Let's assume the ROM works, as a I don't want
-; to bother testing it, beyond showing that we're reading the test ok.
+; Slots all work. On to a RAM test.
+;
 ; Let's map a single slot, and use it to write over all of RAM, then
 ; read it all back.
 
 ; NB: This corrupts stack. Fortunately, not actually using it...
+
+            ld a, 1          ; Display status
+            out ($70),a
 
             ld l, 23         ; Magic modulo.
 ; Map physical pages C0-DF into slot 1.
@@ -268,6 +271,9 @@ rwiskip:    inc de
             jp nz, ramwouter
             
 ; Having written, read.
+            ld a, 3          ; Update status
+            out ($70),a
+
             ld l, 23
             ld h, $c0
 ramrouter:  ld bc, $1000
@@ -292,6 +298,9 @@ rriskip:    inc de
             jp nz, ramrouter
 
 ; Now, read the read-only mapping, throwing in attempts to write.
+            ld a, 7          ; Update status
+            out ($70),a
+
             ld l, 23
             ld h, $80
 ramrwouter: ld bc, $1000
@@ -317,12 +326,38 @@ rrwiskip:   inc de
             cp a, $a0
             jp nz, ramrwouter
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Now, a similar test for the ROM
+            ld a, $f         ; Update status
+            out ($70),a
 
+            ld l, 17
+            ld h, $01
+romouter:   ld bc, $1000
+            out (bc), h
+; Loop from $1000 to $2000, trying to write, then reading values as we go.
+            ld de,$1000
+rominner:   xor a, a
+            ld (de), a
+            ld a, (de)
+            cp a, l
+            jp nz, fail
+            dec l
+            jp nz, romiskip
+            ld l,17
+romiskip:   inc de
+            ld a, d
+            sub $20
+            or e
+            jp nz, rominner
+; Written this page, go to next.
+            inc h
+            ld a, h
+            cp a, $08
+            jp nz, romouter
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; FIXME: Things not otherwise checked:
-;  * ROM access
-;  * NMI
+; End and general subroutines
 
 success:    ld a, $ff
             call disp
@@ -346,13 +381,27 @@ disp_loop:  dec de
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; NMI test code
 
-; NB: Not really right yet - should preserve registers, and demonstrate
-; the current SP, so I can see if we've got a clean trigger or not...
+; We try to preserve registers, and display the SP lower contents,
+; so that we can see if we're triggering nested NMIs or whatever.
 
-nmi:        ld a, $aa
-            call disp
-            ld a, $55
-            call disp
+nmi:        ex af, af'
+            exx
+
+            ; Must be a better way of reading SP, but my z80 asm is poor...
+            ld hl, 0
+            add hl, sp
+
+            ld a, l
+            out ($70), a
+
+            ld de,$0000
+nmi_loop:   dec de
+            ld a, d
+            or e
+            jp nz, nmi_loop
+
+            exx
+            ex af, af'
             retn
 
 #end

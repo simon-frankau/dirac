@@ -15,7 +15,7 @@ local file_name = "testdata.rom"
 
 -- Nasty complexity but modulus is a small number
 local msg = ""
-for i = 1, modulus do
+for i = modulus, 1, -1 do
     msg = msg .. string.char(i)
 end
 
