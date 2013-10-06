@@ -302,6 +302,7 @@ rriskip:    inc de
             out ($70),a
 
             ld l, 23
+; Physical slots 80-9f, this time.
             ld h, $80
 ramrwouter: ld bc, $1000
             out (bc), h
@@ -332,6 +333,7 @@ rrwiskip:   inc de
             out ($70),a
 
             ld l, 17
+; Physical slots 01-07
             ld h, $01
 romouter:   ld bc, $1000
             out (bc), h
