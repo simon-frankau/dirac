@@ -14,7 +14,7 @@
 ; XX Then map all locations into same slot, and read all the data
 ; XX Probably want to check that read-only mappings allow reading, do not
 ;    allow writing.
-; * Should also have an NMI-tester
+; X Should also have an NMI-tester
 
 ; Need some kind of assumption about where the LEDs and banking are
 ; mapped...
@@ -33,7 +33,14 @@
 
 #target     rom
 
-#code       0,$4000
+; Initial vectors
+#code       0,$66
+            jp top
+
+#code       $66, $4000
+            jp nmi
+
+; Now the real stuff
 
 ; Initial wipe across, no hardware enabled
 
@@ -337,5 +344,17 @@ disp_loop:  dec de
             or e
             jp nz, disp_loop
             ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; NMI test code
+
+; NB: Not really right yet - should preserve registers, and demonstrate
+; the current SP, so I can see if we've got a clean trigger or not...
+
+nmi:        ld a, $aa
+            call disp
+            ld a, $55
+            call disp
+            retn
 
 #end
