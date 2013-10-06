@@ -1,7 +1,5 @@
 ; Basic test program to exercise my simple Z80-based computer.
 ;
-; TODO: Currently just a copy of the cylon thing. Needs fleshing out
-;
 ; PLAN:
 ; X Do a few flashing lights initially
 ; X Enable memory banking for the ROM location

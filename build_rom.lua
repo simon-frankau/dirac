@@ -12,7 +12,8 @@ local chunk_size = 0x1000
 local rom_name   = "z80.bin"
 
 local contents = {
-    ["test.rom"] = 0x0000
+    ["test.rom"]     = 0x0000,
+    ["testdata.rom"] = 0x1000
 }
 
 ------------------------------------------------------------------------
