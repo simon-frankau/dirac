@@ -8,11 +8,11 @@
 ; X Flash a few more lights to show still working
 ; X Map RAM in for stack space
 ; X Flash a few more lights, making use of stack
-; * Then we want to test the banking hardware, specifically:
-; ** Can write and read all values to all locations (skip top and bottom)
-; ** Can map all locations into one of the slots, and fill with data...
-; ** Then map all locations into another slot, and read all the data
-; ** Probably want to check that read-only mappings allow reading, do not
+; X Then we want to test the banking hardware, specifically:
+; XX Can write and read all values to all locations (skip top and bottom)
+; XX Can map all locations into one of the slots, and fill with data...
+; XX Then map all locations into same slot, and read all the data
+; XX Probably want to check that read-only mappings allow reading, do not
 ;    allow writing.
 ; * Should also have an NMI-tester
 
@@ -286,9 +286,36 @@ rriskip:    inc de
             cp a, $e0
             jp nz, ramrouter
 
+; Now, read the read-only mapping, throwing in attempts to write.
+            ld l, 23
+            ld h, $80
+ramrwouter: ld bc, $1000
+            out (bc), h
+; Loop from $1000 to $2000, trying to write, then reading values as we go.
+            ld de,$1000
+ramrwinner: xor a, a
+            ld (de), a
+            ld a, (de)
+            cp a, l
+            jp nz, fail
+            dec l
+            jp nz, rrwiskip
+            ld l,23
+rrwiskip:   inc de
+            ld a, d
+            sub $20
+            or e
+            jp nz, ramrwinner
+; Written this page, go to next.
+            inc h
+            ld a, h
+            cp a, $a0
+            jp nz, ramrwouter
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; FIXME: Things not otherwise checked:
-;  * Read-only RAM
 ;  * ROM access
 ;  * NMI
 
