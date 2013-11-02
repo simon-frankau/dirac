@@ -359,6 +359,22 @@ romiskip:   inc de
             jp nz, romouter
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; CTC test
+
+            ; Clock channel 0 at 9600 bps:
+            ; Disable interrupt, timer mode, prescale 16, falling edge
+            ; Auto, time constant, reset, control word
+            ld a, $07
+            out ($10), a
+            ld a, 13 ; 2M / (16 * 9600)
+            out ($10), a
+            ; Clock channel 1 at 2400 bps:
+            ld a, $07
+            out ($11), a
+            ld a, 52
+            out ($11), a
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; End and general subroutines
 
 success:    ld a, $ff
