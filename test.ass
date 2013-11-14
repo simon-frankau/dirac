@@ -31,11 +31,22 @@
 
 #target     rom
 
-; Initial vectors
-#code       0,$66
+; State for interrupts...
+pattern:    equ $f000
+
+; Reset vector
+#code       0,$4000
             jp top
 
-#code       $66, $4000
+; Counter channel 3 interrupt vector
+            defs $40 - $
+            defw fail
+            defw fail
+            defw fail
+            defw isr
+
+; NMI vector
+            defs $66 - $
             jp nmi
 
 ; Now the real stuff
@@ -269,7 +280,7 @@ rwiskip:    inc de
             ld a, h
             cp a, $e0
             jp nz, ramwouter
-            
+
 ; Having written, read.
             ld a, 3          ; Update status
             out ($70),a
@@ -361,6 +372,10 @@ romiskip:   inc de
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; CTC test
 
+            ; Set interrupt vector to 0x40, just after the restarts.
+            ld a, $40
+            out ($10), a
+
             ; Clock channel 0 at 9600 bps:
             ; Disable interrupt, timer mode, prescale 16, falling edge
             ; Auto, time constant, reset, control word
@@ -368,18 +383,43 @@ romiskip:   inc de
             out ($10), a
             ld a, 13 ; 2M / (16 * 9600)
             out ($10), a
+
             ; Clock channel 1 at 2400 bps:
             ld a, $07
             out ($11), a
-            ld a, 52
+            ld a, 52 ; 2M / (16 * 2400)
             out ($11), a
+
+            ; Clock channel 2 at 1 kHz
+            ld a, $07
+            out ($12), a
+            ld a, 125 ; 2M / (16 * 1000)
+            out ($12), a
+
+            ; Clock channel 3 at 10 Hz
+            ; Enable interrupt, counter, prescale 16, falling edge
+            ; Auto, time constant, reset, control word
+            ld a, $c7
+            out ($13), a
+            ld a, 100
+            out ($13), a
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Interrupt initialisation
+            xor a
+            ld (pattern), a ; Initialise the counter
+            ld i, a         ; Interrupt vectors in first page.
+            im 2            ; Vectored interrupt
+            ei              ; Off we go!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; End and general subroutines
 
-success:    ld a, $ff
+success:    ld a, (pattern)
             call disp
-            ld a, $00
+            ld a, (pattern)
+            neg
+            dec a
             call disp
             jp success
 
@@ -421,5 +461,16 @@ nmi_loop:   dec de
             exx
             ex af, af'
             retn
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Counter timer test code
+;
+
+isr:        push af
+            ld a, (pattern)
+            inc a
+            ld (pattern), a
+            pop af
+            reti
 
 #end
