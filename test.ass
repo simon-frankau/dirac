@@ -53,7 +53,8 @@ pattern:    equ $f000
 
 ; Initial wipe across, no hardware enabled
 
-top:        ld a,$1
+top:        di ; Could have come here without reset, for whatever reason.
+            ld a,$1
             out ($70),a
 
             ld de,$4000
@@ -416,11 +417,7 @@ romiskip:   inc de
 ; End and general subroutines
 
 success:    ld a, (pattern)
-            call disp
-            ld a, (pattern)
-            neg
-            dec a
-            call disp
+            out ($70), a
             jp success
 
 fail:       ld a, $aa
@@ -471,6 +468,7 @@ isr:        push af
             inc a
             ld (pattern), a
             pop af
+            ei ; Must re-enable!
             reti
 
 #end
