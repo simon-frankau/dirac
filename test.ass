@@ -406,6 +406,11 @@ romiskip:   inc de
             out ($13), a
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; SIO test
+
+            ; SIO test to go here.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Interrupt initialisation
             xor a
             ld (pattern), a ; Initialise the counter
@@ -416,8 +421,7 @@ romiskip:   inc de
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; End and general subroutines
 
-success:    ld a, (pattern)
-            out ($70), a
+success:    halt
             jp success
 
 fail:       ld a, $aa
@@ -467,6 +471,7 @@ isr:        push af
             ld a, (pattern)
             inc a
             ld (pattern), a
+            out ($70), a
             pop af
             ei ; Must re-enable!
             reti
