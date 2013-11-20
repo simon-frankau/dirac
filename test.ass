@@ -392,7 +392,32 @@ romiskip:   inc de
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; SIO test
 
-            ; SIO test to go here.
+            ; We will be working with channel A, control port
+            ld a, $18 ; Channel reset
+            out ($21), a
+
+            ld a, $04 ; WR4
+            out ($21), a
+            ld a, $04 ; x1 rate, 1 stop bit, no parity
+            out ($21), a
+
+            ld a, $01 ; WR1
+            out ($21), a
+            ld a, $00 ; Disable transmit/receive interrupts
+            out ($21), a
+
+            ; WR2 has the interrupt vector - NB channel 2-specific stuff?
+
+            ld a, $05 ; WR5
+            out ($21), a
+            ld a, $ea ; Enable transmission, RTS, DTR, 8 bits
+            out ($21), a
+
+            ld a, $03 ; WR3
+            out ($21), a
+            ld a, $c1 ; Enable receiving, 8 bits
+            out ($21), a
+            ; What about auto-enable - send on CTS, receive on DC?
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Interrupt initialisation
@@ -419,6 +444,26 @@ disp_loop:  dec de
             ld a, d
             or e
             jp nz, disp_loop
+            ret
+
+; Write serial
+sio_wr:     ld b, a
+            ; Wait until transmit buffer has space
+            in a, ($21)
+            and $04
+            jp nz, sio_wr
+            ; Stick the data in the data register
+            ld b, a
+            out ($20), a
+            ret
+
+; Read serial
+sio_rd:     ; Wait until there's a character to receive
+            in a, ($21)
+            and $01
+            jp z, sio_rd
+            ; Read the data from the data register
+            in a, ($20)
             ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
