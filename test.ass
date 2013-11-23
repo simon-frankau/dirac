@@ -430,7 +430,11 @@ romiskip:   inc de
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; End and general subroutines
 
-success:    halt
+success:    ; Upper case/lower case switch
+            call sio_rd
+            ld b, $20
+            xor b
+            call sio_wr
             jp success
 
 fail:       ld a, $aa
@@ -451,9 +455,9 @@ sio_wr:     ld b, a
             ; Wait until transmit buffer has space
             in a, ($21)
             and $04
-            jp nz, sio_wr
+            jp z, sio_wr
             ; Stick the data in the data register
-            ld b, a
+            ld a, b
             out ($20), a
             ret
 
