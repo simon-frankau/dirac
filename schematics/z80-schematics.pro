@@ -1,4 +1,4 @@
-update=08/10/2014 21:01:29
+update=09/10/2014 21:27:55
 version=1
 last_client=eeschema
 [cvpcb]
@@ -85,3 +85,4 @@ LibName28=atmel
 LibName29=contrib
 LibName30=valves
 LibName31=o_zilog
+LibName32=contrib/simon
