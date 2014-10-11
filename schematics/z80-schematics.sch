@@ -282,12 +282,12 @@ a7
 $Comp
 L VCC #PWR?
 U 1 1 5435B495
-P 6400 2950
-F 0 "#PWR?" H 6400 3050 30  0001 C CNN
-F 1 "VCC" H 6400 3050 30  0000 C CNN
-F 2 "" H 6400 2950 60  0000 C CNN
-F 3 "" H 6400 2950 60  0000 C CNN
-	1    6400 2950
+P 6200 2950
+F 0 "#PWR?" H 6200 3050 30  0001 C CNN
+F 1 "VCC" H 6200 3050 30  0000 C CNN
+F 2 "" H 6200 2950 60  0000 C CNN
+F 3 "" H 6200 2950 60  0000 C CNN
+	1    6200 2950
 	1    0    0    -1  
 $EndComp
 NoConn ~ 6550 3750
@@ -299,7 +299,7 @@ Text Label 8650 3250 2    60   Italic 12
 a14
 Text Label 8650 3350 2    60   Italic 12
 a15
-Text Label 6850 4750 0    60   Italic 12
+Text Label 3550 3850 0    60   Italic 12
 /rd
 $Comp
 L 74LS540 U?
@@ -568,9 +568,9 @@ Text Label 14850 5150 2    60   Italic 12
 /bankwr
 Text Label 6200 2150 0    60   Italic 12
 /iorq
-Text Label 6850 750  0    60   Italic 12
+Text Label 6150 3450 0    60   Italic 12
 /reset
-Text Label 6850 1150 0    60   Italic 12
+Text Label 6200 2250 0    60   Italic 12
 /wr
 Text Label 9200 2450 0    60   Italic 12
 /iorq
@@ -742,25 +742,17 @@ Wire Wire Line
 Wire Wire Line
 	3750 3850 3550 3850
 Wire Wire Line
-	6550 3650 6400 3650
+	6550 3650 6200 3650
 Wire Wire Line
-	6400 3650 6400 2950
-Wire Wire Line
-	6400 2950 6550 2950
+	6200 2950 6550 2950
 Wire Wire Line
 	6550 3450 6150 3450
-Wire Wire Line
-	6150 750  6150 3450
-Wire Wire Line
-	6150 3450 6150 5750
 Wire Wire Line
 	6550 3150 5950 3150
 Wire Wire Line
 	5950 3150 5950 5750
 Wire Wire Line
-	6550 2050 5700 2050
-Wire Wire Line
-	5700 2050 5700 4950
+	6550 2050 6200 2050
 Wire Wire Line
 	6550 1850 5600 1850
 Wire Wire Line
@@ -772,9 +764,7 @@ Wire Wire Line
 Wire Wire Line
 	3450 3750 3450 5150
 Wire Wire Line
-	3750 3650 3350 3650
-Wire Wire Line
-	3350 3650 3350 4950
+	3750 3650 3400 3650
 Wire Wire Line
 	8450 3050 8650 3050
 Wire Wire Line
@@ -892,28 +882,11 @@ Wire Wire Line
 Wire Wire Line
 	12200 3450 11750 3450
 Wire Wire Line
-	3550 3850 3550 4750
-Wire Wire Line
-	6150 750  9550 750 
-Connection ~ 6150 3450
-Wire Wire Line
 	12650 3850 13100 3850
 Wire Wire Line
-	3100 1150 6450 1150
+	6550 2250 6200 2250
 Wire Wire Line
-	6450 1150 9250 1150
-Wire Wire Line
-	6550 2250 6450 2250
-Wire Wire Line
-	6450 2250 6450 1150
-Wire Wire Line
-	6550 2350 5800 2350
-Wire Wire Line
-	1100 4750 3550 4750
-Wire Wire Line
-	3550 4750 5800 4750
-Wire Wire Line
-	5800 4750 8300 4750
+	6550 2350 6200 2350
 Wire Wire Line
 	10750 2450 11200 2450
 Wire Wire Line
@@ -929,27 +902,15 @@ Wire Wire Line
 Wire Wire Line
 	10750 1850 11200 1850
 Wire Wire Line
-	5800 2350 5800 4750
-Wire Wire Line
-	1100 4750 1100 3550
-Wire Wire Line
-	1100 3550 1200 3550
-Connection ~ 5800 4750
-Connection ~ 3550 4750
-Wire Wire Line
-	3100 1150 3100 3950
-Connection ~ 6450 1150
+	1000 3550 1200 3550
 Connection ~ 14400 3950
 Wire Wire Line
 	14300 5150 14850 5150
 Wire Wire Line
 	1200 5050 1250 5050
 Wire Wire Line
-	5700 4950 3350 4950
-Wire Wire Line
 	3350 4950 2450 4950
-Connection ~ 3350 4950
-Text Label 3550 4950 0    60   Italic 12
+Text Label 2650 4950 0    60   Italic 12
 /mreq
 $Comp
 L 7400 U?
@@ -1077,4 +1038,25 @@ Text Label 12650 4750 0    60   Italic 12
 /bankwr
 Text Label 12650 3850 0    60   Italic 12
 /reset
+Text Label 3100 3950 0    60   Italic 12
+/wr
+Text Label 1000 3550 0    60   Italic 12
+/rd
+Text Label 6200 2350 0    60   Italic 12
+/rd
+Text Label 3400 3650 0    60   Italic 12
+/mreq
+Text Label 6200 2050 0    60   Italic 12
+/mreq
+$Comp
+L VCC #PWR?
+U 1 1 5439C872
+P 6200 3650
+F 0 "#PWR?" H 6200 3750 30  0001 C CNN
+F 1 "VCC" H 6200 3750 30  0000 C CNN
+F 2 "" H 6200 3650 60  0000 C CNN
+F 3 "" H 6200 3650 60  0000 C CNN
+	1    6200 3650
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
