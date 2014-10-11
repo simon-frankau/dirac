@@ -31,12 +31,13 @@ LIBS:contrib
 LIBS:valves
 LIBS:o_zilog
 LIBS:simon
+LIBS:xo-14s
 EELAYER 24 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
 Sheet 1 1
-Title "Z80 Single Board Computer"
+Title "Dirac Z80 Single Board Computer"
 Date "9 oct 2014"
 Rev ""
 Comp ""
@@ -568,7 +569,7 @@ Text Label 14850 5150 2    60   Italic 12
 /bankwr
 Text Label 6300 1150 0    60   Italic 12
 /iorq
-Text Label 6250 2450 0    60   Italic 12
+Text Label 6300 2450 0    60   Italic 12
 /reset
 Text Label 6300 1250 0    60   Italic 12
 /wr
@@ -744,7 +745,7 @@ Wire Wire Line
 Wire Wire Line
 	6300 1950 6650 1950
 Wire Wire Line
-	6650 2450 6250 2450
+	6650 2450 6300 2450
 Wire Wire Line
 	6650 2150 6050 2150
 Wire Wire Line
@@ -933,13 +934,9 @@ Wire Wire Line
 Wire Wire Line
 	1100 3350 800  3350
 Wire Wire Line
-	6650 2950 6500 2950
+	6650 2950 6300 2950
 Wire Wire Line
-	6500 2950 6500 4750
-Wire Wire Line
-	6650 2250 6150 2250
-Wire Wire Line
-	6150 2250 6150 4750
+	6650 2250 6300 2250
 Wire Wire Line
 	15300 3500 15100 3500
 Wire Wire Line
@@ -1062,4 +1059,252 @@ Text Label 3150 2700 0    60   Italic 12
 /b19
 Text Label 800  3350 0    60   Italic 12
 /b19
+$Comp
+L C C?
+U 1 1 5439CD97
+P 5050 6350
+F 0 "C?" H 5050 6450 40  0000 L CNN
+F 1 "C" H 5056 6265 40  0000 L CNN
+F 2 "" H 5088 6200 30  0000 C CNN
+F 3 "" H 5050 6350 60  0000 C CNN
+	1    5050 6350
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D?
+U 1 1 5439CDAB
+P 1000 4650
+F 0 "D?" H 1000 4750 50  0000 C CNN
+F 1 "LED" H 1000 4550 50  0000 C CNN
+F 2 "" H 1000 4650 60  0000 C CNN
+F 3 "" H 1000 4650 60  0000 C CNN
+	1    1000 4650
+	0    1    1    0   
+$EndComp
+$Comp
+L R R?
+U 1 1 5439CDBF
+P 1000 5500
+F 0 "R?" V 1080 5500 40  0000 C CNN
+F 1 "R" V 1007 5501 40  0000 C CNN
+F 2 "" V 930 5500 30  0000 C CNN
+F 3 "" H 1000 5500 30  0000 C CNN
+	1    1000 5500
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 5439CDD1
+P 1550 4650
+F 0 "R?" V 1630 4650 40  0000 C CNN
+F 1 "R" V 1557 4651 40  0000 C CNN
+F 2 "" V 1480 4650 30  0000 C CNN
+F 3 "" H 1550 4650 30  0000 C CNN
+	1    1550 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 5439CDDC
+P 2250 4650
+F 0 "R?" V 2330 4650 40  0000 C CNN
+F 1 "R" V 2257 4651 40  0000 C CNN
+F 2 "" V 2180 4650 30  0000 C CNN
+F 3 "" H 2250 4650 30  0000 C CNN
+	1    2250 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L SW_PUSH SW?
+U 1 1 5439CDE9
+P 1550 5500
+F 0 "SW?" H 1700 5610 50  0000 C CNN
+F 1 "SW_PUSH" H 1550 5420 50  0000 C CNN
+F 2 "" H 1550 5500 60  0000 C CNN
+F 3 "" H 1550 5500 60  0000 C CNN
+	1    1550 5500
+	0    1    1    0   
+$EndComp
+$Comp
+L SW_PUSH SW?
+U 1 1 5439CDFB
+P 2400 5500
+F 0 "SW?" H 2550 5610 50  0000 C CNN
+F 1 "SW_PUSH" H 2400 5420 50  0000 C CNN
+F 2 "" H 2400 5500 60  0000 C CNN
+F 3 "" H 2400 5500 60  0000 C CNN
+	1    2400 5500
+	0    1    1    0   
+$EndComp
+$Comp
+L C C?
+U 1 1 5439CE08
+P 2100 5500
+F 0 "C?" H 2100 5600 40  0000 L CNN
+F 1 "C" H 2106 5415 40  0000 L CNN
+F 2 "" H 2138 5350 30  0000 C CNN
+F 3 "" H 2100 5500 60  0000 C CNN
+	1    2100 5500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2400 5900 2400 5800
+Wire Wire Line
+	2100 5900 2250 5900
+Wire Wire Line
+	2250 5900 2400 5900
+Wire Wire Line
+	2100 5900 2100 5700
+Wire Wire Line
+	2400 5050 2400 5200
+Wire Wire Line
+	2100 5050 2250 5050
+Wire Wire Line
+	2250 5050 2400 5050
+Wire Wire Line
+	2400 5050 2800 5050
+Wire Wire Line
+	2100 5050 2100 5300
+Wire Wire Line
+	2250 4900 2250 5050
+Connection ~ 2250 5050
+$Comp
+L VCC #PWR?
+U 1 1 5439D0BF
+P 2250 4250
+F 0 "#PWR?" H 2250 4350 30  0001 C CNN
+F 1 "VCC" H 2250 4350 30  0000 C CNN
+F 2 "" H 2250 4250 60  0000 C CNN
+F 3 "" H 2250 4250 60  0000 C CNN
+	1    2250 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 5439D0D3
+P 2250 6050
+F 0 "#PWR?" H 2250 6050 30  0001 C CNN
+F 1 "GND" H 2250 5980 30  0001 C CNN
+F 2 "" H 2250 6050 60  0000 C CNN
+F 3 "" H 2250 6050 60  0000 C CNN
+	1    2250 6050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2250 6050 2250 5900
+Connection ~ 2250 5900
+Connection ~ 2400 5050
+Wire Wire Line
+	2250 4400 2250 4250
+Text Label 2800 5050 2    60   Italic 12
+/reset
+Wire Wire Line
+	1550 4900 1550 5050
+Wire Wire Line
+	1550 5050 1550 5200
+$Comp
+L VCC #PWR?
+U 1 1 5439D481
+P 1550 4250
+F 0 "#PWR?" H 1550 4350 30  0001 C CNN
+F 1 "VCC" H 1550 4350 30  0000 C CNN
+F 2 "" H 1550 4250 60  0000 C CNN
+F 3 "" H 1550 4250 60  0000 C CNN
+	1    1550 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 5439D495
+P 1550 6050
+F 0 "#PWR?" H 1550 6050 30  0001 C CNN
+F 1 "GND" H 1550 5980 30  0001 C CNN
+F 2 "" H 1550 6050 60  0000 C CNN
+F 3 "" H 1550 6050 60  0000 C CNN
+	1    1550 6050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1550 5800 1550 6050
+Wire Wire Line
+	1550 4400 1550 4250
+Wire Wire Line
+	1550 5050 1950 5050
+Connection ~ 1550 5050
+Text Label 1950 5050 2    60   Italic 12
+/nmi
+Text Label 6300 2250 0    60   Italic 12
+/nmi
+$Comp
+L VCC #PWR?
+U 1 1 5439D74E
+P 1000 4250
+F 0 "#PWR?" H 1000 4350 30  0001 C CNN
+F 1 "VCC" H 1000 4350 30  0000 C CNN
+F 2 "" H 1000 4250 60  0000 C CNN
+F 3 "" H 1000 4250 60  0000 C CNN
+	1    1000 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 5439D762
+P 1000 6050
+F 0 "#PWR?" H 1000 6050 30  0001 C CNN
+F 1 "GND" H 1000 5980 30  0001 C CNN
+F 2 "" H 1000 6050 60  0000 C CNN
+F 3 "" H 1000 6050 60  0000 C CNN
+	1    1000 6050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1000 5750 1000 6050
+Wire Wire Line
+	1000 4850 1000 5250
+Wire Wire Line
+	1000 4250 1000 4450
+$Comp
+L XO-14S X?
+U 1 1 5439DA14
+P 3600 5050
+F 0 "X?" H 3360 5410 60  0000 C CNN
+F 1 "XO-14S" H 3600 4680 60  0000 C CNN
+F 2 "" H 3600 5050 60  0000 C CNN
+F 3 "" H 3600 5050 60  0000 C CNN
+	1    3600 5050
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 5439DA28
+P 3000 6050
+F 0 "#PWR?" H 3000 6050 30  0001 C CNN
+F 1 "GND" H 3000 5980 30  0001 C CNN
+F 2 "" H 3000 6050 60  0000 C CNN
+F 3 "" H 3000 6050 60  0000 C CNN
+	1    3000 6050
+	1    0    0    -1  
+$EndComp
+$Comp
+L VCC #PWR?
+U 1 1 5439DA3C
+P 3000 4250
+F 0 "#PWR?" H 3000 4350 30  0001 C CNN
+F 1 "VCC" H 3000 4350 30  0000 C CNN
+F 2 "" H 3000 4250 60  0000 C CNN
+F 3 "" H 3000 4250 60  0000 C CNN
+	1    3000 4250
+	1    0    0    -1  
+$EndComp
+NoConn ~ 4250 4800
+Wire Wire Line
+	3000 4850 3000 4250
+Wire Wire Line
+	3000 5250 3000 6050
+Wire Wire Line
+	4300 5150 4600 5150
+Text Label 4600 5150 2    60   Italic 12
+clk
+Text Label 6300 2950 0    60   Italic 12
+clk
 $EndSCHEMATC
