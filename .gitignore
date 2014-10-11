@@ -1,3 +1,7 @@
 *~
 *.rom
 *.bin
+*.bak
+*.bck
+*.dcm
+*.cache.lib
