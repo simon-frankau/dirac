@@ -48,34 +48,34 @@ $EndDescr
 $Comp
 L 28C256 U?
 U 1 1 54359578
-P 1900 2750
-F 0 "U?" H 2100 3750 70  0000 C CNN
-F 1 "28C256" H 2200 1750 70  0000 C CNN
-F 2 "" H 1900 2750 60  0000 C CNN
-F 3 "" H 1900 2750 60  0000 C CNN
-	1    1900 2750
+P 1700 1750
+F 0 "U?" H 1900 2750 70  0000 C CNN
+F 1 "28C256" H 2000 750 70  0000 C CNN
+F 2 "" H 1700 1750 60  0000 C CNN
+F 3 "" H 1700 1750 60  0000 C CNN
+	1    1700 1750
 	1    0    0    -1  
 $EndComp
 $Comp
 L 628128 U?
 U 1 1 5435969B
-P 4450 2900
-F 0 "U?" H 4500 2900 70  0000 C CNN
-F 1 "628128" H 4750 1700 70  0000 C CNN
-F 2 "" H 4450 2900 60  0000 C CNN
-F 3 "" H 4450 2900 60  0000 C CNN
-	1    4450 2900
+P 4200 1850
+F 0 "U?" H 4250 1850 70  0000 C CNN
+F 1 "628128" H 4500 650 70  0000 C CNN
+F 2 "" H 4200 1850 60  0000 C CNN
+F 3 "" H 4200 1850 60  0000 C CNN
+	1    4200 1850
 	1    0    0    -1  
 $EndComp
 $Comp
 L Z80-CPU U?
 U 1 1 54359841
-P 7500 3050
-F 0 "U?" H 7500 4400 60  0000 C CNN
-F 1 "Z80-CPU" H 7500 1700 60  0000 C CNN
-F 2 "" H 7500 3050 60  0000 C CNN
-F 3 "" H 7500 3050 60  0000 C CNN
-	1    7500 3050
+P 7600 2050
+F 0 "U?" H 7600 3400 60  0000 C CNN
+F 1 "Z80-CPU" H 7600 700 60  0000 C CNN
+F 2 "" H 7600 2050 60  0000 C CNN
+F 3 "" H 7600 2050 60  0000 C CNN
+	1    7600 2050
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -100,154 +100,154 @@ F 3 "" H 13100 7550 60  0000 C CNN
 	1    13100 7550
 	1    0    0    -1  
 $EndComp
-NoConn ~ 6550 2750
-NoConn ~ 6550 2550
-Text Label 8650 3550 2    60   Italic 12
+NoConn ~ 6650 1750
+NoConn ~ 6650 1550
+Text Label 8750 2550 2    60   Italic 12
 d0
-Text Label 8650 3750 2    60   Italic 12
+Text Label 8750 2750 2    60   Italic 12
 d2
-Text Label 8650 3850 2    60   Italic 12
+Text Label 8750 2850 2    60   Italic 12
 d3
-Text Label 8650 3950 2    60   Italic 12
+Text Label 8750 2950 2    60   Italic 12
 d4
-Text Label 8650 4050 2    60   Italic 12
+Text Label 8750 3050 2    60   Italic 12
 d5
-Text Label 8650 3650 2    60   Italic 12
+Text Label 8750 2650 2    60   Italic 12
 d1
-Text Label 8650 4150 2    60   Italic 12
+Text Label 8750 3150 2    60   Italic 12
 d6
-Text Label 8650 4250 2    60   Italic 12
+Text Label 8750 3250 2    60   Italic 12
 d7
-Text Label 8650 1850 2    60   Italic 12
+Text Label 8750 850  2    60   Italic 12
 a0
-Text Label 8650 1950 2    60   Italic 12
+Text Label 8750 950  2    60   Italic 12
 a1
-Text Label 8650 2050 2    60   Italic 12
+Text Label 8750 1050 2    60   Italic 12
 a2
-Text Label 8650 2150 2    60   Italic 12
+Text Label 8750 1150 2    60   Italic 12
 a3
-Text Label 8650 2250 2    60   Italic 12
+Text Label 8750 1250 2    60   Italic 12
 a4
-Text Label 8650 2350 2    60   Italic 12
+Text Label 8750 1350 2    60   Italic 12
 a5
-Text Label 8650 2450 2    60   Italic 12
+Text Label 8750 1450 2    60   Italic 12
 a6
-Text Label 8650 2550 2    60   Italic 12
+Text Label 8750 1550 2    60   Italic 12
 a7
-Text Label 8650 2650 2    60   Italic 12
+Text Label 8750 1650 2    60   Italic 12
 a8
-Text Label 8650 2750 2    60   Italic 12
+Text Label 8750 1750 2    60   Italic 12
 a9
-Text Label 8650 2850 2    60   Italic 12
+Text Label 8750 1850 2    60   Italic 12
 a10
-Text Label 8650 2950 2    60   Italic 12
+Text Label 8750 1950 2    60   Italic 12
 a11
-Text Label 5350 1850 2    60   Italic 12
+Text Label 5100 800  2    60   Italic 12
 d0
-Text Label 5350 1950 2    60   Italic 12
+Text Label 5100 900  2    60   Italic 12
 d1
-Text Label 5350 2050 2    60   Italic 12
+Text Label 5100 1000 2    60   Italic 12
 d2
-Text Label 5350 2150 2    60   Italic 12
+Text Label 5100 1100 2    60   Italic 12
 d3
-Text Label 5350 2250 2    60   Italic 12
+Text Label 5100 1200 2    60   Italic 12
 d4
-Text Label 5350 2350 2    60   Italic 12
+Text Label 5100 1300 2    60   Italic 12
 d5
-Text Label 5350 2450 2    60   Italic 12
+Text Label 5100 1400 2    60   Italic 12
 d6
-Text Label 5350 2550 2    60   Italic 12
+Text Label 5100 1500 2    60   Italic 12
 d7
-Text Label 1000 1850 0    60   Italic 12
+Text Label 800  850  0    60   Italic 12
 a0
-Text Label 1000 1950 0    60   Italic 12
+Text Label 800  950  0    60   Italic 12
 a1
-Text Label 1000 2050 0    60   Italic 12
+Text Label 800  1050 0    60   Italic 12
 a2
-Text Label 1000 2150 0    60   Italic 12
+Text Label 800  1150 0    60   Italic 12
 a3
-Text Label 1000 2250 0    60   Italic 12
+Text Label 800  1250 0    60   Italic 12
 a4
-Text Label 1000 2350 0    60   Italic 12
+Text Label 800  1350 0    60   Italic 12
 a5
-Text Label 1000 2450 0    60   Italic 12
+Text Label 800  1450 0    60   Italic 12
 a6
-Text Label 1000 2550 0    60   Italic 12
+Text Label 800  1550 0    60   Italic 12
 a7
-Text Label 1000 2650 0    60   Italic 12
+Text Label 800  1650 0    60   Italic 12
 a8
-Text Label 1000 2750 0    60   Italic 12
+Text Label 800  1750 0    60   Italic 12
 a9
-Text Label 1000 2850 0    60   Italic 12
+Text Label 800  1850 0    60   Italic 12
 a10
-Text Label 1000 2950 0    60   Italic 12
+Text Label 800  1950 0    60   Italic 12
 a11
-Text Label 2800 1850 2    60   Italic 12
+Text Label 2600 850  2    60   Italic 12
 d0
-Text Label 2800 1950 2    60   Italic 12
+Text Label 2600 950  2    60   Italic 12
 d1
-Text Label 2800 2050 2    60   Italic 12
+Text Label 2600 1050 2    60   Italic 12
 d2
-Text Label 2800 2150 2    60   Italic 12
+Text Label 2600 1150 2    60   Italic 12
 d3
-Text Label 2800 2250 2    60   Italic 12
+Text Label 2600 1250 2    60   Italic 12
 d4
-Text Label 2800 2350 2    60   Italic 12
+Text Label 2600 1350 2    60   Italic 12
 d5
-Text Label 2800 2450 2    60   Italic 12
+Text Label 2600 1450 2    60   Italic 12
 d6
-Text Label 2800 2550 2    60   Italic 12
+Text Label 2600 1550 2    60   Italic 12
 d7
-Text Label 3550 1850 0    60   Italic 12
+Text Label 3300 800  0    60   Italic 12
 a0
-Text Label 3550 1950 0    60   Italic 12
+Text Label 3300 900  0    60   Italic 12
 a1
-Text Label 3550 2050 0    60   Italic 12
+Text Label 3300 1000 0    60   Italic 12
 a2
-Text Label 3550 2150 0    60   Italic 12
+Text Label 3300 1100 0    60   Italic 12
 a3
-Text Label 3550 2250 0    60   Italic 12
+Text Label 3300 1200 0    60   Italic 12
 a4
-Text Label 3550 2350 0    60   Italic 12
+Text Label 3300 1300 0    60   Italic 12
 a5
-Text Label 3550 2450 0    60   Italic 12
+Text Label 3300 1400 0    60   Italic 12
 a6
-Text Label 3550 2550 0    60   Italic 12
+Text Label 3300 1500 0    60   Italic 12
 a7
-Text Label 3550 2650 0    60   Italic 12
+Text Label 3300 1600 0    60   Italic 12
 a8
-Text Label 3550 2750 0    60   Italic 12
+Text Label 3300 1700 0    60   Italic 12
 a9
-Text Label 3550 2850 0    60   Italic 12
+Text Label 3300 1800 0    60   Italic 12
 a10
 $Comp
 L VCC #PWR?
 U 1 1 5435A5D9
-P 1000 3450
-F 0 "#PWR?" H 1000 3550 30  0001 C CNN
-F 1 "VCC" H 1000 3550 30  0000 C CNN
-F 2 "" H 1000 3450 60  0000 C CNN
-F 3 "" H 1000 3450 60  0000 C CNN
-	1    1000 3450
+P 800 2450
+F 0 "#PWR?" H 800 2550 30  0001 C CNN
+F 1 "VCC" H 800 2550 30  0000 C CNN
+F 2 "" H 800 2450 60  0000 C CNN
+F 3 "" H 800 2450 60  0000 C CNN
+	1    800  2450
 	1    0    0    -1  
 $EndComp
-Text Label 1000 3050 0    60   Italic 12
+Text Label 800  2050 0    60   Italic 12
 b12
-Text Label 1000 3150 0    60   Italic 12
+Text Label 800  2150 0    60   Italic 12
 b13
-Text Label 1000 3250 0    60   Italic 12
+Text Label 800  2250 0    60   Italic 12
 b14
-Text Label 3550 2950 0    60   Italic 12
+Text Label 3300 1900 0    60   Italic 12
 a11
-Text Label 3550 3050 0    60   Italic 12
+Text Label 3300 2000 0    60   Italic 12
 b12
-Text Label 3550 3150 0    60   Italic 12
+Text Label 3300 2100 0    60   Italic 12
 b13
-Text Label 3550 3250 0    60   Italic 12
+Text Label 3300 2200 0    60   Italic 12
 b14
-Text Label 3550 3350 0    60   Italic 12
+Text Label 3300 2300 0    60   Italic 12
 b15
-Text Label 3550 3450 0    60   Italic 12
+Text Label 3300 2400 0    60   Italic 12
 b16
 $Comp
 L 74LS138 U?
@@ -282,24 +282,24 @@ a7
 $Comp
 L VCC #PWR?
 U 1 1 5435B495
-P 6200 2950
-F 0 "#PWR?" H 6200 3050 30  0001 C CNN
-F 1 "VCC" H 6200 3050 30  0000 C CNN
-F 2 "" H 6200 2950 60  0000 C CNN
-F 3 "" H 6200 2950 60  0000 C CNN
-	1    6200 2950
+P 6300 1950
+F 0 "#PWR?" H 6300 2050 30  0001 C CNN
+F 1 "VCC" H 6300 2050 30  0000 C CNN
+F 2 "" H 6300 1950 60  0000 C CNN
+F 3 "" H 6300 1950 60  0000 C CNN
+	1    6300 1950
 	1    0    0    -1  
 $EndComp
-NoConn ~ 6550 3750
-Text Label 8650 3050 2    60   Italic 12
+NoConn ~ 6650 2750
+Text Label 8750 2050 2    60   Italic 12
 a12
-Text Label 8650 3150 2    60   Italic 12
+Text Label 8750 2150 2    60   Italic 12
 a13
-Text Label 8650 3250 2    60   Italic 12
+Text Label 8750 2250 2    60   Italic 12
 a14
-Text Label 8650 3350 2    60   Italic 12
+Text Label 8750 2350 2    60   Italic 12
 a15
-Text Label 3550 3850 0    60   Italic 12
+Text Label 3150 2800 0    60   Italic 12
 /rd
 $Comp
 L 74LS540 U?
@@ -566,165 +566,163 @@ F 3 "~" H 13700 5150 60  0000 C CNN
 $EndComp
 Text Label 14850 5150 2    60   Italic 12
 /bankwr
-Text Label 6200 2150 0    60   Italic 12
+Text Label 6300 1150 0    60   Italic 12
 /iorq
-Text Label 6150 3450 0    60   Italic 12
+Text Label 6250 2450 0    60   Italic 12
 /reset
-Text Label 6200 2250 0    60   Italic 12
+Text Label 6300 1250 0    60   Italic 12
 /wr
 Text Label 9200 2450 0    60   Italic 12
 /iorq
 $Comp
 L 74LS32 U?
 U 1 1 5437590A
-P 1850 5050
-F 0 "U?" H 1850 5100 60  0000 C CNN
-F 1 "74LS32" H 1850 5000 60  0000 C CNN
-F 2 "~" H 1850 5050 60  0000 C CNN
-F 3 "~" H 1850 5050 60  0000 C CNN
-	1    1850 5050
-	-1   0    0    1   
+P 1700 3450
+F 0 "U?" H 1700 3500 60  0000 C CNN
+F 1 "74LS32" H 1700 3400 60  0000 C CNN
+F 2 "~" H 1700 3450 60  0000 C CNN
+F 3 "~" H 1700 3450 60  0000 C CNN
+	1    1700 3450
+	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	8450 2950 8650 2950
+	8550 1950 8750 1950
 Wire Wire Line
-	8450 2850 8650 2850
+	8550 1850 8750 1850
 Wire Wire Line
-	8450 2750 8650 2750
+	8550 1750 8750 1750
 Wire Wire Line
-	8450 2650 8650 2650
+	8550 1650 8750 1650
 Wire Wire Line
-	8450 2550 8650 2550
+	8550 1550 8750 1550
 Wire Wire Line
-	8450 2450 8650 2450
+	8550 1450 8750 1450
 Wire Wire Line
-	8450 2350 8650 2350
+	8550 1350 8750 1350
 Wire Wire Line
-	8450 2250 8650 2250
+	8550 1250 8750 1250
 Wire Wire Line
-	8450 2150 8650 2150
+	8550 1150 8750 1150
 Wire Wire Line
-	8450 2050 8650 2050
+	8550 1050 8750 1050
 Wire Wire Line
-	8450 1950 8650 1950
+	8550 950  8750 950 
 Wire Wire Line
-	8450 1850 8650 1850
+	8550 850  8750 850 
 Wire Wire Line
-	8450 3750 8650 3750
+	8550 2750 8750 2750
 Wire Wire Line
-	8450 3650 8650 3650
+	8550 2650 8750 2650
 Wire Wire Line
-	8450 3550 8650 3550
+	8550 2550 8750 2550
 Wire Wire Line
-	8450 4250 8650 4250
+	8550 3250 8750 3250
 Wire Wire Line
-	8450 4150 8650 4150
+	8550 3150 8750 3150
 Wire Wire Line
-	8450 4050 8650 4050
+	8550 3050 8750 3050
 Wire Wire Line
-	8450 3950 8650 3950
+	8550 2950 8750 2950
 Wire Wire Line
-	8450 3850 8650 3850
+	8550 2850 8750 2850
 Wire Wire Line
-	5150 1850 5350 1850
+	4900 800  5100 800 
 Wire Wire Line
-	5150 1950 5350 1950
+	4900 900  5100 900 
 Wire Wire Line
-	5150 2050 5350 2050
+	4900 1000 5100 1000
 Wire Wire Line
-	5150 2150 5350 2150
+	4900 1100 5100 1100
 Wire Wire Line
-	5150 2250 5350 2250
+	4900 1200 5100 1200
 Wire Wire Line
-	5150 2350 5350 2350
+	4900 1300 5100 1300
 Wire Wire Line
-	5150 2450 5350 2450
+	4900 1400 5100 1400
 Wire Wire Line
-	5150 2550 5350 2550
+	4900 1500 5100 1500
 Wire Wire Line
-	1200 1850 1000 1850
+	1000 850  800  850 
 Wire Wire Line
-	1000 1950 1200 1950
+	800  950  1000 950 
 Wire Wire Line
-	1200 2050 1000 2050
+	1000 1050 800  1050
 Wire Wire Line
-	1200 2150 1000 2150
+	1000 1150 800  1150
 Wire Wire Line
-	1200 2250 1000 2250
+	1000 1250 800  1250
 Wire Wire Line
-	1200 2350 1000 2350
+	1000 1350 800  1350
 Wire Wire Line
-	1200 2450 1000 2450
+	1000 1450 800  1450
 Wire Wire Line
-	1200 2550 1000 2550
+	1000 1550 800  1550
 Wire Wire Line
-	1200 2650 1000 2650
+	1000 1650 800  1650
 Wire Wire Line
-	1200 2750 1000 2750
+	1000 1750 800  1750
 Wire Wire Line
-	1200 2850 1000 2850
+	1000 1850 800  1850
 Wire Wire Line
-	1200 2950 1000 2950
+	1000 1950 800  1950
 Wire Wire Line
-	2600 1850 2800 1850
+	2400 850  2600 850 
 Wire Wire Line
-	2600 1950 2800 1950
+	2400 950  2600 950 
 Wire Wire Line
-	2600 2050 2800 2050
+	2400 1050 2600 1050
 Wire Wire Line
-	2600 2150 2800 2150
+	2400 1150 2600 1150
 Wire Wire Line
-	2600 2250 2800 2250
+	2400 1250 2600 1250
 Wire Wire Line
-	2600 2350 2800 2350
+	2400 1350 2600 1350
 Wire Wire Line
-	2600 2450 2800 2450
+	2400 1450 2600 1450
 Wire Wire Line
-	2600 2550 2800 2550
+	2400 1550 2600 1550
 Wire Wire Line
-	3750 1850 3550 1850
+	3500 800  3300 800 
 Wire Wire Line
-	3750 1950 3550 1950
+	3500 900  3300 900 
 Wire Wire Line
-	3750 2050 3550 2050
+	3500 1000 3300 1000
 Wire Wire Line
-	3750 2150 3550 2150
+	3500 1100 3300 1100
 Wire Wire Line
-	3750 2250 3550 2250
+	3500 1200 3300 1200
 Wire Wire Line
-	3750 2350 3550 2350
+	3500 1300 3300 1300
 Wire Wire Line
-	3750 2450 3550 2450
+	3500 1400 3300 1400
 Wire Wire Line
-	3750 2550 3550 2550
+	3500 1500 3300 1500
 Wire Wire Line
-	3750 2650 3550 2650
+	3500 1600 3300 1600
 Wire Wire Line
-	3750 2750 3550 2750
+	3500 1700 3300 1700
 Wire Wire Line
-	3750 2850 3550 2850
+	3500 1800 3300 1800
 Wire Wire Line
-	1000 3450 1200 3450
+	800  2450 1000 2450
 Wire Wire Line
-	1200 3650 1200 5050
+	1000 2050 800  2050
 Wire Wire Line
-	1200 3050 1000 3050
+	1000 2150 800  2150
 Wire Wire Line
-	1200 3150 1000 3150
+	1000 2250 800  2250
 Wire Wire Line
-	1200 3250 1000 3250
+	3300 1900 3500 1900
 Wire Wire Line
-	3550 2950 3750 2950
+	3300 2000 3500 2000
 Wire Wire Line
-	3550 3050 3750 3050
+	3300 2100 3500 2100
 Wire Wire Line
-	3550 3150 3750 3150
+	3300 2200 3500 2200
 Wire Wire Line
-	3550 3250 3750 3250
+	3300 2300 3500 2300
 Wire Wire Line
-	3550 3350 3750 3350
-Wire Wire Line
-	3550 3450 3750 3450
+	3300 2400 3500 2400
 Wire Wire Line
 	9200 1750 9550 1750
 Wire Wire Line
@@ -736,43 +734,41 @@ Wire Wire Line
 Wire Wire Line
 	9200 2350 9550 2350
 Wire Wire Line
-	6550 2150 6200 2150
+	6650 1150 6300 1150
 Wire Wire Line
 	9200 2450 9550 2450
 Wire Wire Line
-	3750 3850 3550 3850
+	3500 2800 3150 2800
 Wire Wire Line
-	6550 3650 6200 3650
+	6650 2650 6300 2650
 Wire Wire Line
-	6200 2950 6550 2950
+	6300 1950 6650 1950
 Wire Wire Line
-	6550 3450 6150 3450
+	6650 2450 6250 2450
 Wire Wire Line
-	6550 3150 5950 3150
+	6650 2150 6050 2150
 Wire Wire Line
-	5950 3150 5950 5750
+	6050 2150 6050 4750
 Wire Wire Line
-	6550 2050 6200 2050
+	6650 1050 6300 1050
 Wire Wire Line
-	6550 1850 5600 1850
+	6650 850  5700 850 
 Wire Wire Line
-	5600 1850 5600 5650
+	5700 850  5700 4650
 Wire Wire Line
-	3100 3950 3750 3950
+	3150 2900 3500 2900
 Wire Wire Line
-	3750 3750 3450 3750
+	3500 2700 3150 2700
 Wire Wire Line
-	3450 3750 3450 5150
+	3500 2600 3150 2600
 Wire Wire Line
-	3750 3650 3400 3650
+	8550 2050 8750 2050
 Wire Wire Line
-	8450 3050 8650 3050
+	8550 2150 8750 2150
 Wire Wire Line
-	8450 3150 8650 3150
+	8550 2250 8750 2250
 Wire Wire Line
-	8450 3250 8650 3250
-Wire Wire Line
-	8450 3350 8650 3350
+	8550 2350 8750 2350
 Wire Wire Line
 	13550 1650 13750 1650
 Wire Wire Line
@@ -884,9 +880,9 @@ Wire Wire Line
 Wire Wire Line
 	12650 3850 13100 3850
 Wire Wire Line
-	6550 2250 6200 2250
+	6650 1250 6300 1250
 Wire Wire Line
-	6550 2350 6200 2350
+	6650 1350 6300 1350
 Wire Wire Line
 	10750 2450 11200 2450
 Wire Wire Line
@@ -902,53 +898,48 @@ Wire Wire Line
 Wire Wire Line
 	10750 1850 11200 1850
 Wire Wire Line
-	1000 3550 1200 3550
+	800  2550 1000 2550
 Connection ~ 14400 3950
 Wire Wire Line
 	14300 5150 14850 5150
 Wire Wire Line
-	1200 5050 1250 5050
+	2550 3450 2300 3450
 Wire Wire Line
-	3350 4950 2450 4950
-Text Label 2650 4950 0    60   Italic 12
+	800  3550 1100 3550
+Text Label 800  3550 0    60   Italic 12
 /mreq
 $Comp
 L 7400 U?
 U 1 1 54376642
-P 1900 4200
-F 0 "U?" H 1900 4250 60  0000 C CNN
-F 1 "7400" H 1900 4100 60  0000 C CNN
-F 2 "~" H 1900 4200 60  0000 C CNN
-F 3 "~" H 1900 4200 60  0000 C CNN
-	1    1900 4200
+P 4050 3450
+F 0 "U?" H 4050 3500 60  0000 C CNN
+F 1 "7400" H 4050 3350 60  0000 C CNN
+F 2 "~" H 4050 3450 60  0000 C CNN
+F 3 "~" H 4050 3450 60  0000 C CNN
+	1    4050 3450
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1300 4100 1300 4200
+	3450 3350 3450 3450
 Wire Wire Line
-	1300 4200 1300 4300
+	3450 3450 3450 3550
 Wire Wire Line
-	1300 4200 800  4200
-Connection ~ 1300 4200
-Text Label 800  4200 0    60   Italic 12
+	3450 3450 3150 3450
+Connection ~ 3450 3450
+Text Label 3150 3450 0    60   Italic 12
 b19
 Wire Wire Line
-	2500 4200 2600 4200
+	4650 3450 4950 3450
 Wire Wire Line
-	2600 4200 2600 5150
+	1100 3350 800  3350
 Wire Wire Line
-	3450 5150 2600 5150
+	6650 2950 6500 2950
 Wire Wire Line
-	2600 5150 2450 5150
-Connection ~ 2600 5150
+	6500 2950 6500 4750
 Wire Wire Line
-	6550 3950 6400 3950
+	6650 2250 6150 2250
 Wire Wire Line
-	6400 3950 6400 5750
-Wire Wire Line
-	6550 3250 6050 3250
-Wire Wire Line
-	6050 3250 6050 5750
+	6150 2250 6150 4750
 Wire Wire Line
 	15300 3500 15100 3500
 Wire Wire Line
@@ -1038,25 +1029,37 @@ Text Label 12650 4750 0    60   Italic 12
 /bankwr
 Text Label 12650 3850 0    60   Italic 12
 /reset
-Text Label 3100 3950 0    60   Italic 12
+Text Label 3150 2900 0    60   Italic 12
 /wr
-Text Label 1000 3550 0    60   Italic 12
+Text Label 800  2550 0    60   Italic 12
 /rd
-Text Label 6200 2350 0    60   Italic 12
+Text Label 6300 1350 0    60   Italic 12
 /rd
-Text Label 3400 3650 0    60   Italic 12
+Text Label 3150 2600 0    60   Italic 12
 /mreq
-Text Label 6200 2050 0    60   Italic 12
+Text Label 6300 1050 0    60   Italic 12
 /mreq
 $Comp
 L VCC #PWR?
 U 1 1 5439C872
-P 6200 3650
-F 0 "#PWR?" H 6200 3750 30  0001 C CNN
-F 1 "VCC" H 6200 3750 30  0000 C CNN
-F 2 "" H 6200 3650 60  0000 C CNN
-F 3 "" H 6200 3650 60  0000 C CNN
-	1    6200 3650
+P 6300 2650
+F 0 "#PWR?" H 6300 2750 30  0001 C CNN
+F 1 "VCC" H 6300 2750 30  0000 C CNN
+F 2 "" H 6300 2650 60  0000 C CNN
+F 3 "" H 6300 2650 60  0000 C CNN
+	1    6300 2650
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	800  2650 1000 2650
+Text Label 800  2650 0    60   Italic 12
+/rom
+Text Label 2550 3450 2    60   Italic 12
+/rom
+Text Label 4950 3450 2    60   Italic 12
+/b19
+Text Label 3150 2700 0    60   Italic 12
+/b19
+Text Label 800  3350 0    60   Italic 12
+/b19
 $EndSCHEMATC
