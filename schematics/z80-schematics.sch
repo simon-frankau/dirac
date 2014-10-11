@@ -31,8 +31,7 @@ LIBS:contrib
 LIBS:valves
 LIBS:o_zilog
 LIBS:simon
-LIBS:z80-schematics-cache
-EELAYER 27 0
+EELAYER 24 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
@@ -119,22 +118,6 @@ Text Label 8650 4150 2    60   Italic 12
 d6
 Text Label 8650 4250 2    60   Italic 12
 d7
-Entry Wire Line
-	8650 3550 8750 3650
-Entry Wire Line
-	8650 3650 8750 3750
-Entry Wire Line
-	8650 3750 8750 3850
-Entry Wire Line
-	8650 3850 8750 3950
-Entry Wire Line
-	8650 3950 8750 4050
-Entry Wire Line
-	8650 4050 8750 4150
-Entry Wire Line
-	8650 4150 8750 4250
-Entry Wire Line
-	8650 4250 8750 4350
 Text Label 8650 1850 2    60   Italic 12
 a0
 Text Label 8650 1950 2    60   Italic 12
@@ -159,30 +142,6 @@ Text Label 8650 2850 2    60   Italic 12
 a10
 Text Label 8650 2950 2    60   Italic 12
 a11
-Entry Wire Line
-	8650 2950 8750 2850
-Entry Wire Line
-	8650 2850 8750 2750
-Entry Wire Line
-	8650 2750 8750 2650
-Entry Wire Line
-	8650 2650 8750 2550
-Entry Wire Line
-	8650 2550 8750 2450
-Entry Wire Line
-	8650 2450 8750 2350
-Entry Wire Line
-	8650 2350 8750 2250
-Entry Wire Line
-	8650 2250 8750 2150
-Entry Wire Line
-	8650 2150 8750 2050
-Entry Wire Line
-	8650 2050 8750 1950
-Entry Wire Line
-	8650 1950 8750 1850
-Entry Wire Line
-	8650 1850 8750 1750
 Text Label 5350 1850 2    60   Italic 12
 d0
 Text Label 5350 1950 2    60   Italic 12
@@ -199,22 +158,6 @@ Text Label 5350 2450 2    60   Italic 12
 d6
 Text Label 5350 2550 2    60   Italic 12
 d7
-Entry Wire Line
-	5350 1850 5450 1950
-Entry Wire Line
-	5350 1950 5450 2050
-Entry Wire Line
-	5350 2050 5450 2150
-Entry Wire Line
-	5350 2150 5450 2250
-Entry Wire Line
-	5350 2250 5450 2350
-Entry Wire Line
-	5350 2350 5450 2450
-Entry Wire Line
-	5350 2450 5450 2550
-Entry Wire Line
-	5350 2550 5450 2650
 Text Label 1000 1850 0    60   Italic 12
 a0
 Text Label 1000 1950 0    60   Italic 12
@@ -239,30 +182,6 @@ Text Label 1000 2850 0    60   Italic 12
 a10
 Text Label 1000 2950 0    60   Italic 12
 a11
-Entry Wire Line
-	900  1750 1000 1850
-Entry Wire Line
-	900  1850 1000 1950
-Entry Wire Line
-	900  1950 1000 2050
-Entry Wire Line
-	900  2050 1000 2150
-Entry Wire Line
-	900  2150 1000 2250
-Entry Wire Line
-	900  2250 1000 2350
-Entry Wire Line
-	900  2350 1000 2450
-Entry Wire Line
-	900  2450 1000 2550
-Entry Wire Line
-	900  2550 1000 2650
-Entry Wire Line
-	900  2650 1000 2750
-Entry Wire Line
-	900  2750 1000 2850
-Entry Wire Line
-	900  2850 1000 2950
 Text Label 2800 1850 2    60   Italic 12
 d0
 Text Label 2800 1950 2    60   Italic 12
@@ -279,46 +198,6 @@ Text Label 2800 2450 2    60   Italic 12
 d6
 Text Label 2800 2550 2    60   Italic 12
 d7
-Entry Wire Line
-	2800 1850 2900 1950
-Entry Wire Line
-	2800 1950 2900 2050
-Entry Wire Line
-	2800 2050 2900 2150
-Entry Wire Line
-	2800 2150 2900 2250
-Entry Wire Line
-	2800 2250 2900 2350
-Entry Wire Line
-	2800 2350 2900 2450
-Entry Wire Line
-	2800 2450 2900 2550
-Entry Wire Line
-	2800 2550 2900 2650
-Entry Wire Line
-	3450 1750 3550 1850
-Entry Wire Line
-	3450 1850 3550 1950
-Entry Wire Line
-	3450 1950 3550 2050
-Entry Wire Line
-	3450 2050 3550 2150
-Entry Wire Line
-	3450 2150 3550 2250
-Entry Wire Line
-	3450 2250 3550 2350
-Entry Wire Line
-	3450 2350 3550 2450
-Entry Wire Line
-	3450 2450 3550 2550
-Entry Wire Line
-	3450 2550 3550 2650
-Entry Wire Line
-	3450 2650 3550 2750
-Entry Wire Line
-	3450 2750 3550 2850
-Entry Wire Line
-	3450 2850 3550 2950
 Text Label 3550 1850 0    60   Italic 12
 a0
 Text Label 3550 1950 0    60   Italic 12
@@ -358,12 +237,6 @@ Text Label 1000 3150 0    60   Italic 12
 b13
 Text Label 1000 3250 0    60   Italic 12
 b14
-Entry Wire Line
-	700  2950 800  3050
-Entry Wire Line
-	700  3050 800  3150
-Entry Wire Line
-	700  3150 800  3250
 Text Label 3550 2950 0    60   Italic 12
 a11
 Text Label 3550 3050 0    60   Italic 12
@@ -376,18 +249,6 @@ Text Label 3550 3350 0    60   Italic 12
 b15
 Text Label 3550 3450 0    60   Italic 12
 b16
-Entry Wire Line
-	3250 2950 3350 3050
-Entry Wire Line
-	3250 3050 3350 3150
-Entry Wire Line
-	3250 3150 3350 3250
-Entry Wire Line
-	3250 3250 3350 3350
-Entry Wire Line
-	3250 3350 3350 3450
-Entry Wire Line
-	3250 3350 3350 3450
 $Comp
 L 74LS138 U?
 U 1 1 5435AB03
@@ -418,14 +279,6 @@ F 3 "" H 9150 4050 60  0000 C CNN
 $EndComp
 Text Label 9150 4150 0    60   Italic 12
 a7
-Entry Wire Line
-	9050 3450 9150 3550
-Entry Wire Line
-	9050 3550 9150 3650
-Entry Wire Line
-	9050 3650 9150 3750
-Entry Wire Line
-	9050 4050 9150 4150
 $Comp
 L VCC #PWR?
 U 1 1 5435B495
@@ -446,12 +299,6 @@ Text Label 8650 3250 2    60   Italic 12
 a14
 Text Label 8650 3350 2    60   Italic 12
 a15
-Text Label 6850 1550 0    60   Italic 12
-a[0..11]
-Text Label 6850 1350 0    60   Italic 12
-b[12..19]
-Text Label 6850 4550 0    60   Italic 12
-d[0..7]
 Text Label 6850 4750 0    60   Italic 12
 /rd
 $Comp
@@ -503,38 +350,6 @@ Text Label 13750 4000 2    60   Italic 12
 b18
 Text Label 13750 4100 2    60   Italic 12
 b19
-Entry Wire Line
-	13750 2400 13850 2300
-Entry Wire Line
-	13750 2500 13850 2400
-Entry Wire Line
-	13750 2600 13850 2500
-Entry Wire Line
-	13750 2700 13850 2600
-Entry Wire Line
-	13750 3800 13850 3700
-Entry Wire Line
-	13750 3900 13850 3800
-Entry Wire Line
-	13750 4000 13850 3900
-Entry Wire Line
-	13750 4100 13850 4000
-Entry Wire Line
-	11950 2500 12050 2400
-Entry Wire Line
-	11950 2600 12050 2500
-Entry Wire Line
-	11950 2700 12050 2600
-Entry Wire Line
-	11950 2800 12050 2700
-Entry Wire Line
-	11950 3900 12050 3800
-Entry Wire Line
-	11950 4000 12050 3900
-Entry Wire Line
-	11950 4100 12050 4000
-Entry Wire Line
-	11950 4200 12050 4100
 Text Label 12050 2400 0    60   Italic 12
 d0
 Text Label 12050 2500 0    60   Italic 12
@@ -567,30 +382,6 @@ Text Label 12050 3500 0    60   Italic 12
 a14
 Text Label 12050 3600 0    60   Italic 12
 a15
-Entry Wire Line
-	11750 2000 11850 1900
-Entry Wire Line
-	11750 2100 11850 2000
-Entry Wire Line
-	11750 2200 11850 2100
-Entry Wire Line
-	11750 2300 11850 2200
-Entry Wire Line
-	13850 2950 13950 2850
-Entry Wire Line
-	13850 3050 13950 2950
-Entry Wire Line
-	13850 3150 13950 3050
-Entry Wire Line
-	13850 3250 13950 3150
-Entry Wire Line
-	13850 3350 13950 3250
-Entry Wire Line
-	13850 3450 13950 3350
-Entry Wire Line
-	13850 3550 13950 3450
-Entry Wire Line
-	13850 3650 13950 3550
 Text Label 13950 2850 0    60   Italic 12
 b12
 Text Label 13950 2950 0    60   Italic 12
@@ -623,22 +414,6 @@ Text Label 15750 3450 2    60   Italic 12
 d6
 Text Label 15750 3550 2    60   Italic 12
 d7
-Entry Wire Line
-	15750 2850 15850 2950
-Entry Wire Line
-	15750 2950 15850 3050
-Entry Wire Line
-	15750 3050 15850 3150
-Entry Wire Line
-	15750 3150 15850 3250
-Entry Wire Line
-	15750 3250 15850 3350
-Entry Wire Line
-	15750 3350 15850 3450
-Entry Wire Line
-	15750 3450 15850 3550
-Entry Wire Line
-	15750 3550 15850 3650
 $Comp
 L R R?
 U 1 1 5436F625
@@ -727,67 +502,33 @@ F 3 "~" H 14850 2600 30  0000 C CNN
 	1    14850 2600
 	0    -1   -1   0   
 $EndComp
-Text Label 14600 1550 2    60   Italic 12
+Text Label 14400 1550 0    60   Italic 12
 b12
-Text Label 14600 1700 2    60   Italic 12
+Text Label 14400 1700 0    60   Italic 12
 b13
-Text Label 14600 1850 2    60   Italic 12
+Text Label 14400 1850 0    60   Italic 12
 b14
-Text Label 14600 2000 2    60   Italic 12
+Text Label 14400 2000 0    60   Italic 12
 b15
-Text Label 14600 2150 2    60   Italic 12
+Text Label 14400 2150 0    60   Italic 12
 b16
-Text Label 14600 2300 2    60   Italic 12
+Text Label 14400 2300 0    60   Italic 12
 b17
-Text Label 14600 2450 2    60   Italic 12
+Text Label 14400 2450 0    60   Italic 12
 b18
-Text Label 14600 2600 2    60   Italic 12
+Text Label 14400 2600 0    60   Italic 12
 b19
 $Comp
 L VCC #PWR?
 U 1 1 5436F980
-P 15300 1450
-F 0 "#PWR?" H 15300 1550 30  0001 C CNN
-F 1 "VCC" H 15300 1550 30  0000 C CNN
-F 2 "" H 15300 1450 60  0000 C CNN
-F 3 "" H 15300 1450 60  0000 C CNN
-	1    15300 1450
+P 15300 1400
+F 0 "#PWR?" H 15300 1500 30  0001 C CNN
+F 1 "VCC" H 15300 1500 30  0000 C CNN
+F 2 "" H 15300 1400 60  0000 C CNN
+F 3 "" H 15300 1400 60  0000 C CNN
+	1    15300 1400
 	1    0    0    -1  
 $EndComp
-Entry Wire Line
-	14300 1450 14400 1550
-Entry Wire Line
-	14300 1600 14400 1700
-Entry Wire Line
-	14300 2200 14400 2300
-Entry Wire Line
-	14300 1750 14400 1850
-Entry Wire Line
-	14300 2350 14400 2450
-Entry Wire Line
-	14300 1900 14400 2000
-Entry Wire Line
-	14300 2050 14400 2150
-Entry Wire Line
-	14300 2500 14400 2600
-Entry Wire Line
-	8650 3050 8750 2950
-Entry Wire Line
-	8650 3150 8750 3050
-Entry Wire Line
-	8650 3250 8750 3150
-Entry Wire Line
-	8650 3350 8750 3250
-Entry Wire Line
-	11750 3200 11850 3300
-Entry Wire Line
-	11750 3300 11850 3400
-Entry Wire Line
-	11750 3400 11850 3500
-Entry Wire Line
-	11750 3500 11850 3600
-Text Label 9700 3200 0    60   Italic 12
-a[12..15]
 $Comp
 L 7400 U?
 U 2 1 54370EA9
@@ -872,8 +613,6 @@ Wire Wire Line
 	8450 1950 8650 1950
 Wire Wire Line
 	8450 1850 8650 1850
-Wire Bus Line
-	8750 3650 8750 4550
 Wire Wire Line
 	8450 3750 8650 3750
 Wire Wire Line
@@ -930,8 +669,6 @@ Wire Wire Line
 	1200 2850 1000 2850
 Wire Wire Line
 	1200 2950 1000 2950
-Wire Bus Line
-	900  1550 900  2850
 Wire Wire Line
 	2600 1850 2800 1850
 Wire Wire Line
@@ -970,40 +707,28 @@ Wire Wire Line
 	3750 2750 3550 2750
 Wire Wire Line
 	3750 2850 3550 2850
-Wire Bus Line
-	3450 1550 3450 2850
-Wire Bus Line
-	8750 1550 8750 2850
-Wire Bus Line
-	5450 1950 5450 4550
-Wire Bus Line
-	2900 1950 2900 4550
 Wire Wire Line
 	1000 3450 1200 3450
 Wire Wire Line
 	1200 3650 1200 5050
-Wire Bus Line
-	700  1350 700  4100
 Wire Wire Line
-	1200 3050 800  3050
+	1200 3050 1000 3050
 Wire Wire Line
-	1200 3150 800  3150
+	1200 3150 1000 3150
 Wire Wire Line
-	1200 3250 800  3250
+	1200 3250 1000 3250
 Wire Wire Line
 	3550 2950 3750 2950
-Wire Bus Line
-	3250 1350 3250 3350
 Wire Wire Line
-	3350 3050 3750 3050
+	3550 3050 3750 3050
 Wire Wire Line
-	3350 3150 3750 3150
+	3550 3150 3750 3150
 Wire Wire Line
-	3350 3250 3750 3250
+	3550 3250 3750 3250
 Wire Wire Line
-	3350 3350 3750 3350
+	3550 3350 3750 3350
 Wire Wire Line
-	3350 3450 3750 3450
+	3550 3450 3750 3450
 Wire Wire Line
 	9150 3550 9350 3550
 Wire Wire Line
@@ -1014,8 +739,6 @@ Wire Wire Line
 	9150 4050 9350 4050
 Wire Wire Line
 	9150 4150 9350 4150
-Wire Bus Line
-	9050 1550 9050 4050
 Wire Wire Line
 	6550 2150 6300 2150
 Wire Wire Line
@@ -1035,7 +758,9 @@ Wire Wire Line
 Wire Wire Line
 	6550 3450 6150 3450
 Wire Wire Line
-	6150 750  6150 5750
+	6150 750  6150 3450
+Wire Wire Line
+	6150 3450 6150 5750
 Wire Wire Line
 	6550 3150 5950 3150
 Wire Wire Line
@@ -1066,8 +791,6 @@ Wire Wire Line
 	8450 3250 8650 3250
 Wire Wire Line
 	8450 3350 8650 3350
-Wire Bus Line
-	900  1550 9050 1550
 Wire Wire Line
 	13550 2400 13750 2400
 Wire Wire Line
@@ -1084,8 +807,6 @@ Wire Wire Line
 	13550 4000 13750 4000
 Wire Wire Line
 	13550 4100 13750 4100
-Wire Bus Line
-	13850 1350 13850 4000
 Wire Wire Line
 	12250 2400 12050 2400
 Wire Wire Line
@@ -1102,24 +823,22 @@ Wire Wire Line
 	12250 4000 12050 4000
 Wire Wire Line
 	12250 4100 12050 4100
-Wire Bus Line
-	11950 2500 11950 4550
 Wire Wire Line
-	12250 3300 11850 3300
+	12250 3300 12050 3300
 Wire Wire Line
-	12250 3400 11850 3400
+	12250 3400 12050 3400
 Wire Wire Line
-	12250 3500 11850 3500
+	12250 3500 12050 3500
 Wire Wire Line
-	12250 3600 11850 3600
+	12250 3600 12050 3600
 Wire Wire Line
-	12250 1900 11850 1900
+	12250 1900 12050 1900
 Wire Wire Line
-	12250 2000 11850 2000
+	12250 2000 12050 2000
 Wire Wire Line
-	12250 2100 11850 2100
+	12250 2100 12050 2100
 Wire Wire Line
-	12250 2200 11850 2200
+	12250 2200 12050 2200
 Wire Wire Line
 	14150 2850 13950 2850
 Wire Wire Line
@@ -1152,8 +871,6 @@ Wire Wire Line
 	15550 3450 15750 3450
 Wire Wire Line
 	15550 3550 15750 3550
-Wire Bus Line
-	700  1350 14300 1350
 Wire Wire Line
 	14400 1550 14600 1550
 Wire Wire Line
@@ -1171,50 +888,17 @@ Wire Wire Line
 Wire Wire Line
 	14400 2600 14600 2600
 Wire Wire Line
-	15100 1550 15300 1550
-Wire Wire Line
-	15300 1450 15300 2600
-Wire Wire Line
-	15300 1700 15100 1700
-Connection ~ 15300 1550
-Wire Wire Line
-	15300 1850 15100 1850
-Connection ~ 15300 1700
-Wire Wire Line
-	15300 2000 15100 2000
-Connection ~ 15300 1850
-Wire Wire Line
-	15300 2150 15100 2150
-Connection ~ 15300 2000
-Wire Wire Line
-	15300 2300 15100 2300
-Connection ~ 15300 2150
-Wire Wire Line
-	15300 2450 15100 2450
-Connection ~ 15300 2300
-Wire Wire Line
-	15300 2600 15100 2600
-Connection ~ 15300 2450
-Wire Bus Line
-	14300 1350 14300 2500
-Wire Wire Line
 	14150 3750 14000 3750
 Wire Wire Line
 	14000 3750 14000 4950
-Wire Bus Line
-	2900 4550 15850 4550
-Wire Bus Line
-	15850 4550 15850 2950
-Wire Bus Line
-	8750 2950 8750 3250
-Wire Bus Line
-	11750 3200 8750 3200
-Wire Bus Line
-	11750 2000 11750 3500
 Wire Wire Line
 	6300 950  8950 950 
 Wire Wire Line
-	10850 1600 12200 1600
+	10850 1600 10950 1600
+Wire Wire Line
+	10950 1600 11650 1600
+Wire Wire Line
+	11650 1600 12200 1600
 Wire Wire Line
 	11650 1600 11650 3000
 Wire Wire Line
@@ -1237,7 +921,9 @@ Wire Wire Line
 Wire Wire Line
 	12200 1700 11550 1700
 Wire Wire Line
-	11550 1700 11550 3100
+	11550 1700 11550 2800
+Wire Wire Line
+	11550 2800 11550 3100
 Wire Wire Line
 	11550 3100 12200 3100
 Connection ~ 11550 2800
@@ -1249,7 +935,9 @@ Wire Wire Line
 Wire Wire Line
 	9550 1500 9650 1500
 Wire Wire Line
-	3100 1150 9250 1150
+	3100 1150 6450 1150
+Wire Wire Line
+	6450 1150 9250 1150
 Wire Wire Line
 	9250 1150 9250 2900
 Wire Wire Line
@@ -1261,7 +949,11 @@ Wire Wire Line
 Wire Wire Line
 	6550 2350 5800 2350
 Wire Wire Line
-	14100 4750 1100 4750
+	14100 4750 5800 4750
+Wire Wire Line
+	5800 4750 3550 4750
+Wire Wire Line
+	3550 4750 1100 4750
 Wire Wire Line
 	10550 4250 10950 4250
 Wire Wire Line
@@ -1293,7 +985,9 @@ Wire Wire Line
 Wire Wire Line
 	10550 3550 11650 3550
 Wire Wire Line
-	11650 3300 11650 4950
+	11650 3300 11650 3550
+Wire Wire Line
+	11650 3550 11650 4950
 Wire Wire Line
 	9650 2700 9450 2700
 Wire Wire Line
@@ -1326,7 +1020,9 @@ Wire Wire Line
 Wire Wire Line
 	1200 5050 1250 5050
 Wire Wire Line
-	5700 4950 2450 4950
+	5700 4950 3350 4950
+Wire Wire Line
+	3350 4950 2450 4950
 Connection ~ 3350 4950
 Text Label 3550 4950 0    60   Italic 12
 /mreq
@@ -1342,12 +1038,12 @@ F 3 "~" H 1900 4200 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1300 4100 1300 4300
+	1300 4100 1300 4200
+Wire Wire Line
+	1300 4200 1300 4300
 Wire Wire Line
 	1300 4200 800  4200
 Connection ~ 1300 4200
-Entry Wire Line
-	700  4100 800  4200
 Text Label 800  4200 0    60   Italic 12
 b19
 Wire Wire Line
@@ -1355,7 +1051,9 @@ Wire Wire Line
 Wire Wire Line
 	2600 4200 2600 5150
 Wire Wire Line
-	3450 5150 2450 5150
+	3450 5150 2600 5150
+Wire Wire Line
+	2600 5150 2450 5150
 Connection ~ 2600 5150
 Wire Wire Line
 	6550 3950 6400 3950
@@ -1365,4 +1063,43 @@ Wire Wire Line
 	6550 3250 6050 3250
 Wire Wire Line
 	6050 3250 6050 5750
+Wire Wire Line
+	15300 2600 15100 2600
+Wire Wire Line
+	15300 2450 15100 2450
+Wire Wire Line
+	15300 1400 15300 1550
+Wire Wire Line
+	15300 1550 15300 1700
+Wire Wire Line
+	15300 1700 15300 1850
+Wire Wire Line
+	15300 1850 15300 2000
+Wire Wire Line
+	15300 2000 15300 2150
+Wire Wire Line
+	15300 2150 15300 2300
+Wire Wire Line
+	15300 2300 15300 2450
+Wire Wire Line
+	15300 2450 15300 2600
+Wire Wire Line
+	15100 2300 15300 2300
+Connection ~ 15300 2450
+Wire Wire Line
+	15100 2150 15300 2150
+Connection ~ 15300 2300
+Wire Wire Line
+	15100 2000 15300 2000
+Connection ~ 15300 2150
+Wire Wire Line
+	15100 1850 15300 1850
+Connection ~ 15300 2000
+Wire Wire Line
+	15100 1700 15300 1700
+Connection ~ 15300 1850
+Wire Wire Line
+	15100 1550 15300 1550
+Connection ~ 15300 1700
+Connection ~ 15300 1550
 $EndSCHEMATC

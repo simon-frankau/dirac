@@ -4,4 +4,4 @@
 *.bak
 *.bck
 *.dcm
-*.cache.lib
+*cache.lib
