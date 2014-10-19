@@ -32,6 +32,7 @@ LIBS:valves
 LIBS:o_zilog
 LIBS:simon
 LIBS:xo-14s
+LIBS:z80-schematics-cache
 EELAYER 24 0
 EELAYER END
 $Descr A3 16535 11693
@@ -82,23 +83,23 @@ $EndComp
 $Comp
 L Z80-CTC U?
 U 1 1 54359876
-P 10450 7550
-F 0 "U?" H 10450 8650 60  0000 C CNN
-F 1 "Z80-CTC" H 10450 6450 60  0000 C CNN
-F 2 "" H 10450 7550 60  0000 C CNN
-F 3 "" H 10450 7550 60  0000 C CNN
-	1    10450 7550
+P 11200 4750
+F 0 "U?" H 11200 5850 60  0000 C CNN
+F 1 "Z80-CTC" H 11200 3650 60  0000 C CNN
+F 2 "" H 11200 4750 60  0000 C CNN
+F 3 "" H 11200 4750 60  0000 C CNN
+	1    11200 4750
 	1    0    0    -1  
 $EndComp
 $Comp
 L Z80-SIO/0 U?
 U 1 1 54359885
-P 13100 7550
-F 0 "U?" H 13100 8750 60  0000 C CNN
-F 1 "Z80-SIO/0" H 13100 6350 60  0000 C CNN
-F 2 "" H 13100 7550 60  0000 C CNN
-F 3 "" H 13100 7550 60  0000 C CNN
-	1    13100 7550
+P 8600 4850
+F 0 "U?" H 8600 6050 60  0000 C CNN
+F 1 "Z80-SIO/0" H 8600 3650 60  0000 C CNN
+F 2 "" H 8600 4850 60  0000 C CNN
+F 3 "" H 8600 4850 60  0000 C CNN
+	1    8600 4850
 	1    0    0    -1  
 $EndComp
 NoConn ~ 6650 1750
@@ -747,15 +748,11 @@ Wire Wire Line
 Wire Wire Line
 	6650 2450 6300 2450
 Wire Wire Line
-	6650 2150 6050 2150
-Wire Wire Line
-	6050 2150 6050 4750
+	6650 2150 6300 2150
 Wire Wire Line
 	6650 1050 6300 1050
 Wire Wire Line
-	6650 850  5700 850 
-Wire Wire Line
-	5700 850  5700 4650
+	6650 850  6300 850 
 Wire Wire Line
 	3150 2900 3500 2900
 Wire Wire Line
@@ -1266,28 +1263,199 @@ Wire Wire Line
 $Comp
 L XO-14S X?
 U 1 1 5439DA14
-P 3600 5050
-F 0 "X?" H 3360 5410 60  0000 C CNN
-F 1 "XO-14S" H 3600 4680 60  0000 C CNN
-F 2 "" H 3600 5050 60  0000 C CNN
-F 3 "" H 3600 5050 60  0000 C CNN
-	1    3600 5050
+P 4100 5050
+F 0 "X?" H 3860 5410 60  0000 C CNN
+F 1 "XO-14S" H 4100 4680 60  0000 C CNN
+F 2 "" H 4100 5050 60  0000 C CNN
+F 3 "" H 4100 5050 60  0000 C CNN
+	1    4100 5050
 	1    0    0    -1  
 $EndComp
 $Comp
 L GND #PWR?
 U 1 1 5439DA28
-P 3000 6050
-F 0 "#PWR?" H 3000 6050 30  0001 C CNN
-F 1 "GND" H 3000 5980 30  0001 C CNN
-F 2 "" H 3000 6050 60  0000 C CNN
-F 3 "" H 3000 6050 60  0000 C CNN
-	1    3000 6050
+P 3500 6050
+F 0 "#PWR?" H 3500 6050 30  0001 C CNN
+F 1 "GND" H 3500 5980 30  0001 C CNN
+F 2 "" H 3500 6050 60  0000 C CNN
+F 3 "" H 3500 6050 60  0000 C CNN
+	1    3500 6050
 	1    0    0    -1  
 $EndComp
 $Comp
 L VCC #PWR?
 U 1 1 5439DA3C
+P 3500 4250
+F 0 "#PWR?" H 3500 4350 30  0001 C CNN
+F 1 "VCC" H 3500 4350 30  0000 C CNN
+F 2 "" H 3500 4250 60  0000 C CNN
+F 3 "" H 3500 4250 60  0000 C CNN
+	1    3500 4250
+	1    0    0    -1  
+$EndComp
+NoConn ~ 4750 4800
+Wire Wire Line
+	3500 4850 3500 4250
+Wire Wire Line
+	3500 5250 3500 6050
+Wire Wire Line
+	4800 5150 5100 5150
+Text Label 5100 5150 2    60   Italic 12
+clk
+Text Label 6300 2950 0    60   Italic 12
+clk
+Wire Wire Line
+	7700 3800 7500 3800
+Wire Wire Line
+	7700 3900 7500 3900
+Wire Wire Line
+	7700 4000 7500 4000
+Wire Wire Line
+	7700 4100 7500 4100
+Wire Wire Line
+	7700 4200 7500 4200
+Wire Wire Line
+	7700 4300 7500 4300
+Wire Wire Line
+	7700 4400 7500 4400
+Wire Wire Line
+	7700 4500 7500 4500
+Wire Wire Line
+	10300 3800 10100 3800
+Wire Wire Line
+	10300 3900 10100 3900
+Wire Wire Line
+	10300 4000 10100 4000
+Wire Wire Line
+	10300 4100 10100 4100
+Wire Wire Line
+	10300 4200 10100 4200
+Wire Wire Line
+	10300 4300 10100 4300
+Wire Wire Line
+	10300 4400 10100 4400
+Wire Wire Line
+	10300 4500 10100 4500
+Text Label 10100 3800 0    60   Italic 12
+d0
+Text Label 10100 3900 0    60   Italic 12
+d1
+Text Label 10100 4000 0    60   Italic 12
+d2
+Text Label 10100 4100 0    60   Italic 12
+d3
+Text Label 10100 4200 0    60   Italic 12
+d4
+Text Label 10100 4300 0    60   Italic 12
+d5
+Text Label 10100 4500 0    60   Italic 12
+d7
+Text Label 10100 4400 0    60   Italic 12
+d6
+Text Label 7500 3800 0    60   Italic 12
+d0
+Text Label 7500 3900 0    60   Italic 12
+d1
+Text Label 7500 4000 0    60   Italic 12
+d2
+Text Label 7500 4100 0    60   Italic 12
+d3
+Text Label 7500 4200 0    60   Italic 12
+d4
+Text Label 7500 4300 0    60   Italic 12
+d5
+Text Label 7500 4400 0    60   Italic 12
+d6
+Text Label 7500 4500 0    60   Italic 12
+d7
+Wire Wire Line
+	10300 5200 9900 5200
+Text Label 9900 5200 0    60   Italic 12
+/rd
+Wire Wire Line
+	12100 4000 12300 4000
+Text Label 12300 4000 2    60   Italic 12
+to0
+Wire Wire Line
+	9500 3900 9700 3900
+Text Label 9700 3900 2    60   Italic 12
+to0
+Wire Wire Line
+	12100 4500 12300 4500
+Text Label 12300 4500 2    60   Italic 12
+to1
+Wire Wire Line
+	9500 5200 9700 5200
+Text Label 9700 5200 2    60   Italic 12
+to1
+Wire Wire Line
+	10300 5100 9900 5100
+Text Label 9900 5100 0    60   Italic 12
+/iorq
+Wire Wire Line
+	7700 5000 7400 5000
+Text Label 7400 5000 0    60   Italic 12
+/iorq
+Wire Wire Line
+	12100 4900 12300 4900
+Text Label 12300 4900 2    60   Italic 12
+to2
+Wire Wire Line
+	12100 5200 12300 5200
+Text Label 12300 5200 2    60   Italic 12
+to2
+Wire Wire Line
+	10300 5500 10000 5500
+Text Label 10000 5500 0    60   Italic 12
+ieo
+Wire Wire Line
+	7400 5600 7700 5600
+Text Label 7400 5600 0    60   Italic 12
+ieo
+Text Label 6300 2150 0    60   Italic 12
+/int
+Wire Wire Line
+	7400 5500 7700 5500
+Text Label 7400 5500 0    60   Italic 12
+/int
+Wire Wire Line
+	10000 5600 10300 5600
+Text Label 10000 5600 0    60   Italic 12
+/int
+$Comp
+L VCC #PWR?
+U 1 1 54443902
+P 9800 5300
+F 0 "#PWR?" H 9800 5400 30  0001 C CNN
+F 1 "VCC" H 9800 5400 30  0000 C CNN
+F 2 "" H 9800 5300 60  0000 C CNN
+F 3 "" H 9800 5300 60  0000 C CNN
+	1    9800 5300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9800 5300 10300 5300
+Text Label 6300 850  0    60   Italic 12
+/m1
+Wire Wire Line
+	7400 4900 7700 4900
+Wire Wire Line
+	9900 5000 10300 5000
+Text Label 9900 5000 0    60   Italic 12
+/m1
+Text Label 7400 4900 0    60   Italic 12
+/m1
+Wire Wire Line
+	10000 5700 10300 5700
+Wire Wire Line
+	7400 5900 7700 5900
+Text Label 7400 5900 0    60   Italic 12
+clk
+Text Label 10000 5700 0    60   Italic 12
+clk
+$Comp
+L VCC #PWR?
+U 1 1 54443E22
 P 3000 4250
 F 0 "#PWR?" H 3000 4350 30  0001 C CNN
 F 1 "VCC" H 3000 4350 30  0000 C CNN
@@ -1296,15 +1464,56 @@ F 3 "" H 3000 4250 60  0000 C CNN
 	1    3000 4250
 	1    0    0    -1  
 $EndComp
-NoConn ~ 4250 4800
+$Comp
+L R R?
+U 1 1 54443E36
+P 3000 4650
+F 0 "R?" V 3080 4650 40  0000 C CNN
+F 1 "R" V 3007 4651 40  0000 C CNN
+F 2 "" V 2930 4650 30  0000 C CNN
+F 3 "" H 3000 4650 30  0000 C CNN
+	1    3000 4650
+	1    0    0    -1  
+$EndComp
 Wire Wire Line
-	3000 4850 3000 4250
+	3000 4250 3000 4400
 Wire Wire Line
-	3000 5250 3000 6050
+	3000 4900 3000 5050
 Wire Wire Line
-	4300 5150 4600 5150
-Text Label 4600 5150 2    60   Italic 12
-clk
-Text Label 6300 2950 0    60   Italic 12
-clk
+	3000 5050 3300 5050
+Text Label 3300 5050 2    60   Italic 12
+/int
+Wire Wire Line
+	10300 4700 9900 4700
+Text Label 9900 4700 0    60   Italic 12
+/ctcsel
+Text Label 11200 1850 2    60   Italic 12
+/ctcsel
+Wire Wire Line
+	12100 5600 12400 5600
+Wire Wire Line
+	7400 4800 7700 4800
+Text Label 7400 4800 0    60   Italic 12
+/reset
+Text Label 12400 5600 2    60   Italic 12
+/reset
+Wire Wire Line
+	10300 4800 9900 4800
+Text Label 9900 4800 0    60   Italic 12
+a0
+Wire Wire Line
+	10300 4900 9900 4900
+Text Label 9900 4900 0    60   Italic 12
+a1
+Wire Wire Line
+	7700 5200 7400 5200
+Text Label 7400 5200 0    60   Italic 12
+a0
+Wire Wire Line
+	7700 5300 7400 5300
+Text Label 7400 5300 0    60   Italic 12
+a1
+NoConn ~ 12100 4800
+NoConn ~ 12100 4400
+NoConn ~ 12100 3900
 $EndSCHEMATC
