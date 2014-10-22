@@ -56,3 +56,19 @@ Why's it taken so long?
 (I bought my first pile of components in early 2010.)
 
 Children. They're lovely, but they don't mix well with soldering irons!
+
+What's here?
+------------
+
+* **schematics** covers the hardware
+* **src** contains the assembly source to program it with
+* **tools** contains the tools to do the required translations to make
+    workable images
+
+What do I need?
+---------------
+
+* **Kicad** for the schematics
+* **zasm** (http://sourceforge.net/projects/zasm/ /
+    http://k1.spdns.de/Develop/Projects/zasm/) for the assembly
+* **lua** to run the tools
