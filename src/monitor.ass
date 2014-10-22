@@ -1,0 +1,188 @@
+; Serial I/O program loader/monitor
+;
+; We initialise the system, mapping RAM into place, and then execute
+; very simple (and not human-friendly) commands over serial. The real
+; point of this is to provide a mechanism to allow programs to be
+; loaded without reprogramming the EEPROM, speeding up the development
+; cycle.
+
+; Banking    is at port 0x00.
+; CTC        is at port 0x10.
+; SIO        is at port 0x20.
+; LED output is at port 0x70.
+
+; Banked memory map:
+; 0x00000 - 0x07FFF - ROM (top 4 bits inverted when programming the EEPROM)
+; 0x80000 - 0x9FFFF - RAM - Read-only
+; 0xC0000 - 0xDFFFF - RAM - Read-write
+
+#target     rom
+
+; State
+dest:       equ $fffe
+count:      equ $fffc
+stack_top:  equ $fffa
+
+; Reset vector
+#code       0,$4000
+            jp top
+
+; Interrupt vectors - shouldn't be using them.
+            defs $40 - $
+            defw fail
+            defw fail
+            defw fail
+            defw fail
+
+; NMI vector
+            defs $66 - $
+            jp fail
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Initialise hardware
+
+top:        ; Could have come here without reset, for whatever reason.
+            di 
+            ; Enable banking for the ROM page.
+            ld bc, $0000
+            ld a, $00 ; Inverted, selects the default $FF page
+            out (bc), a
+            ; Map in some RAM, set SP
+            ld bc, $f000
+            ld a, $c0 ; Inverted, selects a RAM page, RW
+            out (bc), a
+            ld sp, $0000
+
+; Should use something like the following to map all slots:
+;            ld l, d      ; Base value to write
+;            ld b, $e0    ; Last page to write
+;blah1:      out (bc), l  ; Write page thing
+;            inc l        ; Write next value to next page
+;            ld a, b
+;            sub a, $10   ; Next page
+;            ld b, a
+;            jp nz, blah1 ; Don't write page zero
+
+
+            ; Set up CTC to provide the serial clock.
+
+            ; Set interrupt vector to 0x40, just after the restarts.
+            ld a, $40
+            out ($10), a
+
+            ; Clock channel 0 at 9600 bps:
+            ; Disable interrupt, timer mode, prescale 16, falling edge
+            ; Auto, time constant, reset, control word
+            ld a, $07
+            out ($10), a
+            ld a, 13 ; 2M / (16 * 9600)
+            out ($10), a
+
+            ; Set up SIO
+
+            ; We will be working with channel A, control port
+            ld a, $18 ; Channel reset
+            out ($21), a
+
+            ld a, $04 ; WR4
+            out ($21), a
+            ld a, $04 ; x1 rate, 1 stop bit, no parity
+            out ($21), a
+
+            ld a, $01 ; WR1
+            out ($21), a
+            ld a, $00 ; Disable transmit/receive interrupts
+            out ($21), a
+
+            ld a, $05 ; WR5
+            out ($21), a
+            ld a, $ea ; Enable transmission, RTS, DTR, 8 bits
+            out ($21), a
+
+            ld a, $03 ; WR3
+            out ($21), a
+            ld a, $c1 ; Enable receiving, 8 bits
+            out ($21), a
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Main monitor implementation
+
+main:       ld bc, str_hi
+            call sio_wr_str
+mainloop:   call sio_rd
+	    cp 'J'
+            jp z, cmd_jmp
+            cp 'W'
+            jp z, cmd_write
+            ld bc, str_eh
+            call sio_wr_str
+            jp mainloop
+
+cmd_jmp:    call sio_rd_16
+            ld hl, bc
+            jp (hl)
+
+cmd_write:  ; TODO: Not yet implemented...
+            ld bc, str_nyi
+            call sio_wr_str
+            jp mainloop
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Helper subroutines
+
+fail:       ld a, $aa
+            call disp
+            jp fail
+
+disp:       out ($70),a
+
+            ld de,$4000
+disp_loop:  dec de
+            ld a, d
+            or e
+            jp nz, disp_loop
+            ret
+
+; Write serial
+sio_wr:     ld b, a
+            ; Wait until transmit buffer has space
+            in a, ($21)
+            and $04
+            jp z, sio_wr
+            ; Stick the data in the data register
+            ld a, b
+            out ($20), a
+            ret
+
+; Read serial
+sio_rd:     ; Wait until there's a character to receive
+            in a, ($21)
+            and $01
+            jp z, sio_rd
+            ; Read the data from the data register
+            in a, ($20)
+            ret
+
+; Write a string
+sio_wr_str: ld a, (bc)
+            ret z
+            push bc
+            call sio_wr
+            pop bc
+            inc bc
+            jp sio_wr_str
+
+; Read a 16-bit hex value - TODO
+sio_rd_16:  ld bc, 0
+            ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Data
+
+str_hi:     defb "*** WELCOME TO THE DIRAC LOADER ***\n\0"
+
+str_eh:     defb "\nEh?\n\0"
+
+str_nyi:    defb "\nNYI\n\0"
+
+#end

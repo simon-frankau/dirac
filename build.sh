@@ -6,6 +6,7 @@ cd src
 
 zasm bouncer.ass -o ../out/bouncer.bin
 zasm test.ass    -o ../out/test.rom
+zasm monitor.ass -o ../out/monitor.bin
 
 cd ../out
 
