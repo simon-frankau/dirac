@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# FIXME: This is clearly very machine-specific, and should be made
-# general! Also, I've just moved the source and tools into
-# subdirectories, so this won't even work on the original machine any
-# more. Needs a huge re-jig.
+mkdir -p out
 
-~/zasm/zasm test.ass
+cd src
 
-~/Moomin-backup/sgf/lua-5.1.4/src/lua build_test_data.lua
+zasm bouncer.ass -o ../out/bouncer.bin
+zasm test.ass    -o ../out/test.rom
 
-~/Moomin-backup/sgf/lua-5.1.4/src/lua build_rom.lua
+cd ../out
 
+lua ../tools/build_test_data.lua
+lua ../tools/build_rom.lua
