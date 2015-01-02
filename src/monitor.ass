@@ -42,7 +42,15 @@ stack_top:  equ $fffa
 ; Initialise hardware
 
 top:        ; Could have come here without reset, for whatever reason.
-            di 
+            di
+
+            ; Wait for reset to complete
+            ld de,$0000
+top_loop:   dec de
+            ld a, d
+            or e
+            jp nz, top_loop
+
             ; Enable banking for the ROM page.
             ld bc, $0000
             ld a, $00 ; Inverted, selects the default $FF page
@@ -63,6 +71,8 @@ top:        ; Could have come here without reset, for whatever reason.
 ;            ld b, a
 ;            jp nz, blah1 ; Don't write page zero
 
+            ld a, 1
+            out ($70), a
 
             ; Set up CTC to provide the serial clock.
 
@@ -77,6 +87,9 @@ top:        ; Could have come here without reset, for whatever reason.
             out ($10), a
             ld a, 13 ; 2M / (16 * 9600)
             out ($10), a
+
+            ld a, 2
+            out ($70), a
 
             ; Set up SIO
 
@@ -107,13 +120,22 @@ top:        ; Could have come here without reset, for whatever reason.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Main monitor implementation
 
+            ld a, 3
+            out ($70), a
+
 main:       ld bc, str_hi
             call sio_wr_str
 mainloop:   call sio_rd
-	    cp 'J'
+            cp 'J'
             jp z, cmd_jmp
             cp 'W'
             jp z, cmd_write
+            cp 'R'
+            jp z, cmd_read
+            cp 'M'
+            jp z, cmd_map
+            cp 'X'
+            jp z, cmd_restart
             ld bc, str_eh
             call sio_wr_str
             jp mainloop
@@ -126,6 +148,22 @@ cmd_write:  ; TODO: Not yet implemented...
             ld bc, str_nyi
             call sio_wr_str
             jp mainloop
+
+cmd_read:   ; TODO: Not yet implemented...
+            ld bc, str_nyi
+            call sio_wr_str
+            jp mainloop
+
+cmd_map:    ; TODO: Not yet implemented...
+            ld bc, str_nyi
+            call sio_wr_str
+            jp mainloop
+
+cmd_restart:; TODO: Not yet implemented...
+            ld bc, str_nyi
+            call sio_wr_str
+            jp mainloop
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Helper subroutines
@@ -145,26 +183,35 @@ disp_loop:  dec de
 
 ; Write serial
 sio_wr:     ld b, a
+            ld a, $80
+            out ($70), a
             ; Wait until transmit buffer has space
-            in a, ($21)
+sio_wr_lp:  in a, ($21)
             and $04
-            jp z, sio_wr
+            jp z, sio_wr_lp
             ; Stick the data in the data register
             ld a, b
             out ($20), a
+            ld a, $40
+            out ($70), a
             ret
 
 ; Read serial
 sio_rd:     ; Wait until there's a character to receive
+            ld a, $20
+            out ($70), a
             in a, ($21)
             and $01
             jp z, sio_rd
+            ld a, $10
+            out ($70), a
             ; Read the data from the data register
             in a, ($20)
             ret
 
 ; Write a string
 sio_wr_str: ld a, (bc)
+            cp 0
             ret z
             push bc
             call sio_wr
@@ -179,10 +226,10 @@ sio_rd_16:  ld bc, 0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Data
 
-str_hi:     defb "*** WELCOME TO THE DIRAC LOADER ***\n\0"
+str_hi:     defb "*** WELCOME TO THE DIRAC LOADER ***", $0a, $00
 
-str_eh:     defb "\nEh?\n\0"
+str_eh:     defb $0a, "Eh?", $0a, $00
 
-str_nyi:    defb "\nNYI\n\0"
+str_nyi:    defb $0a, "NYI", $0a, $00
 
 #end

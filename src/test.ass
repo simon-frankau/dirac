@@ -453,9 +453,9 @@ disp_loop:  dec de
 ; Write serial
 sio_wr:     ld b, a
             ; Wait until transmit buffer has space
-            in a, ($21)
+sio_wr_lp:  in a, ($21)
             and $04
-            jp z, sio_wr
+            jp z, sio_wr_lp
             ; Stick the data in the data register
             ld a, b
             out ($20), a
