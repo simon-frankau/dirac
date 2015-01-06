@@ -49,7 +49,7 @@ top:        ; Could have come here without reset, for whatever reason.
 top_loop:   dec de
             ld a, d
             or e
-            jp nz, top_loop
+            jr nz, top_loop
 
             ; Enable banking for the ROM page.
             ld bc, $0000
@@ -69,7 +69,7 @@ top_loop:   dec de
 ;            ld a, b
 ;            sub a, $10   ; Next page
 ;            ld b, a
-;            jp nz, blah1 ; Don't write page zero
+;            jr nz, blah1 ; Don't write page zero
 
             ld a, 1
             out ($70), a
@@ -125,7 +125,9 @@ top_loop:   dec de
 
 main:       ld bc, str_hi
             call sio_wr_str
-mainloop:   call sio_rd
+mainloop:   ld bc, str_prompt
+            call sio_wr_str
+            call sio_rd_echo
             cp 'J'
             jp z, cmd_jmp
             cp 'W'
@@ -136,49 +138,107 @@ mainloop:   call sio_rd
             jp z, cmd_map
             cp 'X'
             jp z, cmd_restart
-            ld bc, str_eh
-            call sio_wr_str
-            jp mainloop
+	    jp error
 
 cmd_jmp:    call sio_rd_16
             ld hl, bc
             jp (hl)
 
-cmd_write:  ; TODO: Not yet implemented...
-            ld bc, str_nyi
+            ; Destination, count, then data.
+cmd_write:  call sio_rd_16
+            push bc
+            call sio_rd_16
+            pop de
+wr_loop:    push bc
+            push de
+            call sio_rd_8
+            pop de
+            pop bc
+            ld (de), a
+            inc de
+            dec bc
+            ld a, b
+            or c
+            jr nz, wr_loop
+            ld bc, str_ok
             call sio_wr_str
             jp mainloop
 
-cmd_read:   ; TODO: Not yet implemented...
-            ld bc, str_nyi
+            ; Destination, count, then data.
+cmd_read:   call sio_rd_16
+            push bc
+            call sio_rd_16
+            pop hl
+rd_loop:    ld a, (hl)
+            push bc
+            push hl
+            call sio_wr_8
+            pop hl
+            pop bc
+            inc hl
+            dec bc
+            ld a, b
+            or c
+            jr nz, rd_loop
+            ld a, $0a
+            call sio_wr
+            ld bc, str_ok
             call sio_wr_str
             jp mainloop
 
-cmd_map:    ; TODO: Not yet implemented...
-            ld bc, str_nyi
-            call sio_wr_str
-            jp mainloop
+            ; Page, then physical address
+cmd_map:    call sio_rd_4
+            add a, a
+            add a, a
+            add a, a
+            push af
+            call sio_rd_8
+            pop bc
+            ld c, 0
+            ; BC contains virtual address, with page in top nibble
+            ; A contains physical page.
+            out (bc), a
 
-cmd_restart:; TODO: Not yet implemented...
-            ld bc, str_nyi
-            call sio_wr_str
-            jp mainloop
+            ; Physical address to map into virtual page 0 is parameter.
+cmd_restart:; Fill in destination address with "out (bc), a".
+            ld a, $ed
+            ld ($fffe), a
+            ld a, $79
+            ld ($ffff), a
 
+            ; Now set up BC and A appropriately...
+            call sio_rd_8
+            ld bc, $0000
+            ; BC has virtual address of bottom page
+            ; A contains physical page
+
+            ; And go!
+            di
+            jp $fffe
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Helper subroutines
 
+; Shouldn't happen cases - unexpected interrupts, etc.
 fail:       ld a, $aa
             call disp
-            jp fail
+            ld a, $55
+            call disp
+            jr fail
 
+; Error cases where we abort to the top-level loop (normally parse errors)
+error:      ld bc, str_eh
+            call sio_wr_str
+	    ld sp,$0000
+	    jp mainloop
+
+; Display something on the debug port
 disp:       out ($70),a
-
             ld de,$4000
 disp_loop:  dec de
             ld a, d
             or e
-            jp nz, disp_loop
+            jr nz, disp_loop
             ret
 
 ; Write serial
@@ -188,7 +248,7 @@ sio_wr:     ld b, a
             ; Wait until transmit buffer has space
 sio_wr_lp:  in a, ($21)
             and $04
-            jp z, sio_wr_lp
+            jr z, sio_wr_lp
             ; Stick the data in the data register
             ld a, b
             out ($20), a
@@ -202,11 +262,19 @@ sio_rd:     ; Wait until there's a character to receive
             out ($70), a
             in a, ($21)
             and $01
-            jp z, sio_rd
+            jr z, sio_rd
             ld a, $10
             out ($70), a
             ; Read the data from the data register
             in a, ($20)
+            ret
+
+; Read character with echo
+sio_rd_echo:
+            call sio_rd
+            push af
+            call sio_wr
+            pop af
             ret
 
 ; Write a string
@@ -217,16 +285,53 @@ sio_wr_str: ld a, (bc)
             call sio_wr
             pop bc
             inc bc
-            jp sio_wr_str
+            jr sio_wr_str
 
-; Read a 16-bit hex value - TODO
-sio_rd_16:  ld bc, 0
+; Read a 16-bit hex value
+sio_rd_16:  call sio_rd_8
+            push af
+            call sio_rd_8
+            pop bc
+            ld c, a
             ret
+
+; Read an 8-bit hex value
+sio_rd_8:   call sio_rd_4
+            add a
+            add a
+            add a
+            push af
+            call sio_rd_4
+            pop bc
+            add b
+            ret
+
+; Read a single hex digit
+sio_rd_4:   call sio_rd
+            sub '0'
+            jp c, error
+            cp 10
+            ret c
+            sub 'A' - '0'
+            jp c, error
+            cp 6
+            jp nc, error
+            add 10
+            ret
+
+; Write a byte.
+; TODO: Should be in hex, using pure binary value for the moment.
+sio_wr_8:  call sio_wr
+           ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Data
 
 str_hi:     defb "*** WELCOME TO THE DIRAC LOADER ***", $0a, $00
+
+str_prompt: defb "> ", $00
+
+str_ok:     defb "OK", $0a, $00
 
 str_eh:     defb $0a, "Eh?", $0a, $00
 
