@@ -131,6 +131,8 @@ main:       ld bc, str_hi
 mainloop:   ld bc, str_prompt
             call sio_wr_str
             call sio_rd_echo
+            cp 'H'
+            jp z, cmd_help
             cp 'J'
             jp z, cmd_jmp
             cp 'W'
@@ -142,6 +144,10 @@ mainloop:   ld bc, str_prompt
             cp 'X'
             jp z, cmd_restart
 	    jp error
+
+cmd_help:   ld bc, str_help
+            call sio_wr_str
+            jp mainloop
 
 cmd_jmp:    call sio_rd_16
             ld hl, bc
@@ -335,7 +341,16 @@ sio_wr_8:  call sio_wr
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Data
 
-str_hi:     defb "*** WELCOME TO THE DIRAC LOADER ***", $0a, $00
+str_hi:     defb "*** WELCOME TO THE DIRAC LOADER ***", $0a
+            defb "Type 'H' for help", $0a, $00
+
+str_help:   defb "H         This help text", $0a
+            defb "Jxxxx     Jump to xxxx", $0a
+            defb "Wxxxxyyyy Write yyyy bytes of data, starting at xxxx", $0a
+            defb "Rxxxxyyyy Read yyyy bytes of data, starting at xxxx", $0a
+            defb "Mvpp      Map physical page pp to virtual page v", $0a
+            defb "Xpp       Map physicl page pp to virtual page 0 and restart"
+            defb $0a
 
 str_prompt: defb "> ", $00
 
