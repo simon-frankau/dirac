@@ -178,10 +178,20 @@ cmd_read:   call sio_rd_16
             push bc
             call sio_rd_16
             pop hl
+
 rd_loop:    ld a, (hl)
             push bc
             push hl
             call sio_wr_8
+
+            ; Follow with space or newline, depending, to get nice wrapping
+            ld a, l
+            and $0f
+            ld a, ' '
+            jr nz, do_space
+            ld a, $0a
+do_space:   call sio_wr
+
             pop hl
             pop bc
             inc hl
@@ -334,9 +344,24 @@ sio_rd_4:   call sio_rd_echo
             ret
 
 ; Write a byte.
-; TODO: Should be in hex, using pure binary value for the moment.
-sio_wr_8:  call sio_wr
-           ret
+sio_wr_8:   push af
+            srl a
+            srl a
+            srl a
+            srl a
+            call sio_wr_4
+            pop af
+            and $0f
+            call sio_wr_4
+            ret
+
+; Write a single hex digit
+sio_wr_4:   cp 10
+            jr c, wr_num
+            add 'A' - 1
+            jp sio_wr
+wr_num:     add '0'
+            jp sio_wr
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Data
