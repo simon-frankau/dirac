@@ -131,6 +131,7 @@ main:       ld bc, str_hi
 mainloop:   ld bc, str_prompt
             call sio_wr_str
             call sio_rd_echo
+            and ~$20 ; To upper case
             cp 'H'
             jp z, cmd_help
             cp 'J'
@@ -336,7 +337,9 @@ sio_rd_4:   call sio_rd_echo
             jp c, error
             cp 10
             ret c
-            sub 'A' - '0'
+            add '0'
+            and ~$20 ; To upper case
+            sub 'A'
             jp c, error
             cp 6
             jp nc, error
