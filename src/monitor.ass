@@ -16,8 +16,9 @@
 ; 0x80000 - 0x9FFFF - RAM - Read-only
 ; 0xC0000 - 0xDFFFF - RAM - Read-write
 
-; TODO: Online help, dump memory map, proper dump of RAM
+; TODO:
 ; Still need to test memory mapping.
+; Callee saves calling convention? Centralise 'ok' message printing?
 
 #target     rom
 
@@ -142,6 +143,8 @@ mainloop:   ld bc, str_prompt
             jp z, cmd_read
             cp 'M'
             jp z, cmd_map
+            cp 'Q'
+            jp z, cmd_querymap
             cp 'X'
             jp z, cmd_restart
 	    jp error
@@ -216,6 +219,29 @@ cmd_map:    call sio_rd_4
             ; BC contains virtual address, with page in top nibble
             ; A contains physical page.
             out (bc), a
+
+            ld bc, str_ok
+            call sio_wr_str
+            jp mainloop
+
+            ; Dump the current banking map
+cmd_querymap:
+            ld bc, $f000
+qm_loop:    push bc
+            call sio_wr_16
+            ld bc, str_arrow
+            call sio_wr_str
+            pop bc
+            in a, (c) ; Really, in a, (bc).
+            push bc
+            call sio_wr_8
+            ld bc, str_zeros
+            call sio_wr_str
+            pop bc
+            ld a, b
+            sub $10
+            ld b, a
+            jr nc, qm_loop
 
             ld bc, str_ok
             call sio_wr_str
@@ -346,6 +372,15 @@ sio_rd_4:   call sio_rd_echo
             add 10
             ret
 
+; Write a 16-bit value
+sio_wr_16:  push bc
+            ld a, b
+            call sio_wr_8
+            pop bc
+            ld a, c
+            call sio_wr_8
+            ret
+
 ; Write a byte.
 sio_wr_8:   push af
             srl a
@@ -377,15 +412,17 @@ str_help:   defb "H         This help text", $0a
             defb "Wxxxxyyyy Write yyyy bytes of data, starting at xxxx", $0a
             defb "Rxxxxyyyy Read yyyy bytes of data, starting at xxxx", $0a
             defb "Mvpp      Map physical page pp to virtual page v", $0a
+            defb "Q         Print the current banking memory map", $0a
             defb "Xpp       Map physicl page pp to virtual page 0 and restart"
             defb $0a
 
 str_prompt: defb "> ", $00
 
-str_ok:     defb $0a, "OK", $0a, $00
-
+str_ok:     defb $0a, "OK",  $0a, $00
 str_eh:     defb $0a, "Eh?", $0a, $00
-
 str_nyi:    defb $0a, "NYI", $0a, $00
+
+str_arrow:  defb " -> ", $00
+str_zeros:  defb "000", $0a, $00
 
 #end
