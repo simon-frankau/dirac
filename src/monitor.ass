@@ -18,7 +18,7 @@
 
 ; TODO:
 ; Still need to test memory mapping.
-; Callee saves calling convention? Centralise 'ok' message printing?
+; Callee saves calling convention?
 
 #target     rom
 
@@ -147,7 +147,7 @@ mainloop:   ld bc, str_prompt
             jp z, cmd_querymap
             cp 'X'
             jp z, cmd_restart
-	    jp error
+            jp error
 
 cmd_help:   ld bc, str_help
             call sio_wr_str
@@ -155,6 +155,10 @@ cmd_help:   ld bc, str_help
 
 cmd_jmp:    call sio_rd_16
             ld hl, bc
+            ; Put a return address on the stack, faking a 'call'.
+            ld bc, ok
+            push bc
+            ; And perform the jp...
             jp (hl)
 
             ; Destination, count, then data.
@@ -173,9 +177,7 @@ wr_loop:    push bc
             ld a, b
             or c
             jr nz, wr_loop
-            ld bc, str_ok
-            call sio_wr_str
-            jp mainloop
+            jp ok
 
             ; Destination, count, then data.
 cmd_read:   call sio_rd_16
@@ -203,9 +205,7 @@ do_space:   call sio_wr
             ld a, b
             or c
             jr nz, rd_loop
-            ld bc, str_ok
-            call sio_wr_str
-            jp mainloop
+            jp ok
 
             ; Page, then physical address
 cmd_map:    call sio_rd_4
@@ -219,10 +219,7 @@ cmd_map:    call sio_rd_4
             ; BC contains virtual address, with page in top nibble
             ; A contains physical page.
             out (bc), a
-
-            ld bc, str_ok
-            call sio_wr_str
-            jp mainloop
+            jp ok
 
             ; Dump the current banking map
 cmd_querymap:
@@ -242,10 +239,7 @@ qm_loop:    push bc
             sub $10
             ld b, a
             jr nc, qm_loop
-
-            ld bc, str_ok
-            call sio_wr_str
-            jp mainloop
+            jp ok
 
             ; Physical address to map into virtual page 0 is parameter.
 cmd_restart:call sio_rd_8
@@ -280,8 +274,12 @@ fail:       ld a, $aa
 ; Error cases where we abort to the top-level loop (normally parse errors)
 error:      ld bc, str_eh
             call sio_wr_str
-	    ld sp,$0000
-	    jp mainloop
+            ld sp,$0000
+            jp mainloop
+
+ok:         ld bc, str_ok
+            call sio_wr_str
+            jp mainloop
 
 ; Display something on the debug port
 disp:       out ($70),a
