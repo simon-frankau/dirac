@@ -17,7 +17,7 @@
 ; 0xC0000 - 0xDFFFF - RAM - Read-write
 
 ; TODO:
-; Still need to test memory mapping.
+; Still need to test 'x'
 ; Callee saves calling convention?
 
 #target     rom
@@ -154,7 +154,10 @@ cmd_help:   ld bc, str_help
             jp mainloop
 
 cmd_jmp:    call sio_rd_16
-            ld hl, bc
+            push bc
+            ld a, $0a
+            call sio_wr
+            pop hl
             ; Put a return address on the stack, faking a 'call'.
             ld bc, ok
             push bc
@@ -183,6 +186,10 @@ wr_loop:    push bc
 cmd_read:   call sio_rd_16
             push bc
             call sio_rd_16
+            push bc
+            ld a, $0a
+            call sio_wr
+            pop bc
             pop hl
 
 rd_loop:    ld a, (hl)
@@ -193,6 +200,7 @@ rd_loop:    ld a, (hl)
             ; Follow with space or newline, depending, to get nice wrapping
             ld a, l
             and $0f
+            cp $0f
             ld a, ' '
             jr nz, do_space
             ld a, $0a
@@ -212,6 +220,7 @@ cmd_map:    call sio_rd_4
             add a, a
             add a, a
             add a, a
+            add a, a
             push af
             call sio_rd_8
             pop bc
@@ -223,6 +232,8 @@ cmd_map:    call sio_rd_4
 
             ; Dump the current banking map
 cmd_querymap:
+            ld a, $0a
+            call sio_wr
             ld bc, $f000
 qm_loop:    push bc
             call sio_wr_16
@@ -333,6 +344,8 @@ sio_rd_ws:
             jr z, sio_rd_ws
             cp $09
             jr z, sio_rd_ws
+            cp $0d
+            jr z, sio_rd_ws
             cp $0a
             ret nz
             ; Print a character to identify continuation line
@@ -360,6 +373,7 @@ sio_rd_16:  call sio_rd_8
 
 ; Read an 8-bit hex value
 sio_rd_8:   call sio_rd_4
+            add a
             add a
             add a
             add a
@@ -408,7 +422,7 @@ sio_wr_8:   push af
 ; Write a single hex digit
 sio_wr_4:   cp 10
             jr c, wr_num
-            add 'A' - 1
+            add 'A' - 10
             jp sio_wr
 wr_num:     add '0'
             jp sio_wr
@@ -420,6 +434,7 @@ str_hi:     defb "*** WELCOME TO THE DIRAC LOADER ***", $0a
             defb "Type 'H' for help", $0a, $00
 
 str_help:
+  defb $0a
   defb "H           This help text", $0a
   defb "J xxxx      Jump to xxxx", $0a
   defb "W xxxx yyyy Write yyyy bytes of data, starting at xxxx", $0a
@@ -427,6 +442,7 @@ str_help:
   defb "M v pp      Map physical page pp to virtual page v", $0a
   defb "Q           Print the current banking memory map", $0a
   defb "X pp        Map physical page pp to virtual page 0 and restart", $0a
+  defb $00
 
 str_prompt: defb "> ", $00
 
