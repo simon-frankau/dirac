@@ -131,7 +131,7 @@ main:       ld bc, str_hi
             call sio_wr_str
 mainloop:   ld bc, str_prompt
             call sio_wr_str
-            call sio_rd_echo
+            call sio_rd_ws
             and ~$20 ; To upper case
             cp 'H'
             jp z, cmd_help
@@ -328,6 +328,20 @@ sio_rd_echo:
             pop af
             ret
 
+; Read character with echo, ignore whitespace
+sio_rd_ws:
+            call sio_rd_echo
+            cp ' '
+            jr z, sio_rd_ws
+            cp $09
+            jr z, sio_rd_ws
+            cp $0a
+            ret nz
+            ; Print a character to identify continuation line
+            ld a, '\'
+            call sio_wr
+            jr sio_rd_ws
+
 ; Write a string
 sio_wr_str: ld a, (bc)
             cp 0
@@ -358,7 +372,7 @@ sio_rd_8:   call sio_rd_4
             ret
 
 ; Read a single hex digit
-sio_rd_4:   call sio_rd_echo
+sio_rd_4:   call sio_rd_ws
             sub '0'
             jp c, error
             cp 10
@@ -407,14 +421,14 @@ wr_num:     add '0'
 str_hi:     defb "*** WELCOME TO THE DIRAC LOADER ***", $0a
             defb "Type 'H' for help", $0a, $00
 
-str_help:   defb "H         This help text", $0a
-            defb "Jxxxx     Jump to xxxx", $0a
-            defb "Wxxxxyyyy Write yyyy bytes of data, starting at xxxx", $0a
-            defb "Rxxxxyyyy Read yyyy bytes of data, starting at xxxx", $0a
-            defb "Mvpp      Map physical page pp to virtual page v", $0a
-            defb "Q         Print the current banking memory map", $0a
-            defb "Xpp       Map physicl page pp to virtual page 0 and restart"
-            defb $0a
+str_help:
+  defb "H           This help text", $0a
+  defb "J xxxx      Jump to xxxx", $0a
+  defb "W xxxx yyyy Write yyyy bytes of data, starting at xxxx", $0a
+  defb "R xxxx yyyy Read yyyy bytes of data, starting at xxxx", $0a
+  defb "M v pp      Map physical page pp to virtual page v", $0a
+  defb "Q           Print the current banking memory map", $0a
+  defb "X pp        Map physical page pp to virtual page 0 and restart", $0a
 
 str_prompt: defb "> ", $00
 
