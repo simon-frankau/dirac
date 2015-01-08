@@ -10,5 +10,5 @@ zasm monitor.ass -o ../out/monitor.bin
 
 cd ../out
 
-lua ../tools/build_test_data.lua
-lua ../tools/build_rom.lua
+lua ../tools/build_test_data.lua -s 0x7000 -m 17 -o testdata.rom
+lua ../tools/build_rom.lua -o z80.bin test.rom:0x0000 testdata.rom:0x1000
