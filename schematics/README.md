@@ -28,7 +28,10 @@ Miscellaneous notes
   map, but the outputs are inverting, meaning the physical address we
   think we're writing is actually the opposite of what we're really
   writing. We have to rearrange the EEPROM contents at the bank level
-  when we write it.
+  when we write it. We also have to be careful with the TTL/CMOS
+  levels between the chips. Fortunately, the big chips are
+  TTL-tolerant, and I've used 74HCT for the others that interact with
+  the '289.
 
 * We have a flip-flop to enable banking as the contents are in an
   unknown state at power on. All pages are mapped to bank 0 (physical
