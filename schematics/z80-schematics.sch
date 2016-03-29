@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:z80-schematics-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -10,7 +11,6 @@ LIBS:cmos4000
 LIBS:adc-dac
 LIBS:memory
 LIBS:xilinx
-LIBS:special
 LIBS:microcontrollers
 LIBS:dsp
 LIBS:microchip
@@ -32,7 +32,8 @@ LIBS:valves
 LIBS:o_zilog
 LIBS:simon
 LIBS:xo-14s
-EELAYER 27 0
+LIBS:z80-schematics-cache
+EELAYER 25 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
@@ -47,7 +48,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L 28C256 U3
+L 28C256-RESCUE-z80-schematics U3
 U 1 1 54359578
 P 1700 1750
 F 0 "U3" H 1900 2750 70  0000 C CNN
@@ -416,7 +417,7 @@ d6
 Text Label 13800 3150 2    60   Italic 12
 d7
 $Comp
-L R R1
+L R-RESCUE-z80-schematics R1
 U 1 1 5436F625
 P 14850 2450
 F 0 "R1" V 14930 2450 40  0000 C CNN
@@ -427,7 +428,7 @@ F 3 "~" H 14850 2450 30  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L R R2
+L R-RESCUE-z80-schematics R2
 U 1 1 5436F632
 P 14850 2600
 F 0 "R2" V 14930 2600 40  0000 C CNN
@@ -438,7 +439,7 @@ F 3 "~" H 14850 2600 30  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L R R3
+L R-RESCUE-z80-schematics R3
 U 1 1 5436F638
 P 14850 2750
 F 0 "R3" V 14930 2750 40  0000 C CNN
@@ -449,7 +450,7 @@ F 3 "~" H 14850 2750 30  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L R R4
+L R-RESCUE-z80-schematics R4
 U 1 1 5436F63E
 P 14850 2900
 F 0 "R4" V 14930 2900 40  0000 C CNN
@@ -460,7 +461,7 @@ F 3 "~" H 14850 2900 30  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L R R5
+L R-RESCUE-z80-schematics R5
 U 1 1 5436F644
 P 14850 3050
 F 0 "R5" V 14930 3050 40  0000 C CNN
@@ -471,7 +472,7 @@ F 3 "~" H 14850 3050 30  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L R R6
+L R-RESCUE-z80-schematics R6
 U 1 1 5436F64A
 P 14850 3200
 F 0 "R6" V 14930 3200 40  0000 C CNN
@@ -482,7 +483,7 @@ F 3 "~" H 14850 3200 30  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L R R7
+L R-RESCUE-z80-schematics R7
 U 1 1 5436F650
 P 14850 3350
 F 0 "R7" V 14930 3350 40  0000 C CNN
@@ -493,7 +494,7 @@ F 3 "~" H 14850 3350 30  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L R R8
+L R-RESCUE-z80-schematics R8
 U 1 1 5436F656
 P 14850 3500
 F 0 "R8" V 14930 3500 40  0000 C CNN
@@ -655,7 +656,7 @@ Text Label 3150 2700 0    60   Italic 12
 Text Label 800  3350 0    60   Italic 12
 /b19
 $Comp
-L LED D1
+L LED-RESCUE-z80-schematics D1
 U 1 1 5439CDAB
 P 1000 4650
 F 0 "D1" H 1000 4750 50  0000 C CNN
@@ -666,7 +667,7 @@ F 3 "" H 1000 4650 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L R R9
+L R-RESCUE-z80-schematics R9
 U 1 1 5439CDBF
 P 1000 5500
 F 0 "R9" V 1080 5500 40  0000 C CNN
@@ -677,7 +678,7 @@ F 3 "" H 1000 5500 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R10
+L R-RESCUE-z80-schematics R10
 U 1 1 5439CDD1
 P 1550 4650
 F 0 "R10" V 1630 4650 40  0000 C CNN
@@ -688,7 +689,7 @@ F 3 "" H 1550 4650 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R11
+L R-RESCUE-z80-schematics R11
 U 1 1 5439CDDC
 P 2250 4650
 F 0 "R11" V 2330 4650 40  0000 C CNN
@@ -721,7 +722,7 @@ F 3 "" H 2400 5500 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L C C15
+L C-RESCUE-z80-schematics C15
 U 1 1 5439CE08
 P 2100 5500
 F 0 "C15" H 2100 5600 40  0000 L CNN
@@ -743,7 +744,7 @@ F 3 "" H 2250 4250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR?
+L GND-RESCUE-z80-schematics #PWR?
 U 1 1 5439D0D3
 P 2250 6050
 F 0 "#PWR?" H 2250 6050 30  0001 C CNN
@@ -767,7 +768,7 @@ F 3 "" H 1550 4250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR?
+L GND-RESCUE-z80-schematics #PWR?
 U 1 1 5439D495
 P 1550 6050
 F 0 "#PWR?" H 1550 6050 30  0001 C CNN
@@ -793,7 +794,7 @@ F 3 "" H 1000 4250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR?
+L GND-RESCUE-z80-schematics #PWR?
 U 1 1 5439D762
 P 1000 6050
 F 0 "#PWR?" H 1000 6050 30  0001 C CNN
@@ -815,7 +816,7 @@ F 3 "" H 4100 5050 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR?
+L GND-RESCUE-z80-schematics #PWR?
 U 1 1 5439DA28
 P 3500 6050
 F 0 "#PWR?" H 3500 6050 30  0001 C CNN
@@ -934,7 +935,7 @@ F 3 "" H 3000 4250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R12
+L R-RESCUE-z80-schematics R12
 U 1 1 54443E36
 P 3000 4650
 F 0 "R12" V 3080 4650 40  0000 C CNN
@@ -977,7 +978,7 @@ F 3 "" H 10900 6700 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR?
+L GND-RESCUE-z80-schematics #PWR?
 U 1 1 54444BB8
 P 10150 6500
 F 0 "#PWR?" H 10150 6500 30  0001 C CNN
@@ -1021,7 +1022,7 @@ NoConn ~ 11150 4650
 Text Label 11350 4750 2    60   Italic 12
 /rts
 $Comp
-L GND #PWR?
+L GND-RESCUE-z80-schematics #PWR?
 U 1 1 54445AE6
 P 11350 5000
 F 0 "#PWR?" H 11350 5000 30  0001 C CNN
@@ -1373,9 +1374,7 @@ Wire Wire Line
 Wire Wire Line
 	12200 3350 11750 3350
 Wire Wire Line
-	14300 3950 14400 3950
-Wire Wire Line
-	14400 3950 14850 3950
+	14300 3950 14850 3950
 Wire Wire Line
 	14400 3950 14400 4350
 Wire Wire Line
@@ -1412,9 +1411,7 @@ Wire Wire Line
 Wire Wire Line
 	800  3550 1100 3550
 Wire Wire Line
-	3450 3350 3450 3450
-Wire Wire Line
-	3450 3450 3450 3550
+	3450 3350 3450 3550
 Wire Wire Line
 	3450 3450 3150 3450
 Connection ~ 3450 3450
@@ -1431,21 +1428,7 @@ Wire Wire Line
 Wire Wire Line
 	15300 3350 15100 3350
 Wire Wire Line
-	15300 2300 15300 2450
-Wire Wire Line
-	15300 2450 15300 2600
-Wire Wire Line
-	15300 2600 15300 2750
-Wire Wire Line
-	15300 2750 15300 2900
-Wire Wire Line
-	15300 2900 15300 3050
-Wire Wire Line
-	15300 3050 15300 3200
-Wire Wire Line
-	15300 3200 15300 3350
-Wire Wire Line
-	15300 3350 15300 3500
+	15300 2300 15300 3500
 Wire Wire Line
 	15100 3200 15300 3200
 Connection ~ 15300 3350
@@ -1498,19 +1481,13 @@ Wire Wire Line
 Wire Wire Line
 	2400 5900 2400 5800
 Wire Wire Line
-	2100 5900 2250 5900
-Wire Wire Line
-	2250 5900 2400 5900
+	2100 5900 2400 5900
 Wire Wire Line
 	2100 5900 2100 5700
 Wire Wire Line
 	2400 5050 2400 5200
 Wire Wire Line
-	2100 5050 2250 5050
-Wire Wire Line
-	2250 5050 2400 5050
-Wire Wire Line
-	2400 5050 2800 5050
+	2100 5050 2800 5050
 Wire Wire Line
 	2100 5050 2100 5300
 Wire Wire Line
@@ -1523,9 +1500,7 @@ Connection ~ 2400 5050
 Wire Wire Line
 	2250 4400 2250 4250
 Wire Wire Line
-	1550 4900 1550 5050
-Wire Wire Line
-	1550 5050 1550 5200
+	1550 4900 1550 5200
 Wire Wire Line
 	1550 5800 1550 6050
 Wire Wire Line
@@ -1732,7 +1707,7 @@ d6
 Text Label 8500 8900 2    60   Italic 12
 d7
 $Comp
-L C C1
+L C-RESCUE-z80-schematics C1
 U 1 1 54448997
 P 1000 6800
 F 0 "C1" H 1000 6900 40  0000 L CNN
@@ -1743,7 +1718,7 @@ F 3 "" H 1000 6800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C2
+L C-RESCUE-z80-schematics C2
 U 1 1 544489AB
 P 1300 6800
 F 0 "C2" H 1300 6900 40  0000 L CNN
@@ -1754,7 +1729,7 @@ F 3 "" H 1300 6800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C3
+L C-RESCUE-z80-schematics C3
 U 1 1 544489BF
 P 1600 6800
 F 0 "C3" H 1600 6900 40  0000 L CNN
@@ -1765,7 +1740,7 @@ F 3 "" H 1600 6800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C4
+L C-RESCUE-z80-schematics C4
 U 1 1 544489D3
 P 1900 6800
 F 0 "C4" H 1900 6900 40  0000 L CNN
@@ -1776,7 +1751,7 @@ F 3 "" H 1900 6800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C5
+L C-RESCUE-z80-schematics C5
 U 1 1 544489E7
 P 2200 6800
 F 0 "C5" H 2200 6900 40  0000 L CNN
@@ -1787,7 +1762,7 @@ F 3 "" H 2200 6800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C6
+L C-RESCUE-z80-schematics C6
 U 1 1 544489FB
 P 2500 6800
 F 0 "C6" H 2500 6900 40  0000 L CNN
@@ -1798,7 +1773,7 @@ F 3 "" H 2500 6800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C7
+L C-RESCUE-z80-schematics C7
 U 1 1 54448A0F
 P 2800 6800
 F 0 "C7" H 2800 6900 40  0000 L CNN
@@ -1809,7 +1784,7 @@ F 3 "" H 2800 6800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C8
+L C-RESCUE-z80-schematics C8
 U 1 1 54448A23
 P 1000 7800
 F 0 "C8" H 1000 7900 40  0000 L CNN
@@ -1820,7 +1795,7 @@ F 3 "" H 1000 7800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C9
+L C-RESCUE-z80-schematics C9
 U 1 1 54448A37
 P 1300 7800
 F 0 "C9" H 1300 7900 40  0000 L CNN
@@ -1831,7 +1806,7 @@ F 3 "" H 1300 7800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C10
+L C-RESCUE-z80-schematics C10
 U 1 1 54448A4B
 P 1600 7800
 F 0 "C10" H 1600 7900 40  0000 L CNN
@@ -1842,7 +1817,7 @@ F 3 "" H 1600 7800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C11
+L C-RESCUE-z80-schematics C11
 U 1 1 54448A5F
 P 1900 7800
 F 0 "C11" H 1900 7900 40  0000 L CNN
@@ -1853,7 +1828,7 @@ F 3 "" H 1900 7800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C12
+L C-RESCUE-z80-schematics C12
 U 1 1 54448A73
 P 2200 7800
 F 0 "C12" H 2200 7900 40  0000 L CNN
@@ -1864,7 +1839,7 @@ F 3 "" H 2200 7800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C13
+L C-RESCUE-z80-schematics C13
 U 1 1 54448A87
 P 2500 7800
 F 0 "C13" H 2500 7900 40  0000 L CNN
@@ -1875,7 +1850,7 @@ F 3 "" H 2500 7800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C14
+L C-RESCUE-z80-schematics C14
 U 1 1 54448A9B
 P 2800 7800
 F 0 "C14" H 2800 7900 40  0000 L CNN
@@ -1888,17 +1863,7 @@ $EndComp
 Wire Wire Line
 	1000 6600 1000 6500
 Wire Wire Line
-	1000 6500 1300 6500
-Wire Wire Line
-	1300 6500 1600 6500
-Wire Wire Line
-	1600 6500 1900 6500
-Wire Wire Line
-	1900 6500 2200 6500
-Wire Wire Line
-	2200 6500 2500 6500
-Wire Wire Line
-	2500 6500 2800 6500
+	1000 6500 2800 6500
 Wire Wire Line
 	2800 6500 2800 6600
 Wire Wire Line
@@ -1908,9 +1873,7 @@ Wire Wire Line
 	1600 6600 1600 6500
 Connection ~ 1600 6500
 Wire Wire Line
-	1900 6400 1900 6500
-Wire Wire Line
-	1900 6500 1900 6600
+	1900 6400 1900 6600
 Connection ~ 1900 6500
 Wire Wire Line
 	2200 6600 2200 6500
@@ -1921,17 +1884,7 @@ Connection ~ 2500 6500
 Wire Wire Line
 	1000 7000 1000 7100
 Wire Wire Line
-	1000 7100 1300 7100
-Wire Wire Line
-	1300 7100 1600 7100
-Wire Wire Line
-	1600 7100 1900 7100
-Wire Wire Line
-	1900 7100 2200 7100
-Wire Wire Line
-	2200 7100 2500 7100
-Wire Wire Line
-	2500 7100 2800 7100
+	1000 7100 2800 7100
 Wire Wire Line
 	2800 7100 2800 7000
 Wire Wire Line
@@ -1941,9 +1894,7 @@ Wire Wire Line
 	1600 7000 1600 7100
 Connection ~ 1600 7100
 Wire Wire Line
-	1900 7000 1900 7100
-Wire Wire Line
-	1900 7100 1900 7200
+	1900 7000 1900 7200
 Connection ~ 1900 7100
 Wire Wire Line
 	2200 7000 2200 7100
@@ -1963,7 +1914,7 @@ F 3 "" H 1900 6400 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR?
+L GND-RESCUE-z80-schematics #PWR?
 U 1 1 54449B07
 P 1900 7200
 F 0 "#PWR?" H 1900 7200 30  0001 C CNN
@@ -1976,17 +1927,7 @@ $EndComp
 Wire Wire Line
 	1000 7600 1000 7500
 Wire Wire Line
-	1000 7500 1300 7500
-Wire Wire Line
-	1300 7500 1600 7500
-Wire Wire Line
-	1600 7500 1900 7500
-Wire Wire Line
-	1900 7500 2200 7500
-Wire Wire Line
-	2200 7500 2500 7500
-Wire Wire Line
-	2500 7500 2800 7500
+	1000 7500 2800 7500
 Wire Wire Line
 	2800 7500 2800 7600
 Wire Wire Line
@@ -1996,9 +1937,7 @@ Wire Wire Line
 	1600 7600 1600 7500
 Connection ~ 1600 7500
 Wire Wire Line
-	1900 7400 1900 7500
-Wire Wire Line
-	1900 7500 1900 7600
+	1900 7400 1900 7600
 Connection ~ 1900 7500
 Wire Wire Line
 	2200 7600 2200 7500
@@ -2009,17 +1948,7 @@ Connection ~ 2500 7500
 Wire Wire Line
 	1000 8000 1000 8100
 Wire Wire Line
-	1000 8100 1300 8100
-Wire Wire Line
-	1300 8100 1600 8100
-Wire Wire Line
-	1600 8100 1900 8100
-Wire Wire Line
-	1900 8100 2200 8100
-Wire Wire Line
-	2200 8100 2500 8100
-Wire Wire Line
-	2500 8100 2800 8100
+	1000 8100 2800 8100
 Wire Wire Line
 	2800 8100 2800 8000
 Wire Wire Line
@@ -2029,9 +1958,7 @@ Wire Wire Line
 	2200 8000 2200 8100
 Connection ~ 2200 8100
 Wire Wire Line
-	1900 8000 1900 8100
-Wire Wire Line
-	1900 8100 1900 8200
+	1900 8000 1900 8200
 Connection ~ 1900 8100
 Wire Wire Line
 	1600 8000 1600 8100
@@ -2051,7 +1978,7 @@ F 3 "" H 1900 7400 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR?
+L GND-RESCUE-z80-schematics #PWR?
 U 1 1 5444ACAB
 P 1900 8200
 F 0 "#PWR?" H 1900 8200 30  0001 C CNN
