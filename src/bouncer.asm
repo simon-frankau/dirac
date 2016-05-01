@@ -1,6 +1,8 @@
 ; Simple cylon/knightrider thing
 ; Dumbest possible implementation - no dependency on RAM, can just be dropped
 ; in at 0x0000.
+;
+; Assumes that you will be fixing your LEDs on port 0.
 
 #target     rom
 

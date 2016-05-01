@@ -10,6 +10,7 @@ cd src
 zasm bouncer.asm -o ../out/bouncer.s
 zasm test.asm    -o ../out/test.s
 zasm monitor.asm -o ../out/monitor.s
+zasm example.asm -o ../out/example.s
 
 # Build ROM images
 

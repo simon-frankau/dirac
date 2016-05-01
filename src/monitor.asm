@@ -20,9 +20,6 @@
 ; 8-bit and 16-bit parameters passed in A and BC respectively.
 ; BC, DE and HL preserved, unless BC is used as a parameter, when's it's not.
 
-; TODO:
-; Still need to test 'x'
-
 #target     rom
 
 ; Reset vector
