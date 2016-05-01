@@ -7,9 +7,9 @@ mkdir -p out
 # Compile source
 cd src
 
-zasm bouncer.ass -o ../out/bouncer.s
-zasm test.ass    -o ../out/test.s
-zasm monitor.ass -o ../out/monitor.s
+zasm bouncer.asm -o ../out/bouncer.s
+zasm test.asm    -o ../out/test.s
+zasm monitor.asm -o ../out/monitor.s
 
 # Build ROM images
 
