@@ -65,6 +65,22 @@ What's here?
 * **tools** contains the tools to do the required translations to make
     workable images
 
+What's the current state?
+-------------------------
+
+I tried creating a simple loader. It allows you to encode your
+binaries as hex, load them and execute them. Unfortunately, reading
+serial data is extremely flakey, and I've yet to work out if this is
+software or hardware. It makes loading binaries over serial
+near-impossible.
+
+The project then stalled for a long time, and more recently I a)
+resolved to get this into a state it could be put up onto github, no
+matter how incomplete, b) decided that building my own monitor and
+loading BASIC on aren't really interesting intermediate goals - CP/M
+looks quite reasonable to port as a next step. I've yet to start the
+CP/M port in earnest, though.
+
 What do I need?
 ---------------
 
