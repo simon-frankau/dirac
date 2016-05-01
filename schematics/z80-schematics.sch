@@ -11,27 +11,6 @@ LIBS:cmos4000
 LIBS:adc-dac
 LIBS:memory
 LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:o_zilog
-LIBS:simon
-LIBS:xo-14s
 LIBS:z80-schematics-cache
 EELAYER 25 0
 EELAYER END
@@ -2093,4 +2072,32 @@ Wire Wire Line
 Wire Wire Line
 	3750 7000 3750 7100
 Connection ~ 3500 7000
+$Comp
+L VCC #PWR?
+U 1 1 5725E77F
+P 6700 7800
+F 0 "#PWR?" H 6700 7650 50  0001 C CNN
+F 1 "VCC" H 6700 7950 50  0000 C CNN
+F 2 "" H 6700 7800 50  0000 C CNN
+F 3 "" H 6700 7800 50  0000 C CNN
+	1    6700 7800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6900 7800 6700 7800
+NoConn ~ 6900 7700
+$Comp
+L VCC #PWR?
+U 1 1 5725EC6B
+P 6700 9100
+F 0 "#PWR?" H 6700 8950 50  0001 C CNN
+F 1 "VCC" H 6700 9250 50  0000 C CNN
+F 2 "" H 6700 9100 50  0000 C CNN
+F 3 "" H 6700 9100 50  0000 C CNN
+	1    6700 9100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6700 9100 6900 9100
+NoConn ~ 6900 9200
 $EndSCHEMATC
