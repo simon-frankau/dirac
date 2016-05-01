@@ -26,7 +26,7 @@
 #target     rom
 
 ; Reset vector
-#code       0,$4000
+#code       RESET,0,$4000
             jp top
 
 ; Interrupt vectors - shouldn't be using them.

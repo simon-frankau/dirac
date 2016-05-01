@@ -4,7 +4,7 @@
 
 #target     rom
 
-#code       0,$4000
+#code       RESET,0,$4000
 
 top:        ld a,$1
             out (0),a

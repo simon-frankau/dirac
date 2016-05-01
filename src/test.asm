@@ -19,7 +19,7 @@
 pattern:    equ $f000
 
 ; Reset vector
-#code       0,$4000
+#code       RESET,0,$4000
             jp top
 
 ; Counter channel 3 interrupt vector
