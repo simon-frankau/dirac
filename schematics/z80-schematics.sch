@@ -571,15 +571,15 @@ Text Label 800  3550 0    60   Italic 12
 $Comp
 L 7400 U8
 U 1 1 54376642
-P 4050 3450
-F 0 "U8" H 4050 3500 60  0000 C CNN
-F 1 "74HCT00" H 4050 3350 60  0000 C CNN
-F 2 "~" H 4050 3450 60  0000 C CNN
-F 3 "~" H 4050 3450 60  0000 C CNN
-	1    4050 3450
+P 5600 3450
+F 0 "U8" H 5600 3500 60  0000 C CNN
+F 1 "74HCT00" H 5600 3350 60  0000 C CNN
+F 2 "~" H 5600 3450 60  0000 C CNN
+F 3 "~" H 5600 3450 60  0000 C CNN
+	1    5600 3450
 	1    0    0    -1  
 $EndComp
-Text Label 3150 3450 0    60   Italic 12
+Text Label 4700 3450 0    60   Italic 12
 b19
 Text Label 11200 1750 2    60   Italic 12
 /banksel
@@ -604,7 +604,7 @@ Text Label 12650 4750 0    60   Italic 12
 Text Label 12650 3850 0    60   Italic 12
 /reset
 Text Label 3150 2900 0    60   Italic 12
-/wr
+/ramwr
 Text Label 800  2550 0    60   Italic 12
 /rd
 Text Label 6300 1350 0    60   Italic 12
@@ -628,7 +628,7 @@ Text Label 800  2650 0    60   Italic 12
 /rom
 Text Label 2550 3450 2    60   Italic 12
 /rom
-Text Label 4950 3450 2    60   Italic 12
+Text Label 6500 3450 2    60   Italic 12
 /b19
 Text Label 3150 2700 0    60   Italic 12
 /b19
@@ -1604,12 +1604,12 @@ Wire Wire Line
 Wire Wire Line
 	800  3550 1100 3550
 Wire Wire Line
-	3450 3350 3450 3550
+	5000 3350 5000 3550
 Wire Wire Line
-	3450 3450 3150 3450
-Connection ~ 3450 3450
+	5000 3450 4700 3450
+Connection ~ 5000 3450
 Wire Wire Line
-	4650 3450 4950 3450
+	6200 3450 6500 3450
 Wire Wire Line
 	1100 3350 800  3350
 Wire Wire Line
@@ -2073,10 +2073,10 @@ Wire Wire Line
 	3750 7000 3750 7100
 Connection ~ 3500 7000
 $Comp
-L VCC #PWR?
+L VCC #PWR029
 U 1 1 5725E77F
 P 6700 7800
-F 0 "#PWR?" H 6700 7650 50  0001 C CNN
+F 0 "#PWR029" H 6700 7650 50  0001 C CNN
 F 1 "VCC" H 6700 7950 50  0000 C CNN
 F 2 "" H 6700 7800 50  0000 C CNN
 F 3 "" H 6700 7800 50  0000 C CNN
@@ -2087,10 +2087,10 @@ Wire Wire Line
 	6900 7800 6700 7800
 NoConn ~ 6900 7700
 $Comp
-L VCC #PWR?
+L VCC #PWR030
 U 1 1 5725EC6B
 P 6700 9100
-F 0 "#PWR?" H 6700 8950 50  0001 C CNN
+F 0 "#PWR030" H 6700 8950 50  0001 C CNN
 F 1 "VCC" H 6700 9250 50  0000 C CNN
 F 2 "" H 6700 9100 50  0000 C CNN
 F 3 "" H 6700 9100 50  0000 C CNN
@@ -2100,4 +2100,27 @@ $EndComp
 Wire Wire Line
 	6700 9100 6900 9100
 NoConn ~ 6900 9200
+$Comp
+L 74LS32 U9
+U 2 1 572614F7
+P 3600 3450
+F 0 "U9" H 3600 3500 60  0000 C CNN
+F 1 "74HCT32" H 3600 3400 60  0000 C CNN
+F 2 "~" H 3600 3450 60  0000 C CNN
+F 3 "~" H 3600 3450 60  0000 C CNN
+	2    3600 3450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4200 3450 4500 3450
+Text Label 4500 3450 2    60   Italic 12
+/ramwr
+Wire Wire Line
+	3000 3350 2700 3350
+Text Label 2700 3350 0    60   Italic 12
+/wr
+Wire Wire Line
+	3000 3550 2700 3550
+Text Label 2700 3550 0    60   Italic 12
+b18
 $EndSCHEMATC
