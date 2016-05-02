@@ -79,12 +79,13 @@ top_loop:   dec de
             ld a, $40
             out ($10), a
 
-            ; Clock channel 0 at 9600 bps:
-            ; Disable interrupt, timer mode, prescale 16, falling edge
+            ; Clock channel 0 at 16 * 4800 bps:
+            ; Disable interrupt, counter mode, rising edge
             ; Auto, time constant, reset, control word
-            ld a, $07
+            ; The SIO uses 16x clock rate to properly decode async serial.
+            ld a, $57
             out ($10), a
-            ld a, 13 ; 2M / (16 * 9600)
+            ld a, 13 ; 1M / (16 * 4800)
             out ($10), a
 
             ld a, 2
@@ -98,7 +99,7 @@ top_loop:   dec de
 
             ld a, $04 ; WR4
             out ($21), a
-            ld a, $04 ; x1 rate, 1 stop bit, no parity
+            ld a, $44 ; x16 rate, 1 stop bit, no parity
             out ($21), a
 
             ld a, $01 ; WR1
