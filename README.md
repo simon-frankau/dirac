@@ -69,10 +69,10 @@ What's the current state?
 -------------------------
 
 I tried creating a simple loader. It allows you to encode your
-binaries as hex, load them and execute them. Unfortunately, reading
-serial data is extremely flakey, and I've yet to work out if this is
-software or hardware. It makes loading binaries over serial
-near-impossible.
+binaries as hex, load them and execute them. With a recent fix, this
+is now working reasonably reliably. I can plug the thing in to USB,
+it'll power itself from the USB port, and I can talk to the monitor at
+4800 8-N-1.
 
 The project then stalled for a long time, and more recently I a)
 resolved to get this into a state it could be put up onto github, no
