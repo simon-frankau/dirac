@@ -8,7 +8,7 @@
 
 #target     ROM
 
-#code       ENTRY,0x0000
+#code       ENTRY,0xF000
 
 main:       ld bc, str_hi
             call sio_wr_str
