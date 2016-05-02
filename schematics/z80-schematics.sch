@@ -850,11 +850,11 @@ Text Label 9150 4650 0    60   Italic 12
 d7
 Text Label 6300 5400 0    60   Italic 12
 /rd
-Text Label 8700 4200 2    60   Italic 12
+Text Label 8800 4200 2    60   Italic 12
 to0
 Text Label 11350 4050 2    60   Italic 12
 to0
-Text Label 8700 4700 2    60   Italic 12
+Text Label 8800 4700 2    60   Italic 12
 to1
 Text Label 11350 5350 2    60   Italic 12
 to1
@@ -862,9 +862,9 @@ Text Label 6300 5300 0    60   Italic 12
 /iorq
 Text Label 9050 5150 0    60   Italic 12
 /iorq
-Text Label 8700 5100 2    60   Italic 12
+Text Label 8800 5100 2    60   Italic 12
 to2
-Text Label 8700 5400 2    60   Italic 12
+Text Label 8800 5400 2    60   Italic 12
 to2
 Text Label 6400 5700 0    60   Italic 12
 ieo
@@ -933,9 +933,6 @@ Text Label 9050 5350 0    60   Italic 12
 a0
 Text Label 9050 5450 0    60   Italic 12
 a1
-NoConn ~ 8500 5000
-NoConn ~ 8500 4600
-NoConn ~ 8500 4100
 $Comp
 L CONN_6 P1
 U 1 1 54444BA4
@@ -1736,21 +1733,13 @@ Wire Wire Line
 Wire Wire Line
 	6700 5400 6300 5400
 Wire Wire Line
-	8500 4200 8700 4200
-Wire Wire Line
 	11150 4050 11350 4050
-Wire Wire Line
-	8500 4700 8700 4700
 Wire Wire Line
 	11150 5350 11350 5350
 Wire Wire Line
 	6700 5300 6300 5300
 Wire Wire Line
 	9350 5150 9050 5150
-Wire Wire Line
-	8500 5100 8700 5100
-Wire Wire Line
-	8500 5400 8700 5400
 Wire Wire Line
 	6700 5700 6400 5700
 Wire Wire Line
@@ -2123,4 +2112,24 @@ Wire Wire Line
 	3000 3550 2700 3550
 Text Label 2700 3550 0    60   Italic 12
 b18
+Wire Wire Line
+	8500 4200 8800 4200
+Wire Wire Line
+	8500 4700 8800 4700
+Wire Wire Line
+	8500 5100 8800 5100
+Wire Wire Line
+	8500 5400 8800 5400
+Wire Wire Line
+	8500 4100 8800 4100
+Wire Wire Line
+	8500 4600 8800 4600
+Wire Wire Line
+	8500 5000 8800 5000
+Text Label 8800 4100 2    60   Italic 12
+clk
+Text Label 8800 4600 2    60   Italic 12
+clk
+Text Label 8800 5000 2    60   Italic 12
+clk
 $EndSCHEMATC
