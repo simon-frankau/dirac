@@ -87,16 +87,22 @@ The address lines that get passed through the banking hardware get
 inverted before they actually reach the EEPROM, so you should write
 your EEPROMs to cope with A12-A14 being inverted.
 
+Parallel I/O ports
+------------------
+
+We have 8 bits of input and output available as a parallel port, at
+$30. This will be used to implement SD card interfacing, which is not
+yet implemented.
+
 I/O map
 -------
 
-I haven't got around to wiring up the parallel I/O ports (which I plan
-to use to interface SD cards, amongst other things). The upper nybble
-of the I/O port number denotes the I/O subsytem, the lower nybble for
-addresses within the subsystem. The ports are:
+The upper nybble of the I/O port number denotes the I/O subsytem, the
+lower nybble for addresses within the subsystem. The ports are:
 
 $0X - Banking (see description above)
 $1X - CTC
 $2X - SIO
+$3X - Parallel I/O ports
 
 (And the rest are unassigned right now.)
