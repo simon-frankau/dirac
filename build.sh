@@ -11,6 +11,7 @@ zasm bouncer.asm -o ../out/bouncer.s
 zasm test.asm    -o ../out/test.s
 zasm monitor.asm -o ../out/monitor.s
 zasm example.asm -o ../out/example.s
+zasm sdcard.asm  -o ../out/sdcard.s
 
 # Build ROM images
 
@@ -22,3 +23,4 @@ lua ../tools/build_rom.lua -o bouncer.bin bouncer.s:0x0000
 lua ../tools/build_rom.lua -o test.bin    test.s:0x0000 testdata.s:0x1000
 lua ../tools/build_rom.lua -o monitor.bin monitor.s:0x0000
 lua ../tools/build_hex.lua -o example.txt example.s
+lua ../tools/build_hex.lua -o sdcard.txt  sdcard.s
