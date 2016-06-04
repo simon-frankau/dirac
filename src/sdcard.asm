@@ -44,6 +44,24 @@ sb_loop:    ld a,d
             jp nz,sb_loop
             ret
 
+            ;; Search for the start of a response. This is a 0
+            ;; bit from the SD card, which is inverted by the time
+            ;; it hits our I/O port.
+            ;;
+            ;; TODO: Should arrive within 16 cycles. Time out, if needed.
+find_resp:  ld d,$03            ; CS low, data high, +ive clk edge to latch.
+fr_loop:    ld a,d
+            out ($30),a
+            in a,($30)
+            rra                 ; Next bit saved in carry flag...
+            ld a,d
+            res 1,a             ; Negative edge of clock cycle.
+            out ($30),a
+            jp nc,fr_loop       ; Loop if CD card sent 0.
+            ;; Received a 1. Let's read the rest of the byte.
+            ld e,$03
+            jp rc_loop
+
             ;; Read a byte into A. Output byte base comes from D.
             ;; Modifies E.
 read_byte:  ld e,$01
@@ -57,18 +75,14 @@ rc_loop:    ld a,d
             rl e                ; And carry flag rotated into E.
             jp nc,rc_loop
             ld a,e
+            cpl                 ; Data is inverted when it hits us.
             ret
 
-            ;; Get a response. Right now, just clocks, rather than
-            ;; actually trying to read.
-get_resp:   ld d,$03            ; CS low, data high, +ive clk edge to latch.
-            ld b,10             ; Should receive a response within 16 cycles.
-gr_loop:    call read_byte
-            cpl
+            ;; Get a response and print it.
+get_resp:   call find_resp
             call sio_wr_8
             ld a, $0a           ; Linefeed
             call sio_wr
-            djnz gr_loop
             ret
 
 ; Write one character to initialised serial port
