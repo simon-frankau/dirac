@@ -8,7 +8,7 @@ a bit nicer than a pure minimal computer, so it has:
  * Serial I/O
  * A counter/timer to provide the clock for serial I/O and also allow
    regular timer interrupts
- * Mass storage via SD card (to be implemented!)
+ * Mass storage via SD card
  * Banked RAM
 
 The banked RAM is a bit excessive, but it always seemed a bit magical
@@ -29,9 +29,9 @@ just using a great big SRAM, rather than bothering with the pain of
 DRAM. Serial I/O uses a proper Z80 SIO, but that connects to a TTL
 serial to USB dongle, rather than RS-232 proper. After a false start,
 I use an oscillator package, rather than a raw crystal. Mass storage
-is going to be SD card, via a break-out board. I see little reason to
-cause myself a lot of pain of using a more difficult and less
-available form of storage!
+is an SD card, via a break-out board. I see little reason to cause
+myself a lot of pain of using a more difficult and less available form
+of storage!
 
 (Having said that, recreating old-school floppy drive control sounds
 like a fun project in itself...)
@@ -80,6 +80,10 @@ matter how incomplete, b) decided that building my own monitor and
 loading BASIC on aren't really interesting intermediate goals - CP/M
 looks quite reasonable to port as a next step. I've yet to start the
 CP/M port in earnest, though.
+
+The SD card interface hardware is now functional, and I just need to
+write the software for it. From there, I can write the CP/M BIOS, and
+have a CP/M port running...
 
 What do I need?
 ---------------

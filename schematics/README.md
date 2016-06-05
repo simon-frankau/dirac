@@ -51,7 +51,7 @@ Miscellaneous notes
   feed it into a USB serial adapter, or a level converter for
   traditional RS232.
 
-* The SD interface has yet to be implemented.
+* An SD card interface is implemented using the parallel ports.
 
 Memory map
 ----------
@@ -87,12 +87,46 @@ The address lines that get passed through the banking hardware get
 inverted before they actually reach the EEPROM, so you should write
 your EEPROMs to cope with A12-A14 being inverted.
 
-Parallel I/O ports
-------------------
+Parallel I/O ports and SD card
+------------------------------
 
 We have 8 bits of input and output available as a parallel port, at
-$30. This will be used to implement SD card interfacing, which is not
-yet implemented.
+$30. The bottom 3 bits of each port are used by the SD card SPI
+interface:
+
+### Out
+
+$01 - Data
+$02 - Clock
+$04 - Select (active low)
+
+### In
+
+$01 - Data (inverted)
+$02 - Card detected (active low)
+$04 - Write protected (active low)
+
+### Interface circuitry
+
+The circuitry might look a little odd, so I'll explain. The SD card
+uses 3.3V, and Dirac uses 5V, so we need some conversion. The SD card
+has 100K pull-ups, and we use 10K resistors to convert, so we rather
+take precedence.
+
+In the outward direction, we need to bring the voltage down, so we use
+voltage dividers. The ratio is 1:1, so the voltage is split in half.
+2.5V when running off USB might seem a little low, but it should be
+logic high for 3.3V logic, and won't go too high if Dirac is run off
+e.g. 4x 1.5V AA batteries (giving 3V out, after division).
+
+On the incoming direction, we just provide 5V pull-ups for card
+detection and write protection lines (those being implemented as
+switches pulling to ground on the SD card socket). The actual data
+line is handled differently. 2.5V is TTL high, but not 5V CMOS high.
+The input buffer is not HCT (I didn't look far enough ahead in Dirac's
+design for that), but the inverter is. So, we pass it through the
+inverter to buffer the level. Sadly this inverts the data line, but
+that's easy enough to fix in software.
 
 I/O map
 -------

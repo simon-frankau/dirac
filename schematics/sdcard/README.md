@@ -12,10 +12,10 @@ how it connects to the actual SD card.
 # So, what's the issue with the board?
 
 While it has a 5V -> 3.3V regulator, it doesn't do any level
-conversion on the signal lines, and SD cards aren't 5V tolerant. I'll
+conversion on the signal lines, and SD cards aren't 5V tolerant. I
 need to do some conversion on the Dirac side.
 
-## What now?
+## And so?
 
-I should be using this to work out appropriate interfacing with the 5V
-Dirac board.
+I've added level conversion hardware to the main Dirac schematic to
+handle this. The README.md in the directory above explains.
