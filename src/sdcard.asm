@@ -8,34 +8,144 @@ top:
 
             ;; Initialise SD card for use.
 init_sd:
-            ;; At least 74 cycles with DI and CS high
-            ld b,10             ; 80 bits > 74 cycles
-            ld d,$02            ; CS high - 4 >> 1
-init_loop:  ld c,$FF            ; DI high for all bits
+            ;; Send the initial sync
+            call send_sync
+            ;; Send CMD0, with CRC
+            ld bc,$9540
+            ld de,0
+            ld hl,0
+            call send_cmd2
+            cp $01
+            ret nz
+            ;; Send CMD8, with CRC
+            ld bc,$8748
+            ld de,0
+            ld hl,$01aa
+            call send_cmd2
+            cp $01
+            jp z,init_sdhc
+
+            ;; SDSC or MMC
+            call acmd41
+            cp $02
+            jp c,init_sdv1      ; Jump if code <= 1 ?
+
+            ;; MMCv3
+            ;; Send CMD1
+            ;; TODO: Untested, unimplemented.
+            ld a, 'Y'
+            call sio_wr
+            ld c,$40 + 1            ; CMD1
+            call send_zcmd
+            ret nz
+            ret
+
+        ;; TODO...
+            ld a, 'Y'
+            call sio_wr
+
+        ;; Send CMD17 - Single block read
+            ld c,$40 + 17       ; CMD17
+            call send_zcmd
+            cp $01
+            ret nz
+
+            ld b,$ff
+x:          call get_resp2
+            djnz x
+
+            ret
+
+        ;; My example card doesn't do this, so not supported right now.
+init_sdhc:
+            ld a, '?'
+            call sio_wr
+            ret
+
+        ;; My example card doesn't do this, so not supported right now.
+init_sdv1:
+            ;; Call ACMD41 until idle.
+            call acmd41
+            cp $00
+            jp nz,init_sdv1
+            jp cmd16            ; Tail call
+
+acmd41:
+            ;; Send ACMD41, which is a CMD55 then CMD41.
+            ld c,$40 + 55
+            call send_zcmd
+            cp $01
+            ret nz
+            ld c,$40 + 41
+            jp send_zcmd        ; Tail call
+
+cmd16:
+            ;; CMD16, with block size of 512
+            ld c,$40 + 16
+            ld de,0
+            ld hl,512
+            jp send_cmd         ; Tail call
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Command-sending routines
+
+        ;; Send a command, with zero'd args
+send_zcmd:
+            ld de,0
+            ld hl,0
+        ;; Fall through
+
+        ;; Send a command, command in C, args in DE, HL.
+send_cmd:   ld b, 1             ; Set CRC to 1.
+        ;; Fall through
+
+        ;; Send a command, CRC in B.
+send_cmd2:  call send_byte
+            ld c,d
             call send_byte
-            djnz init_loop
-            ;; Send CMD0
-            ld d,$00            ; CS low
-            ld c,$40            ; CMD0
+            ld c,e
             call send_byte
-            call zero_args
-            ld c,$95            ; CRC
+            ld c,h
+            call send_byte
+            ld c,l
+            call send_byte
+            ld c,b
             call send_byte
             call get_resp
+            call recv_long      ; TODO: Rarely necessary...
             ret
 
-            ;; Write 4 0 bytes as arguments.
-zero_args:  ld b,$04
-za_loop:    ld c,$00
-            call send_byte
-            djnz za_loop
+        ;; Receive the extra 4 response bytes.
+        ;; TODO: Currently, we just bin them.
+recv_long:
+            push af
+            call get_resp2
+            call get_resp2
+            call get_resp2
+            call get_resp2
+            pop af
             ret
 
-            ;; Byte to send in C, other bits of out reg >> 1 in D.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Low-level bit-twiddling SD card I/O
+;;
+
+            ;; Send the initial sync to the card
+send_sync:
+            ;; At least 74 cycles with DI and CS high
+            ld b,75
+sync_loop:  ld a,$05            ; DI and CS set, clock low.
+            out ($30),a
+            xor a,$2            ; Flip clock bit.
+            out ($30),a
+            djnz sync_loop
+            ret
+
+            ;; Byte to send in C
             ;; Modifies A.
 send_byte:  scf
             rl c
-sb_loop:    ld a,d
+sb_loop:    ld a,0               ; CS low, clock low.
             rla
             out ($30),a
             xor a,$2            ; Flip clock bit.
@@ -49,28 +159,24 @@ sb_loop:    ld a,d
             ;; it hits our I/O port.
             ;;
             ;; TODO: Should arrive within 16 cycles. Time out, if needed.
-find_resp:  ld d,$03            ; CS low, data high, +ive clk edge to latch.
-fr_loop:    ld a,d
+find_resp:  ld a,$03            ; CS low, data high, +ive clk edge to latch.
             out ($30),a
             in a,($30)
             rra                 ; Next bit saved in carry flag...
-            ld a,d
-            res 1,a             ; Negative edge of clock cycle.
+            ld a,$01            ; CS low, data high, -ive clk edge to shift.
             out ($30),a
-            jp nc,fr_loop       ; Loop if CD card sent 0.
+            jp nc,find_resp     ; Loop if CD card sent 0.
             ;; Received a 1. Let's read the rest of the byte.
             ld e,$03
             jp rc_loop
 
-            ;; Read a byte into A. Output byte base comes from D.
-            ;; Modifies E.
-read_byte:  ld e,$01
-rc_loop:    ld a,d
+            ;; Read a byte into A. Modifies E.
+recv_byte:  ld e,$01
+rc_loop:    ld a,$03            ; CS low, data high, +ive clk edge to latch.
             out ($30),a
             in a,($30)
             rra                 ; Next bit saved in carry flag...
-            ld a,d
-            res 1,a             ; Negative edge of clock cycle.
+            ld a,$01            ; CS low, data high, -ive clk edge to shift.
             out ($30),a
             rl e                ; And carry flag rotated into E.
             jp nc,rc_loop
@@ -80,10 +186,22 @@ rc_loop:    ld a,d
 
             ;; Get a response and print it.
 get_resp:   call find_resp
+            push af
+            call sio_wr_8
+            ld a, $0a           ; Linefeed
+            call sio_wr
+            pop af
+            ret
+
+get_resp2:  call recv_byte
             call sio_wr_8
             ld a, $0a           ; Linefeed
             call sio_wr
             ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Serial port I/O
+;;
 
 ; Write one character to initialised serial port
 sio_wr:     push af
