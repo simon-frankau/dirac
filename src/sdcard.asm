@@ -5,6 +5,24 @@
 #code   ENTRY,0xF000
 
 top:
+            call init_sd
+
+            ld a, 'Y'
+            call sio_wr
+
+            ;; Send CMD17 - Single block read
+            ld c,$40 + 17       ; CMD17
+            ld de,$0001
+            ld hl,$d200
+            call send_cmd
+            cp $00
+            ret nz
+
+            ld b,$ff
+x:          call get_resp2
+            djnz x
+
+            ret
 
             ;; Initialise SD card for use.
 init_sd:
@@ -30,31 +48,15 @@ init_sd:
             cp $02
             jp c,init_sdv1      ; Jump if code <= 1 ?
 
-            ;; MMCv3
-            ;; Send CMD1
-            ;; TODO: Untested, unimplemented.
-            ld a, 'Y'
-            call sio_wr
+            ;; MMCv3. UNTESTED!
+init_mmc:
+            ;; Send CMD1 until idle.
+            ;; TODO: Time out?
             ld c,$40 + 1            ; CMD1
             call send_zcmd
-            ret nz
-            ret
-
-        ;; TODO...
-            ld a, 'Y'
-            call sio_wr
-
-        ;; Send CMD17 - Single block read
-            ld c,$40 + 17       ; CMD17
-            call send_zcmd
-            cp $01
-            ret nz
-
-            ld b,$ff
-x:          call get_resp2
-            djnz x
-
-            ret
+            cp $00
+            jp nz, init_mmc
+            jp cmd16            ; Tail call
 
         ;; My example card doesn't do this, so not supported right now.
 init_sdhc:
@@ -62,9 +64,9 @@ init_sdhc:
             call sio_wr
             ret
 
-        ;; My example card doesn't do this, so not supported right now.
 init_sdv1:
             ;; Call ACMD41 until idle.
+            ;; TODO: Time out?
             call acmd41
             cp $00
             jp nz,init_sdv1
