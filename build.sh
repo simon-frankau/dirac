@@ -12,6 +12,7 @@ zasm test.asm    -o ../out/test.s
 zasm monitor.asm -o ../out/monitor.s
 zasm example.asm -o ../out/example.s
 zasm sdcard.asm  -o ../out/sdcard.s
+zasm loader.asm  -o ../out/loader.s
 
 # Build ROM images
 
@@ -24,3 +25,4 @@ lua ../tools/build_rom.lua -o test.bin    test.s:0x0000 testdata.s:0x1000
 lua ../tools/build_rom.lua -o monitor.bin monitor.s:0x0000
 lua ../tools/build_hex.lua -o example.txt example.s
 lua ../tools/build_hex.lua -o sdcard.txt  sdcard.s
+lua ../tools/build_hex.lua -o loader.txt  loader.s -t 1000
