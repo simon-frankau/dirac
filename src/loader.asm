@@ -20,6 +20,7 @@ len_blks:   equ (len+511)/512   ; Data length in blocks.
 top:
             call init_sd
             call init_mem
+        ;; Load the data
             ld b,len_blks
             ld de,dest
             ld hl,source
@@ -29,8 +30,13 @@ ld_loop:    call read_block
             ld a, '.'
             call sio_wr
             djnz ld_loop
+        ;; New line.
             ld a, 10
             call sio_wr
+        ;; Make the lowest page of memory R/W RAM.
+            LD bc,$0000
+            LD a,$cf            ; TODO: May change?
+            OUT (bc), a
             jp start
 
         ;; Disk offset in HL, memory location in DE.
