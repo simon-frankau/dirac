@@ -40,6 +40,7 @@ init_sd:
             ld de,0
             ld hl,$01aa
             call send_cmd2
+            call recv_long
             cp $01
             jp z,init_sdhc
 
@@ -102,7 +103,14 @@ send_cmd:   ld b, 1             ; Set CRC to 1.
         ;; Fall through
 
         ;; Send a command, CRC in B.
-send_cmd2:  call send_byte
+send_cmd2:  push bc
+            ;; Wait until receiver's ready.
+wait_rdy:   call recv_byte
+            cp $ff
+            jp nz,wait_rdy
+            pop bc
+            ;; Send command.
+            call send_byte
             ld c,d
             call send_byte
             ld c,e
@@ -114,7 +122,6 @@ send_cmd2:  call send_byte
             ld c,b
             call send_byte
             call get_resp
-            call recv_long      ; TODO: Rarely necessary...
             ret
 
         ;; Receive the extra 4 response bytes.
@@ -147,7 +154,7 @@ sync_loop:  ld a,$05            ; DI and CS set, clock low.
             ;; Modifies A.
 send_byte:  scf
             rl c
-sb_loop:    ld a,0               ; CS low, clock low.
+sb_loop:    ld a,0              ; CS low, clock low.
             rla
             out ($30),a
             xor a,$2            ; Flip clock bit.
@@ -161,28 +168,28 @@ sb_loop:    ld a,0               ; CS low, clock low.
             ;; it hits our I/O port.
             ;;
             ;; TODO: Should arrive within 16 cycles. Time out, if needed.
-find_resp:  ld a,$03            ; CS low, data high, +ive clk edge to latch.
+find_resp:  ld a,$01            ; CS low, data high, -ive clk edge to shift.
             out ($30),a
             in a,($30)
             rra                 ; Next bit saved in carry flag...
-            ld a,$01            ; CS low, data high, -ive clk edge to shift.
+            ld a,$03            ; CS low, data high, +ive clk edge to latch.
             out ($30),a
             jp nc,find_resp     ; Loop if CD card sent 0.
             ;; Received a 1. Let's read the rest of the byte.
-            ld e,$03
+            ld c,$03
             jp rc_loop
 
-            ;; Read a byte into A. Modifies E.
-recv_byte:  ld e,$01
-rc_loop:    ld a,$03            ; CS low, data high, +ive clk edge to latch.
+            ;; Read a byte into A. Modifies C.
+recv_byte:  ld c,$01
+rc_loop:    ld a,$01            ; CS low, data high, -ive clk edge to shift.
             out ($30),a
             in a,($30)
             rra                 ; Next bit saved in carry flag...
-            ld a,$01            ; CS low, data high, -ive clk edge to shift.
+            ld a,$03            ; CS low, data high, +ive clk edge to latch.
             out ($30),a
-            rl e                ; And carry flag rotated into E.
+            rl c                ; And carry flag rotated into C.
             jp nc,rc_loop
-            ld a,e
+            ld a,c
             cpl                 ; Data is inverted when it hits us.
             ret
 
@@ -196,9 +203,11 @@ get_resp:   call find_resp
             ret
 
 get_resp2:  call recv_byte
+            push af
             call sio_wr_8
             ld a, $0a           ; Linefeed
             call sio_wr
+            pop af
             ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
