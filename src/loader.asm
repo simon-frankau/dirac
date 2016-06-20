@@ -6,7 +6,7 @@
 
 #target ROM
 
-source:     equ $0000           ; Source offset on disk.
+source:     equ $0200           ; Source offset on disk.
 dest:       equ $dc00           ; Destination address in memory.
 start:      equ $f200           ; Entry point
 len:        equ 6511            ; Data length in bytes.
@@ -18,8 +18,6 @@ len_blks:   equ (len+511)/512   ; Data length in blocks.
 
         ;; TODO: Spot failures, retry.
 top:
-            call init_sd
-            call init_mem
         ;; Load the data
             ld b,len_blks
             ld de,dest
@@ -35,7 +33,7 @@ ld_loop:    call read_block
             call sio_wr
         ;; Make the lowest page of memory R/W RAM.
             LD bc,$0000
-            LD a,$cf            ; TODO: May change?
+            LD a,$c0
             OUT (bc), a
             jp start
 
@@ -76,91 +74,6 @@ r256:       call get_resp2
             inc de
             djnz r256
             ret
-
-            ;; Initialise memory map. Should eventually be part of
-            ;; monitor, and set up more sanely...
-init_mem:
-            ; BC contains virtual address, with page in top nibble
-            ; A contains physical page.
-            ld bc,$f000
-            ld a,$c0
-map_loop:   out (bc), a
-            ld d,a
-            ld a,b
-            sub $10
-            ld b,a
-            ld a,d
-            inc a
-            cp $cf
-            jr nz,map_loop
-            ret
-
-            ;; Initialise SD card for use.
-            ;; TODO: Eventually, we'll assume the monitor sets this
-            ;; all up, and we just need to do reads.
-init_sd:
-            ;; Send the initial sync
-            call send_sync
-            ;; Send CMD0, with CRC
-            ld bc,$9540
-            ld de,0
-            ld hl,0
-            call send_cmd2
-            cp $01
-            ret nz
-            ;; Send CMD8, with CRC
-            ld bc,$8748
-            ld de,0
-            ld hl,$01aa
-            call send_cmd2
-            call recv_long
-            cp $01
-            jp z,init_sdhc
-
-            ;; SDSC or MMC
-            call acmd41
-            cp $02
-            jp c,init_sdv1      ; Jump if code <= 1 ?
-
-            ;; MMCv3. UNTESTED!
-init_mmc:
-            ;; Send CMD1 until idle.
-            ;; TODO: Time out?
-            ld c,$40 + 1            ; CMD1
-            call send_zcmd
-            cp $00
-            jp nz, init_mmc
-            jp cmd16            ; Tail call
-
-        ;; My example card doesn't do this, so not supported right now.
-init_sdhc:
-            ld a, '?'
-            call sio_wr
-            ret
-
-init_sdv1:
-            ;; Call ACMD41 until idle.
-            ;; TODO: Time out?
-            call acmd41
-            cp $00
-            jp nz,init_sdv1
-            jp cmd16            ; Tail call
-
-acmd41:
-            ;; Send ACMD41, which is a CMD55 then CMD41.
-            ld c,$40 + 55
-            call send_zcmd
-            cp $01
-            ret nz
-            ld c,$40 + 41
-            jp send_zcmd        ; Tail call
-
-cmd16:
-            ;; CMD16, with block size of 512
-            ld c,$40 + 16
-            ld de,0
-            ld hl,512
-            jp send_cmd         ; Tail call
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Command-sending routines
