@@ -58,29 +58,14 @@ top_loop:   dec de
             ; Map in RAM, set SP
             ; BC contains virtual address, with page in top nibble
             ; A contains physical page.
-            ld bc,$f000
-            ld a,$cf
-map_loop:   out (bc), a
-            ld d,a
-            ld a,b
-            sub $10
-            ld b,a
-            ld a,d
-            dec a
-            cp $c1
-            jr nz,map_loop
-            ld sp, $0000
-
-        ;; TODO: This is slightly better. Test it.
-; Should use something like the following to map all slots:
-;            ld l, d      ; Base value to write
-;            ld b, $e0    ; Last page to write
-;blah1:      out (bc), l  ; Write page thing
-;            inc l        ; Write next value to next page
-;            ld a, b
-;            sub a, $10   ; Next page
-;            ld b, a
-;            jr nz, blah1 ; Don't write page zero
+            ld bc, $f000                ; Last page to write
+            ld l, $cf                   ; Base value to write
+map_loop:   out (bc), l                 ; Write page thing
+            dec l                       ; Write next value to next page
+            ld a, b
+            sub a, $10                  ; Next page
+            ld b, a
+            jr nz, map_loop             ; Don't write page zero
 
             ld a, 1
             out ($70), a
@@ -271,40 +256,25 @@ cmd_load:   call sio_rd_16
             ld de,bc
             call sio_rd_16
             ld hl,bc
-            ; Make sure SD card is initialised
-            call init_sd
-            ; Send CMD17 - Single block read
-            ld c,$40 + 17       ; CMD17, address in DEHL.
-            call send_cmd
+            call cmd17
             pop de              ; Restore destination into DE.
             ; Exit if failed...
             cp $00
-            ret nz
-            ; Expect data token.
-data_tok:   call recv_byte
-            cp $ff
-            jp z,data_tok
-            cp $fe
-            ret nz
-            ; DE contains destination address.
-            ; Read the sector's worth of data.
-            call read256
-            call read256
-            ; Read the CRC.
-            call recv_byte
-            call recv_byte
-            ret
+            jp nz,error
+            call recv_blk
+            jp ok
 
-            ; Read 256 bytes worth of data into DE.
-read256:    ld b,$00
-r256:       call recv_byte
-            ld (de),a
-            inc de
-            djnz r256
-            ret
-
-            ; TODO: FIXME.
-cmd_boot:   ret
+            ; TODO: Error handling.
+cmd_boot:   ; Load first sector.
+            ld de,0
+            ld hl,0
+            call cmd17
+            ; Exit if failed...
+            cp $00
+            jp nz,error
+            ld de,$1000         ; Set destination for block load.
+            call recv_blk
+            jp $1000            ; And off we go!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Helper subroutines
@@ -571,9 +541,9 @@ rc_loop:    ld a,$01            ; CS low, data high, -ive clk edge to shift.
 ; SD card  initialisation routine
 
             ; Initialise SD card for use.
-            ; TODO: Eventually, we'll assume the monitor sets this
-            ; all up, and we just need to do reads.
-init_sd:
+init_sd:    push bc
+            push de
+            push hl
             ; Send the initial sync
             call send_sync
             ; Send CMD0, with CRC
@@ -582,7 +552,7 @@ init_sd:
             ld hl,0
             call send_cmd2
             cp $01
-            ret nz
+            jp nz,ret_sd
             ; Send CMD8, with CRC
             ld bc,$8748
             ld de,0
@@ -605,13 +575,14 @@ init_mmc:
             call send_zcmd
             cp $00
             jp nz, init_mmc
-            jp cmd16            ; Tail call
+            call cmd16
+            jp ret_sd
 
             ; My example card doesn't do this, so not supported right now.
 init_sdhc:
             ld a, '?'
             call sio_wr
-            ret
+            jp ret_sd
 
 init_sdv1:
             ; Call ACMD41 until idle.
@@ -619,7 +590,13 @@ init_sdv1:
             call acmd41
             cp $00
             jp nz,init_sdv1
-            jp cmd16            ; Tail call
+            call cmd16
+            ; Fall through
+
+ret_sd:     pop hl
+            pop de
+            pop bc
+            ret
 
 acmd41:
             ; Send ACMD41, which is a CMD55 then CMD41.
@@ -636,6 +613,39 @@ cmd16:
             ld de,0
             ld hl,512
             jp send_cmd         ; Tail call
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Data read helpers
+
+cmd17:      ; Make sure SD card is initialised
+            call init_sd
+            ; Send CMD17 - Single block read
+            ld c,$40 + 17       ; CMD17, address in DEHL.
+            jp send_cmd         ; Tail call.
+
+            ; Receive a 512-byte block into (DE)
+recv_blk:
+            ; Expect data token.
+data_tok:   call recv_byte
+            cp $ff
+            jp z,data_tok
+            cp $fe
+            jp nz,error
+            ; DE contains destination address.
+            ; Read the sector's worth of data.
+            call read256
+            call read256
+            ; Read the CRC.
+            call recv_byte
+            call recv_byte
+
+            ; Read 256 bytes worth of data into DE.
+read256:    ld b,$00
+r256:       call recv_byte
+            ld (de),a
+            inc de
+            djnz r256
+            ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Data
