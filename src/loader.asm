@@ -16,9 +16,14 @@ len_blks:   equ (len+511)/512   ; Data length in blocks.
 
 ; TODO: Need M1CE up-front.
 
-        ;; TODO: Spot failures, retry.
-top:
-        ;; Load the data
+top:        jr main
+
+            ;; Put a string near the start for identification
+            defb "Dirac CP/M system disk", $0a, $00
+
+            ; TODO: Spot failures, retry.
+main:
+            ; Load the data
             ld b,len_blks
             ld de,dest
             ld hl,source
@@ -28,46 +33,46 @@ ld_loop:    call read_block
             ld a, '.'
             call sio_wr
             djnz ld_loop
-        ;; New line.
+            ; New line.
             ld a, 10
             call sio_wr
-        ;; Make the lowest page of memory R/W RAM.
+            ; Make the lowest page of memory R/W RAM.
             LD bc,$0000
             LD a,$c0
             OUT (bc), a
             jp start
 
-        ;; Disk offset in HL, memory location in DE.
-        ;; Reads 512 bytes, increments DE.
+            ; Disk offset in HL, memory location in DE.
+            ; Reads 512 bytes, increments DE.
 read_block: push bc
             push hl
             push de
-            ;; Send CMD17 - Single block read
+            ; Send CMD17 - Single block read
             ld c,$40 + 17       ; CMD17
             ld de,$0000         ; All within first 64k. HL has lower address.
             call send_cmd
             pop de
-            ;; Exit if failed...
+            ; Exit if failed...
             cp $00
             jr nz, rb_ret
-            ;; Expect data token.
+            ; Expect data token.
 data_tok:   call recv_byte
             cp $ff
             jp z,data_tok
             cp $fe
             jr nz, rb_ret
-            ;; DE contains destination address.
-            ;; Read the sector's worth of data.
+            ; DE contains destination address.
+            ; Read the sector's worth of data.
             call read256
             call read256
-            ;; Read the CRC.
+            ; Read the CRC.
             call recv_byte
             call recv_byte
 rb_ret:     pop hl
             pop bc
             ret
 
-        ;; Read 256 bytes worth of data into DE.
+            ; Read 256 bytes worth of data into DE.
 read256:    ld b,$00
 r256:       call recv_byte
             ld (de),a
@@ -78,13 +83,12 @@ r256:       call recv_byte
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Command-sending routines
 
-
-        ;; Send a command, command in C, args in DE, HL.
-send_cmd:   ;; Wait until receiver's ready.
+            ; Send a command, command in C, args in DE, HL.
+send_cmd:   ; Wait until receiver's ready.
 wait_rdy:   call recv_byte
             cp $ff
             jp nz,wait_rdy
-            ;; Send command.
+            ; Send command.
             call send_byte
             ld c,d
             call send_byte
@@ -103,8 +107,8 @@ wait_rdy:   call recv_byte
 ;; Low-level bit-twiddling SD card I/O
 ;;
 
-            ;; Byte to send in C
-            ;; Modifies A.
+            ; Byte to send in C
+            ; Modifies A.
 send_byte:  scf
             rl c
 sb_loop:    ld a,0              ; CS low, clock low.
@@ -116,11 +120,11 @@ sb_loop:    ld a,0              ; CS low, clock low.
             jp nz,sb_loop
             ret
 
-            ;; Search for the start of a response. This is a 0
-            ;; bit from the SD card, which is inverted by the time
-            ;; it hits our I/O port.
-            ;;
-            ;; TODO: Should arrive within 16 cycles. Time out, if needed.
+            ; Search for the start of a response. This is a 0
+            ; bit from the SD card, which is inverted by the time
+            ; it hits our I/O port.
+            ;
+            ; TODO: Should arrive within 16 cycles. Time out, if needed.
 find_resp:  ld a,$01            ; CS low, data high, -ive clk edge to shift.
             out ($30),a
             in a,($30)
@@ -128,11 +132,11 @@ find_resp:  ld a,$01            ; CS low, data high, -ive clk edge to shift.
             ld a,$03            ; CS low, data high, +ive clk edge to latch.
             out ($30),a
             jp nc,find_resp     ; Loop if CD card sent 0.
-            ;; Received a 1. Let's read the rest of the byte.
+            ; Received a 1. Let's read the rest of the byte.
             ld c,$03
             jp rc_loop
 
-            ;; Read a byte into A. Modifies C.
+            ; Read a byte into A. Modifies C.
 recv_byte:  ld c,$01
 rc_loop:    ld a,$01            ; CS low, data high, -ive clk edge to shift.
             out ($30),a
