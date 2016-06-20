@@ -9,6 +9,7 @@
 ; Banking    is at port 0x00.
 ; CTC        is at port 0x10.
 ; SIO        is at port 0x20.
+; SD card    is at port 0x30.
 ; LED output is at port 0x70.
 
 ; Banked memory map:
@@ -54,12 +55,23 @@ top_loop:   dec de
             ld bc, $0000
             ld a, $00 ; Inverted, selects the default $FF page
             out (bc), a
-            ; Map in some RAM, set SP
-            ld bc, $f000
-            ld a, $c0 ; Inverted, selects a RAM page, RW
-            out (bc), a
+            ; Map in RAM, set SP
+            ; BC contains virtual address, with page in top nibble
+            ; A contains physical page.
+            ld bc,$f000
+            ld a,$cf
+map_loop:   out (bc), a
+            ld d,a
+            ld a,b
+            sub $10
+            ld b,a
+            ld a,d
+            dec a
+            cp $c1
+            jr nz,map_loop
             ld sp, $0000
 
+        ;; TODO: This is slightly better. Test it.
 ; Should use something like the following to map all slots:
 ;            ld l, d      ; Base value to write
 ;            ld b, $e0    ; Last page to write
@@ -143,6 +155,10 @@ mainloop:   ld bc, str_prompt
             jp z, cmd_querymap
             cp 'X'
             jp z, cmd_restart
+            cp 'L'
+            jp z, cmd_load
+            cp 'B'
+            jp z, cmd_boot
             jp error
 
 cmd_help:   ld bc, str_help
@@ -247,6 +263,49 @@ cmd_restart:call sio_rd_8
             di
             jp $fffe
 
+            ; Destination, source offset
+            ; TODO: Error handling.
+cmd_load:   call sio_rd_16
+            push bc
+            call sio_rd_16
+            ld de,bc
+            call sio_rd_16
+            ld hl,bc
+            ; Make sure SD card is initialised
+            call init_sd
+            ; Send CMD17 - Single block read
+            ld c,$40 + 17       ; CMD17, address in DEHL.
+            call send_cmd
+            pop de              ; Restore destination into DE.
+            ; Exit if failed...
+            cp $00
+            ret nz
+            ; Expect data token.
+data_tok:   call recv_byte
+            cp $ff
+            jp z,data_tok
+            cp $fe
+            ret nz
+            ; DE contains destination address.
+            ; Read the sector's worth of data.
+            call read256
+            call read256
+            ; Read the CRC.
+            call recv_byte
+            call recv_byte
+            ret
+
+            ; Read 256 bytes worth of data into DE.
+read256:    ld b,$00
+r256:       call recv_byte
+            ld (de),a
+            inc de
+            djnz r256
+            ret
+
+            ; TODO: FIXME.
+cmd_boot:   ret
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Helper subroutines
 
@@ -277,6 +336,9 @@ disp_loop:  dec de
             jr nz, disp_loop
             pop de
             ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Serial routines
 
 ; Write serial
 sio_wr:     push af
@@ -402,6 +464,180 @@ wr_num:     add '0'
             jp sio_wr
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; SD card routines
+
+            ;; Send a command, with zero'd args
+send_zcmd:
+            ld de,0
+            ld hl,0
+            ;; Fall through
+
+            ;; Send a command, command in C, args in DE, HL.
+send_cmd:   ld b, 1             ; Set CRC to 1.
+            ;; Fall through
+
+            ;; Send a command, CRC in B.
+send_cmd2:  push bc
+            ;; Wait until receiver's ready.
+wait_rdy:   call recv_byte
+            cp $ff
+            jp nz,wait_rdy
+            pop bc
+            ;; Send command.
+            call send_byte
+            ld c,d
+            call send_byte
+            ld c,e
+            call send_byte
+            ld c,h
+            call send_byte
+            ld c,l
+            call send_byte
+            ld c,b
+            call send_byte
+            call find_resp
+            ret
+
+            ;; Receive the extra 4 response bytes.
+            ;; TODO: Currently, we just bin them.
+recv_long:
+            push af
+            call recv_byte
+            call recv_byte
+            call recv_byte
+            call recv_byte
+            pop af
+            ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Low-level bit-twiddling SD card I/O
+;;
+
+            ;; Send the initial sync to the card
+send_sync:
+            ;; At least 74 cycles with DI and CS high
+            ld b,75
+sync_loop:  ld a,$05            ; DI and CS set, clock low.
+            out ($30),a
+            xor a,$2            ; Flip clock bit.
+            out ($30),a
+            djnz sync_loop
+            ret
+
+            ;; Byte to send in C
+            ;; Modifies A.
+send_byte:  scf
+            rl c
+sb_loop:    ld a,0              ; CS low, clock low.
+            rla
+            out ($30),a
+            xor a,$2            ; Flip clock bit.
+            rl c
+            out ($30),a         ; Doesn't affect NZ.
+            jp nz,sb_loop
+            ret
+
+            ;; Search for the start of a response. This is a 0
+            ;; bit from the SD card, which is inverted by the time
+            ;; it hits our I/O port.
+            ;;
+            ;; TODO: Should arrive within 16 cycles. Time out, if needed.
+find_resp:  ld a,$01            ; CS low, data high, -ive clk edge to shift.
+            out ($30),a
+            in a,($30)
+            rra                 ; Next bit saved in carry flag...
+            ld a,$03            ; CS low, data high, +ive clk edge to latch.
+            out ($30),a
+            jp nc,find_resp     ; Loop if CD card sent 0.
+            ;; Received a 1. Let's read the rest of the byte.
+            ld c,$03
+            jp rc_loop
+
+            ;; Read a byte into A. Modifies C.
+recv_byte:  ld c,$01
+rc_loop:    ld a,$01            ; CS low, data high, -ive clk edge to shift.
+            out ($30),a
+            in a,($30)
+            rra                 ; Next bit saved in carry flag...
+            ld a,$03            ; CS low, data high, +ive clk edge to latch.
+            out ($30),a
+            rl c                ; And carry flag rotated into C.
+            jp nc,rc_loop
+            ld a,c
+            cpl                 ; Data is inverted when it hits us.
+            ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; SD card  initialisation routine
+
+            ; Initialise SD card for use.
+            ; TODO: Eventually, we'll assume the monitor sets this
+            ; all up, and we just need to do reads.
+init_sd:
+            ; Send the initial sync
+            call send_sync
+            ; Send CMD0, with CRC
+            ld bc,$9540
+            ld de,0
+            ld hl,0
+            call send_cmd2
+            cp $01
+            ret nz
+            ; Send CMD8, with CRC
+            ld bc,$8748
+            ld de,0
+            ld hl,$01aa
+            call send_cmd2
+            call recv_long
+            cp $01
+            jp z,init_sdhc
+
+            ; SDSC or MMC
+            call acmd41
+            cp $02
+            jp c,init_sdv1      ; Jump if code <= 1 ?
+
+            ; MMCv3. UNTESTED!
+init_mmc:
+            ; Send CMD1 until idle.
+            ; TODO: Time out?
+            ld c,$40 + 1        ; CMD1
+            call send_zcmd
+            cp $00
+            jp nz, init_mmc
+            jp cmd16            ; Tail call
+
+            ; My example card doesn't do this, so not supported right now.
+init_sdhc:
+            ld a, '?'
+            call sio_wr
+            ret
+
+init_sdv1:
+            ; Call ACMD41 until idle.
+            ; TODO: Time out?
+            call acmd41
+            cp $00
+            jp nz,init_sdv1
+            jp cmd16            ; Tail call
+
+acmd41:
+            ; Send ACMD41, which is a CMD55 then CMD41.
+            ld c,$40 + 55
+            call send_zcmd
+            cp $01
+            ret nz
+            ld c,$40 + 41
+            jp send_zcmd        ; Tail call
+
+cmd16:
+            ; CMD16, with block size of 512
+            ld c,$40 + 16
+            ld de,0
+            ld hl,512
+            jp send_cmd         ; Tail call
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Data
 
 str_hi:     defb "*** WELCOME TO THE DIRAC LOADER ***", $0a
@@ -409,13 +645,15 @@ str_hi:     defb "*** WELCOME TO THE DIRAC LOADER ***", $0a
 
 str_help:
   defb $0a
-  defb "H           This help text", $0a
-  defb "J xxxx      Jump to xxxx", $0a
-  defb "W xxxx yyyy Write yyyy bytes of data, starting at xxxx", $0a
-  defb "R xxxx yyyy Read yyyy bytes of data, starting at xxxx", $0a
-  defb "M v pp      Map physical page pp to virtual page v", $0a
-  defb "Q           Print the current banking memory map", $0a
-  defb "X pp        Map physical page pp to virtual page 0 and restart", $0a
+  defb "H               This help text", $0a
+  defb "J xxxx          Jump to xxxx", $0a
+  defb "W xxxx yyyy     Write yyyy bytes of data, starting at xxxx", $0a
+  defb "R xxxx yyyy     Read yyyy bytes of data, starting at xxxx", $0a
+  defb "M v pp          Map physical page pp to virtual page v", $0a
+  defb "Q               Print the current banking memory map", $0a
+  defb "X pp            Map physical page pp to virtual page 0 and restart", $0a
+  defb "L xxxx yyyyyyyy Load one sector into xxxx from disk offset yyyyyy", $0a
+  defb "B               Boot from disk", $0a
   defb $00
 
 str_prompt: defb "> ", $00
