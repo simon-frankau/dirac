@@ -3,6 +3,10 @@
 ;; Requires image to be in the first 64K and the SD card to not be set
 ;; up for sector addressing. Also needs the destination to not overlap
 ;; the loader!
+;;
+;; Put this in the first block of the SD card, so that the
+;; monitor can load it, and it can then load the rest of the
+;; image into RAM.
 
 #target ROM
 
@@ -18,7 +22,7 @@ len_blks:   equ (len+511)/512   ; Data length in blocks.
 
 top:        jr main
 
-            ;; Put a string near the start for identification
+            ; Put a string near the start for identification
             defb "Dirac CP/M system disk", $0a, $00
 
             ; TODO: Spot failures, retry.
