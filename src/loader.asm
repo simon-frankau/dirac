@@ -51,7 +51,7 @@ read_block: push bc
             cp $00
             jr nz, rb_ret
             ;; Expect data token.
-data_tok:   call get_resp2
+data_tok:   call recv_byte
             cp $ff
             jp z,data_tok
             cp $fe
@@ -61,15 +61,15 @@ data_tok:   call get_resp2
             call read256
             call read256
             ;; Read the CRC.
-            call get_resp2
-            call get_resp2
+            call recv_byte
+            call recv_byte
 rb_ret:     pop hl
             pop bc
             ret
 
         ;; Read 256 bytes worth of data into DE.
 read256:    ld b,$00
-r256:       call get_resp2
+r256:       call recv_byte
             ld (de),a
             inc de
             djnz r256
@@ -78,23 +78,12 @@ r256:       call get_resp2
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Command-sending routines
 
-        ;; Send a command, with zero'd args
-send_zcmd:
-            ld de,0
-            ld hl,0
-        ;; Fall through
 
         ;; Send a command, command in C, args in DE, HL.
-send_cmd:   ld b, 1             ; Set CRC to 1.
-        ;; Fall through
-
-        ;; Send a command, CRC in B.
-send_cmd2:  push bc
-            ;; Wait until receiver's ready.
+send_cmd:   ;; Wait until receiver's ready.
 wait_rdy:   call recv_byte
             cp $ff
             jp nz,wait_rdy
-            pop bc
             ;; Send command.
             call send_byte
             ld c,d
@@ -105,36 +94,14 @@ wait_rdy:   call recv_byte
             call send_byte
             ld c,l
             call send_byte
-            ld c,b
+            ld c,1
             call send_byte
-            call get_resp
-            ret
-
-        ;; Receive the extra 4 response bytes.
-        ;; TODO: Currently, we just bin them.
-recv_long:
-            push af
-            call get_resp2
-            call get_resp2
-            call get_resp2
-            call get_resp2
-            pop af
+            call find_resp
             ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Low-level bit-twiddling SD card I/O
 ;;
-
-            ;; Send the initial sync to the card
-send_sync:
-            ;; At least 74 cycles with DI and CS high
-            ld b,75
-sync_loop:  ld a,$05            ; DI and CS set, clock low.
-            out ($30),a
-            xor a,$2            ; Flip clock bit.
-            out ($30),a
-            djnz sync_loop
-            ret
 
             ;; Byte to send in C
             ;; Modifies A.
@@ -179,23 +146,6 @@ rc_loop:    ld a,$01            ; CS low, data high, -ive clk edge to shift.
             cpl                 ; Data is inverted when it hits us.
             ret
 
-            ;; Get a response and print it.
-get_resp:   call find_resp
-;            push af
-;            call sio_wr_8
-;            ld a, $0a           ; Linefeed
-;            call sio_wr
-;            pop af
-            ret
-
-get_resp2:  call recv_byte
-;            push af
-;            call sio_wr_8
-;            ld a, $0a           ; Linefeed
-;            call sio_wr
-;            pop af
-            ret
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Serial port I/O
 ;;
@@ -214,25 +164,5 @@ sio_wr_lp:  in a, ($21)
             ld a, $40
             out ($70), a
             ret
-
-; Write a byte.
-sio_wr_8:   push af
-            srl a
-            srl a
-            srl a
-            srl a
-            call sio_wr_4
-            pop af
-            and $0f
-            call sio_wr_4
-            ret
-
-; Write a single hex digit
-sio_wr_4:   cp 10
-            jr c, wr_num
-            add 'A' - 10
-            jp sio_wr
-wr_num:     add '0'
-            jp sio_wr
 
 #end
