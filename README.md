@@ -81,9 +81,9 @@ loading BASIC on aren't really interesting intermediate goals - CP/M
 looks quite reasonable to port as a next step. I've yet to start the
 CP/M port in earnest, though.
 
-The SD card interface hardware is now functional, and I just need to
-write the software for it. From there, I can write the CP/M BIOS, and
-have a CP/M port running...
+The SD card interface hardware is now functional, and the monitor can
+read data from an SD card. I have a first sector boot loader for the
+card, and can now start looking at a CP/M BIOS...
 
 What do I need?
 ---------------
