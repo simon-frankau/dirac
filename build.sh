@@ -12,6 +12,7 @@ zasm test.asm    -o ../out/test.s
 zasm monitor.asm -o ../out/monitor.s
 zasm example.asm -o ../out/example.s
 zasm loader.asm  -o ../out/loader.s
+zasm cpm22.asm   -o ../out/cpm22.s
 
 # Build ROM images
 
