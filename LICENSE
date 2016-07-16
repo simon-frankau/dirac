@@ -1,3 +1,8 @@
+The file src/cpm22.asm is historical CP/M source imported into this
+repo in order to run CP/M, and has its own copyright. README.md
+contains more details. Everything else is by me, under the MIT
+License:
+
 The MIT License (MIT)
 
 Copyright (c) 2010-2016 Simon Frankau

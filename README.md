@@ -74,16 +74,14 @@ is now working reasonably reliably. I can plug the thing in to USB,
 it'll power itself from the USB port, and I can talk to the monitor at
 4800 8-N-1.
 
-The project then stalled for a long time, and more recently I a)
-resolved to get this into a state it could be put up onto github, no
-matter how incomplete, b) decided that building my own monitor and
-loading BASIC on aren't really interesting intermediate goals - CP/M
-looks quite reasonable to port as a next step. I've yet to start the
-CP/M port in earnest, though.
+I have code to use the SD card interface in read-only mode, and have a
+basic CP/M port running.
 
-The SD card interface hardware is now functional, and the monitor can
-read data from an SD card. I have a first sector boot loader for the
-card, and can now start looking at a CP/M BIOS...
+Where did the CP/M parts come from?
+-----------------------------------
+
+src/cpm22.asm is a lightly-modified copy of CPM22.Z80, extracted from
+http://www.cpm.z80.de/download/cpm2-asm.zip
 
 What do I need?
 ---------------
