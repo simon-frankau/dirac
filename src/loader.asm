@@ -13,12 +13,10 @@
 source:     equ $0200           ; Source offset on disk.
 dest:       equ $dc00           ; Destination address in memory.
 start:      equ $f200           ; Entry point
-len:        equ 6511            ; Data length in bytes.
+len:        equ 7176            ; Data length in bytes.
 len_blks:   equ (len+511)/512   ; Data length in blocks.
 
 #code   ENTRY,0x1000
-
-; TODO: Need M1CE up-front.
 
 top:        jr main
 
@@ -88,10 +86,12 @@ r256:       call recv_byte
 ;; Command-sending routines
 
             ; Send a command, command in C, args in DE, HL.
-send_cmd:   ; Wait until receiver's ready.
+send_cmd:   push bc
+            ; Wait until receiver's ready.
 wait_rdy:   call recv_byte
             cp $ff
             jp nz,wait_rdy
+            pop bc
             ; Send command.
             call send_byte
             ld c,d

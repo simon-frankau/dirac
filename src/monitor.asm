@@ -173,7 +173,7 @@ wr_loop:    call sio_rd_8
             jr nz, wr_loop
             jp ok
 
-            ; Destination, count, then data.
+            ; Destination, and count.
 cmd_read:   call sio_rd_16
             ld hl, bc
             call sio_rd_16
