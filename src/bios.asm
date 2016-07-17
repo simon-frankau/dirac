@@ -10,16 +10,16 @@ iobyte:         EQU     $0003       ; Optional IOBYTE (not implemented).
 ndisks:         EQU     4           ; 4 drives
 
         ;; Constants for disk sector blocking.
-BLKSIZ          EQU     1024            ; CP/M allocation size
-HSTSIZ          EQU     512             ; Host disk sector size
-HSTSPT          EQU     8               ; Host disk sectors/trk
-HSTBLK          EQU     HSTSIZ/128      ; CP/M sects/host buff
-CPMSPT          EQU     HSTBLK * HSTSPT ; CP/M sectors/track
-SECMSK          EQU     HSTBLK-1        ; sector mask
+blksiz          EQU     1024            ; CP/M allocation size
+hstsiz          EQU     512             ; Host disk sector size
+hstspt          EQU     8               ; Host disk sectors/trk
+hstblk          EQU     hstsiz/128      ; CP/M sects/host buff
+cpmspt          EQU     hstblk * hstspt ; CP/M sectors/track
+secmsk          EQU     hstblk-1        ; sector mask
 
-WRALL           EQU     0               ; Write to allocated
-WRDIR           EQU     1               ; Write to directory
-WRUAL           EQU     2               ; Write to unallocateds
+wrall           EQU     0               ; Write to allocated
+wrdir           EQU     1               ; Write to directory
+wrual           EQU     2               ; Write to unallocateds
 
         ;; Number of directory entries per drive, minus one.
 drm:            EQU     255
@@ -88,8 +88,8 @@ signon:         DEFM    $0C, 'CP/M-80 Version 2.2c For the Dirac SBC'
 
 wboot:          LD      SP,$0080
                 XOR     A               ; 0 to accumulator
-                LD      (HSTACT),A      ; Host buffer inactive
-                LD      (UNACNT),A      ; Clear unalloc count
+                LD      (hstact),A      ; Host buffer inactive
+                LD      (unacnt),A      ; Clear unalloc count
         ;; TODO: Reload CCP from disk.
                 JP      gocpm
 
@@ -163,20 +163,20 @@ sectran:        LD      HL,BC
         ;; Derived from Appendix G of the CP/M manuals
         ;; (http://www.gaby.de/cpm/manuals/archive/cpm22htm/axg.asm)
 
-home:           LD      A,(HSTWRT)      ; Check for pending write
+home:           LD      A,(hstwrt)      ; Check for pending write
                 OR      A
                 JP      NZ,homed
-                LD      (HSTACT),A      ; Clear host active flag
+                LD      (hstact),A      ; Clear host active flag
 homed:          RET
 
 seldsk:         LD      HL,$0000        ; Error return code
                 LD      A,C
-                LD      (SEKDSK),A
+                LD      (sekdsk),A
                 CP      4               ; Must be between 0 and 3
                 RET     NC              ; No carry if 4, 5,...
                                         ; Disk number is in the proper range
         ;; Load disk parameter block address into HL
-                LD      A,(SEKDSK)
+                LD      A,(sekdsk)
                 ADD     A,A
                 ADD     A,A
                 ADD     A,A
@@ -188,77 +188,77 @@ seldsk:         LD      HL,$0000        ; Error return code
                 RET
 
         ;; TODO: Track can be BC (16-bit?)
-settrk:         LD      (SEKTRK),BC
+settrk:         LD      (sektrk),BC
                 RET
 
 setsec:         LD      A,C
-                LD      (SEKSEC),A
+                LD      (seksec),A
                 RET
 
-setdma:         LD      (DMAADR),BC
+setdma:         LD      (dmaadr),BC
                 RET
 
 read:           XOR     A
-                LD      (UNACNT),A
+                LD      (unacnt),A
                 LD      A,1
-                LD      (READOP),A      ; Read operation
-                LD      (RSFLAG),A      ; Must read data
-                LD      A,WRUAL
-                LD      (WRTYPE),A      ; Treat as unalloc
+                LD      (readop),A      ; Read operation
+                LD      (rsflag),A      ; Must read data
+                LD      A,wrual
+                LD      (wrtype),A      ; Treat as unalloc
                 JP      rwoper          ; To perform the read
 
         ;; Enter here to perform the read/write
 rwoper:         XOR     A               ; Zero to accum
-                LD      (ERFLAG),A      ; No errors (yet)
-                LD      A,(SEKSEC)      ; Compute host sector
+                LD      (erflag),A      ; No errors (yet)
+                LD      A,(seksec)      ; Compute host sector
         ;; Shift by 2 - 128 bytes sectors to 512 byte sectors
                 OR      A               ; Carry = 0
                 RRA                     ; Shift right
                 OR      A               ; Carry = 0
                 RRA                     ; Shift right
-                LD      (SEKHST),A      ; Host sector to seek
+                LD      (sekhst),A      ; Host sector to seek
         ;; Active host sector?
-                LD      HL,HSTACT       ; Host active flag
+                LD      HL,hstact       ; Host active flag
                 LD      A,(HL)
                 LD      (HL),1          ; Always becomes 1
                 OR      A               ; Was it already?
                 JP      Z,filhst        ; Fill host if not
         ;; Host buffer active, same as seek buffer?
-                LD      A,(SEKDSK)
-                LD      HL,HSTDSK       ; Same disk?
-                CP      (HL)            ; SEKDSK = HSTDSK?
+                LD      A,(sekdsk)
+                LD      HL,hstdsk       ; Same disk?
+                CP      (HL)            ; sekdsk = hstdsk?
                 JP      NZ,nomatch
         ;; Same disk, same track?
-                LD      HL,HSTTRK
-                CALL    sektrkcmp       ; SEKTRK = HSTTRK?
+                LD      HL,hsttrk
+                CALL    sektrkcmp       ; sektrk = hsttrk?
                 JP      NZ,nomatch
         ;; Same disk, same track, same buffer?
-                LD      A,(SEKHST)
-                LD      HL,HSTSEC       ; SEKHST = HSTSEC?
+                LD      A,(sekhst)
+                LD      HL,hstsec       ; sekhst = hstsec?
                 CP      (HL)
                 JP      Z,match         ; Skip if match
 nomatch:
         ;; Proper disk, but not correct sector
-                LD      A,(HSTWRT)      ; Host written?
+                LD      A,(hstwrt)      ; Host written?
                 OR      A
-                CALL    NZ,WRITEHST     ; Clear host buff
+                CALL    NZ,writehst     ; Clear host buff
 filhst:
         ;; May have to fill the host buffer
-                LD      A,(SEKDSK)
-                LD      (HSTDSK),A
-                LD      HL,(SEKTRK)
-                LD      (HSTTRK),HL
-                LD      A,(SEKHST)
-                LD      (HSTSEC),A
-                LD      A,(RSFLAG)      ; Need to read?
+                LD      A,(sekdsk)
+                LD      (hstdsk),A
+                LD      HL,(sektrk)
+                LD      (hsttrk),HL
+                LD      A,(sekhst)
+                LD      (hstsec),A
+                LD      A,(rsflag)      ; Need to read?
                 OR      A
-                CALL    NZ,READHST      ; Yes, if 1
+                CALL    NZ,readhst      ; Yes, if 1
                 XOR     A               ; 0 to accum
-                LD      (HSTWRT),A      ; No pending write
+                LD      (hstwrt),A      ; No pending write
 match:
         ;; Copy data to or from buffer
-                LD      A,(SEKSEC)      ; Mask buffer number
-                AND     A,SECMSK        ; Least signif bits
+                LD      A,(seksec)      ; Mask buffer number
+                AND     A,secmsk        ; Least signif bits
                 LD      L,A             ; Ready to shift
                 LD      H,0             ; Double count
                 ADD     HL,HL           ; Shift left by 7
@@ -269,17 +269,17 @@ match:
                 ADD     HL,HL
                 ADD     HL,HL
         ;; HL has relative host buffer address
-                LD      DE,HSTBUF
+                LD      DE,hstbuf
                 ADD     HL,DE           ; HL = host address
                 EX      DE,HL           ; Now in DE
-                LD      HL,(DMAADR)     ; Get/put CP/M data
+                LD      HL,(dmaadr)     ; Get/put CP/M data
                 LD      C,128           ; Length of move
-                LD      A,(READOP)      ; Which way?
+                LD      A,(readop)      ; Which way?
                 OR      A
                 JP      NZ,rwmove       ; Skip if read
         ;; Write operation, mark and switch direction
                 LD      A,1
-                LD      (HSTWRT),A      ; HSTWRT = 1
+                LD      (hstwrt),A      ; hstwrt = 1
                 EX      DE,HL           ; Source/dest swap
 rwmove:
         ;; C initially 128, DE is source, HL is dest
@@ -290,23 +290,23 @@ rwmove:
                 DEC     C               ; Loop 128 times
                 JP      NZ,rwmove
         ;; Data has been moved to/from host buffer
-                LD      A,(WRTYPE)      ; Write type
-                CP      WRDIR           ; To directory?
-                LD      A,(ERFLAG)      ; In case of errors
+                LD      A,(wrtype)      ; Write type
+                CP      wrdir           ; To directory?
+                LD      A,(erflag)      ; In case of errors
                 RET     NZ              ; No further processing
         ;; Clear host buffer for directory write
                 OR      A               ; Errors?
                 RET     NZ              ; Skip if so
                 XOR     A               ; 0 to accum
-                LD      (HSTWRT),A      ; Buffer written
-                CALL    WRITEHST
-                LD      A,(ERFLAG)
+                LD      (hstwrt),A      ; Buffer written
+                CALL    writehst
+                LD      A,(erflag)
                 RET
 
 sektrkcmp:
-        ;; HL = .UNATRK or .HSTTRK, compare with SEKTRK
+        ;; HL = .unatrk or .hsttrk, compare with sektrk
                 EX      DE,HL
-                LD      HL,SEKTRK
+                LD      HL,sektrk
                 LD      A,(DE)          ; Low byte compare
                 CP      (HL)            ; Same?
                 RET     NZ              ; Return if not
@@ -320,17 +320,17 @@ sektrkcmp:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Raw I/O routines
 
-WRITEHST:
-        ;; HSTDSK = HOST DISK #, HSTTRK = HOST TRACK #,
-        ;; HSTSEC = HOST SECT #. WRITE "HSTSIZ" BYTES
-        ;; FROM HSTBUF AND RETURN ERROR FLAG IN ERFLAG.
-        ;; RETURN ERFLAG NON-ZERO IF ERROR
+writehst:
+        ;; hstdsk = host disk #, hsttrk = host track #,
+        ;; hstsec = host sect #. Write "hstsiz" bytes
+        ;; from hstbuf and return error flag in erflag.
+        ;; Return erflag non-zero if error
                 RET
-        ;;
-READHST:
-        ;; HSTDSK = host disk #, HSTTRK = host track #,
-        ;; HSTSEC = host sect #. Read "HSTSIZ" bytes
-        ;; into HSTBUF and return error flag in ERFLAG.
+
+readhst:
+        ;; hstdsk = host disk #, hsttrk = host track #,
+        ;; hstsec = host sect #. Read "hstsiz" bytes
+        ;; into hstbuf and return error flag in erflag.
             ld (saved_sp),sp
             ld sp,$ffff
 
@@ -339,9 +339,9 @@ READHST:
             push hl
 
             ld d,0
-            ld a,(HSTTRK)
+            ld a,(hsttrk)
             ld e,a
-            ld a,(HSTSEC)
+            ld a,(hstsec)
             add a
             ld h,a
             ld l,0
@@ -368,8 +368,8 @@ data_tok:   call recv_byte
             cp $fe
             ret nz
             ; DE contains destination address.
-            ; Read the sector's worth of data into HSTBUF
-            ld de,HSTBUF
+            ; Read the sector's worth of data into hstbuf
+            ld de,hstbuf
             call read256
             call read256
             ; Read the CRC.
@@ -465,29 +465,29 @@ write:          LD      A,0
 ;; Uninitialised data
 
         ;; Variables for blocked I/O
-SEKDSK:         DEFB    $00             ; SEEK DISK NUMBER
-SEKTRK:         DEFW    $0000           ; SEEK TRACK NUMBER
-SEKSEC:         DEFB    $00             ; SEEK SECTOR NUMBER
+sekdsk:         DEFB    $00             ; Seek disk number
+sektrk:         DEFW    $0000           ; Seek track number
+seksec:         DEFB    $00             ; Seek sector number
 
-HSTDSK:         DEFB    $00             ; HOST DISK NUMBER
-HSTTRK:         DEFW    $0000           ; HOST TRACK NUMBER
-HSTSEC:         DEFB    $00             ; HOST SECTOR NUMBER
+hstdsk:         DEFB    $00             ; Host disk number
+hsttrk:         DEFW    $0000           ; Host track number
+hstsec:         DEFB    $00             ; Host sector number
 
-SEKHST:         DEFB    $00             ; SEEK SHR SECSHF
-HSTACT:         DEFB    $00             ; HOST ACTIVE FLAG
-HSTWRT:         DEFB    $00             ; HOST WRITTEN FLAG
+sekhst:         DEFB    $00             ; Seek SHR secshf
+hstact:         DEFB    $00             ; Host active flag
+hstwrt:         DEFB    $00             ; Host written flag
 
-UNACNT:         DEFB    $00             ; UNALLOC REC CNT
-UNADSK:         DEFB    $00             ; LAST UNALLOC DISK
-UNATRK:         DEFW    $0000           ; LAST UNALLOC TRACK
-UNASEC:         DEFB    $00             ; LAST UNALLOC SECTOR
+unacnt:         DEFB    $00             ; Unalloc rec cnt
+unadsk:         DEFB    $00             ; Last unalloc disk
+unatrk:         DEFW    $0000           ; Last unalloc track
+unasec:         DEFB    $00             ; Last unalloc sector
 
-ERFLAG:         DEFB    $00             ; ERROR REPORTING
-RSFLAG:         DEFB    $00             ; READ SECTOR FLAG
-READOP:         DEFB    $00             ; 1 IF READ OPERATION
-WRTYPE:         DEFB    $00             ; WRITE OPERATION TYPE
-DMAADR:         DEFW    $0000           ; LAST DMA ADDRESS
-HSTBUF:         DEFS    HSTSIZ          ; HOST BUFFER
+erflag:         DEFB    $00             ; Error reporting
+rsflag:         DEFB    $00             ; Read sector flag
+readop:         DEFB    $00             ; 1 if read operation
+wrtype:         DEFB    $00             ; Write operation type
+dmaadr:         DEFW    $0000           ; Last DMA address
+hstbuf:         DEFS    hstsiz          ; Host buffer
 
         ;; Scratch RAM
 dirbf:          DEFS    $80,$00

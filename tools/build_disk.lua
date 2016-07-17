@@ -57,14 +57,12 @@ end
 local fin = assert(io.open(in_image, "rb"))
 local fout = assert(io.open(out_image, "wb"))
 
-local block_size = 512
+local track_len = 32 * 128
 
 for track = 0,34 do
-  for sector = 0,7 do
-    local data = fin:read(block_size)
-    fout:seek("set", track * 65536 + sector * 512)
-    fout:write(data)
-  end
+  local data = fin:read(track_len)
+  fout:seek("set", track * 65536)
+  fout:write(data)
 end
 
 if boot_sector ~= nil then
