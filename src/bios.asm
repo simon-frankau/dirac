@@ -9,8 +9,8 @@ iobyte:         EQU     $0003       ; Optional IOBYTE (not implemented).
 
 ndisks:         EQU     4           ; 4 drives
 
-        ;; 6 bytes for serial number at start of BDOS
-nsects:         EQU (FBASE - CBASE - 6) / 128
+        ;; How much is needed to load everything up to the start of the BIOS?
+nsects:         EQU     (BOOT - CBASE) / 128
 
         ;; Constants for disk sector blocking.
 blksiz          EQU     1024            ; CP/M allocation size
@@ -97,8 +97,8 @@ wboot:  ;; Simplest case is to read the disk until all sectors loaded
 
                 LD      B,nsects        ; B counts * of sectors to load
                 LD      C,0             ; C has the current track number
-                LD      D,2             ; D has the next sector to read
-        ;; Note that we begin by reading track 0, sector 2 since sector 1
+                LD      D,4             ; D has the next sector to read
+        ;; Note that we begin by reading track 0, sector 5 since sectors 1-4
         ;; contains the cold start loader, which is skipped in a warm start
                 LD      HL,CBASE        ; Base of CP/M (initial load point)
 load1:                                  ; Load  one more sector
@@ -125,9 +125,9 @@ load1:                                  ; Load  one more sector
                 JP      Z,gocpm         ; Transfer to CP/M if all have been loaded
         ;; More sectors remain to load, check for track change
                 INC     D
-                LD      A,D             ; sector = 27?, if so, change tracks
-                CP      27
-                JP      C,load1         ; Carry generated if sector < 27
+                LD      A,D             ; sector = 33?, if so, change tracks
+                CP      33
+                JP      C,load1         ; Carry generated if sector < 33
         ;; End of current track, go to next track
                 LD      D,1             ; Begin with first sector of next track
                 INC     C               ; track = track + 1
@@ -135,7 +135,8 @@ load1:                                  ; Load  one more sector
                 PUSH    BC
                 PUSH    DE
                 PUSH    HL
-                CALL    settrk          ; Track address set from register C
+                LD      B,0
+                CALL    settrk          ; Track address set from register BC
                 POP     HL
                 POP     DE
                 POP     BC
@@ -211,11 +212,13 @@ sectran:        LD      HL,BC
         ;; Derived from Appendix G of the CP/M manuals
         ;; (http://www.gaby.de/cpm/manuals/archive/cpm22htm/axg.asm)
 
-home:           LD      A,(hstwrt)      ; Check for pending write
+home:           LD      BC,0            ; Actually go to track 0!
+                LD      (sektrk),BC
+                LD      A,(hstwrt)      ; Check for pending write
                 OR      A
-                JP      NZ,homed
+                RET     NZ
                 LD      (hstact),A      ; Clear host active flag
-homed:          RET
+                RET
 
 seldsk:         LD      HL,$0000        ; Error return code
                 LD      A,C
