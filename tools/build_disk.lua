@@ -1,10 +1,6 @@
--- Rearrange an uninterleaved disk image so that sector s of track t
--- is at position 0000 0000 000t tttt 00ss sss0 0000 0000 (base 2).
---
--- This makes one 128 byte sector per SD card 512 byte block, and
--- simplifies the CP/M BIOS disk read code.
---
--- We also add in the boot sector and bootable CP/M image.
+-- This script used to rearrange disk images for use by Dirac's CP/M,
+-- but the sectors are now arranged contiguously. The main point of
+-- this tool is now to add in the boot sector and bootable CP/M image.
 --
 -- Command line arguments are:
 -- -o file_name           Output filename
@@ -57,13 +53,9 @@ end
 local fin = assert(io.open(in_image, "rb"))
 local fout = assert(io.open(out_image, "wb"))
 
-local track_len = 32 * 128
+local disk_len = 32 * 128 * 35
 
-for track = 0,34 do
-  local data = fin:read(track_len)
-  fout:seek("set", track * 4096)
-  fout:write(data)
-end
+fout:write(fin:read(disk_len))
 
 if boot_sector ~= nil then
   local fboot = assert(io.open(boot_sector))

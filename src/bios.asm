@@ -331,12 +331,6 @@ readhst:
         ;; hstdsk = host disk #, hsttrk = host track #,
         ;; hstsec = host sect #. Read "hstsiz" bytes
         ;; into hstbuf and return error flag in erflag.
-            ld (saved_sp),sp
-            ld sp,$ffff
-
-            push bc
-            push de
-            push hl
 
         ;; Each track is 4K, so offset the track number by 4 bits.
                 LD      HL,(hsttrk)
@@ -353,45 +347,36 @@ readhst:
                 ADD     A,L
                 LD      H,A
                 LD      L,0
-                CALL    read_block
+        ;; Disk offset now in DEHL. Do the read
+                ; Send CMD17 - Single block read
+                LD      C,$40 + 17      ; CMD17
+                CALL    send_cmd
+                ; Exit if failed...
+                OR      A
+                RET     NZ
+                ; Expect data token.
+data_tok:       CALL    recv_byte
+                CP      $FF
+                JP      Z,data_tok
+                CP      $FE
+                RET     NZ
+                ; DE contains destination address.
+                ; Read the sector's worth of data into hstbuf
+                LD      DE,hstbuf
+                CALL    read256
+                CALL    read256
+                ; Read the CRC.
+                CALL    recv_byte
+                CALL    recv_byte
+                RET
 
-            pop hl
-            pop de
-            pop bc
-
-            ld sp,(saved_sp)
-            ret
-
-            ; Disk offset in DEHL.
-read_block: ; Send CMD17 - Single block read
-            ld c,$40 + 17       ; CMD17
-            call send_cmd
-            ; Exit if failed...
-            cp $00
-            ret nz
-            ; Expect data token.
-data_tok:   call recv_byte
-            cp $ff
-            jp z,data_tok
-            cp $fe
-            ret nz
-            ; DE contains destination address.
-            ; Read the sector's worth of data into hstbuf
-            ld de,hstbuf
-            call read256
-            call read256
-            ; Read the CRC.
-            call recv_byte
-            call recv_byte
-            ret
-
-            ; Read 256 bytes worth of data into DE.
-read256:    ld b,$00
-r256:       call recv_byte
-            ld (de),a
-            inc de
-            djnz r256
-            ret
+                ; Read 256 bytes worth of data into DE.
+read256:        LD      B,$00
+r256:           CALL    recv_byte
+                LD      (de),a
+                INC     DE
+                DJNZ    r256
+                RET
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Command-sending routines
@@ -472,7 +457,7 @@ write:          LD      A,0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Uninitialised data
 
-        ;; Variables for blocked I/O
+        ;; Variables for sector-blocking I/O
 sekdsk:         DEFB    $00             ; Seek disk number
 sektrk:         DEFW    $0000           ; Seek track number
 seksec:         DEFB    $00             ; Seek sector number
@@ -509,5 +494,3 @@ chk00:          DEFS    cks,$00
 chk01:          DEFS    cks,$00
 chk02:          DEFS    cks,$00
 chk03:          DEFS    cks,$00
-
-saved_sp:       DEFW    $0000
