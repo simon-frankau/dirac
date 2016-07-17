@@ -21,10 +21,6 @@ wrall           EQU     0               ; Write to allocated
 wrdir           EQU     1               ; Write to directory
 wrual           EQU     2               ; Write to unallocateds
 
-        ;; Number of directory entries per drive, minus one.
-drm:            EQU     255
-cks:            EQU     (drm + 1) / 4
-
         ;; Number of blocks on the drive.
 dsm:            EQU     255         ; Actually 16-bit
 alv:            EQU     (dsm + 1) / 8
@@ -50,10 +46,10 @@ SECTRN:         JP      sectran
 
         ;; Disk parameter headers
         ;;              XLT   0000  0000  0000  DIRBF DPB   CSV   ALV
-dpbase:         DEFW    $0000,$0000,$0000,$0000,dirbf,dpblk,chk00,all00
-                DEFW    $0000,$0000,$0000,$0000,dirbf,dpblk,chk01,all01
-                DEFW    $0000,$0000,$0000,$0000,dirbf,dpblk,chk02,all02
-                DEFW    $0000,$0000,$0000,$0000,dirbf,dpblk,chk03,all03
+dpbase:         DEFW    $0000,$0000,$0000,$0000,dirbf,dpblk,$0000,all00
+                DEFW    $0000,$0000,$0000,$0000,dirbf,dpblk,$0000,all01
+                DEFW    $0000,$0000,$0000,$0000,dirbf,dpblk,$0000,all02
+                DEFW    $0000,$0000,$0000,$0000,dirbf,dpblk,$0000,all03
 
 dpblk:  ;; Disk parameter block, common to all disks.
                 DEFW    32              ; Sectors per track
@@ -64,7 +60,7 @@ dpblk:  ;; Disk parameter block, common to all disks.
                 DEFW    47              ; Directory max
                 DEFB    192             ; Alloc 0
                 DEFB    0               ; Alloc 1
-                DEFW    12              ; Check size - NB can be 0 for HDD
+                DEFW    0               ; Check size
                 DEFW    3               ; Track offset
 
 boot:           XOR     A
@@ -489,8 +485,3 @@ all00:          DEFS    alv,$00
 all01:          DEFS    alv,$00
 all02:          DEFS    alv,$00
 all03:          DEFS    alv,$00
-
-chk00:          DEFS    cks,$00
-chk01:          DEFS    cks,$00
-chk02:          DEFS    cks,$00
-chk03:          DEFS    cks,$00
