@@ -61,7 +61,7 @@ local track_len = 32 * 128
 
 for track = 0,34 do
   local data = fin:read(track_len)
-  fout:seek("set", track * 65536)
+  fout:seek("set", track * 4096)
   fout:write(data)
 end
 

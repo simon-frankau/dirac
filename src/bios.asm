@@ -338,14 +338,22 @@ readhst:
             push de
             push hl
 
-            ld d,0
-            ld a,(hsttrk)
-            ld e,a
-            ld a,(hstsec)
-            add a
-            ld h,a
-            ld l,0
-            call read_block
+        ;; Each track is 4K, so offset the track number by 4 bits.
+                LD      HL,(hsttrk)
+                ADD     HL,HL
+                ADD     HL,HL
+                ADD     HL,HL
+                ADD     HL,HL
+        ;; DE contains the top end of the address...
+                LD      D,0
+                LD      E,H
+        ;; And HL contains the bottom end.
+                LD      A,(hstsec)
+                ADD     A,A
+                ADD     A,L
+                LD      H,A
+                LD      L,0
+                CALL    read_block
 
             pop hl
             pop de
