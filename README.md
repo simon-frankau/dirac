@@ -83,6 +83,9 @@ Where did the CP/M parts come from?
 src/cpm22.asm is a lightly-modified copy of CPM22.Z80, extracted from
 http://www.cpm.z80.de/download/cpm2-asm.zip
 
+(I had disassembled a working CP/M image myself, but this comes with
+comments and produces the same results so... why not?)
+
 images/appleiicpm.dsk is taken from http://schorn.ch/cpm/zip/cpm2.zip,
 as a relatively arbitrary easy-to-reverse-engineer disk image.
 
