@@ -10,7 +10,7 @@ iobyte:         EQU     $0003       ; Optional IOBYTE (not implemented).
 ndisks:         EQU     4           ; 4 drives
 
         ;; How much is needed to load everything up to the start of the BIOS?
-nsects:         EQU     (BOOT - CBASE) / 128
+nsects:         EQU     (BOOT - CBASE + 511) / 512
 
         ;; Constants for disk sector blocking.
 blksiz          EQU     1024            ; CP/M allocation size
@@ -88,59 +88,46 @@ signon:         DEFM    $0C, 'CP/M-80 Version 2.2c For the Dirac SBC'
         ;; Warm boot code taken from the skeleton BIOS.
 wboot:  ;; Simplest case is to read the disk until all sectors loaded
                 LD      SP,$0080        ; Use space below buffer for stack
+
+        ;; Read CP/M in using raw readhst calls...
+        ;; First, initialise disk and track.
+                XOR     A
+                LD      (hstdsk),A
+                LD      DE,0
+                LD      (hsttrk),DE
+        ;; Then set up loop variables
+                LD      DE,CBASE
+                LD      B,nsects
+                LD      C,1
+load1:
+        ;; Load destination in DE.
+        ;; Number of blocks to read in B
+        ;; Current block in C
+                LD      A,C
+                LD      (hstsec),A
+                PUSH    BC
+                PUSH    DE
+                CALL    readhst
+                LD      A,(erflag)
+                OR      A
+                JP      NZ,wboot
+                POP     DE
+                LD      BC,512
+                LD      HL,hstbuf
+                LDIR
+                POP     BC
+        ;; DE already updated. Update B, C and loop.
+                INC     C
+                DJNZ    load1
+
+        ;; Disk subsystem initialisation...
                 XOR     A               ; 0 to accumulator
                 LD      (hstact),A      ; Host buffer inactive
                 LD      (unacnt),A      ; Clear unalloc count
                 LD      C,0             ; Select disk 0
                 CALL    seldsk
                 CALL    home            ; Go to track 00
-
-                LD      B,nsects        ; B counts * of sectors to load
-                LD      C,0             ; C has the current track number
-                LD      D,4             ; D has the next sector to read
-        ;; Note that we begin by reading track 0, sector 5 since sectors 1-4
-        ;; contains the cold start loader, which is skipped in a warm start
-                LD      HL,CBASE        ; Base of CP/M (initial load point)
-load1:                                  ; Load  one more sector
-                PUSH    BC              ; Save sector count, current track
-                PUSH    DE              ; Save next sector to read
-                PUSH    HL              ; Save dma address
-                LD      C,D             ; Get sector address to register C
-                CALL    setsec          ; Set sector address from register C
-                POP     BC              ; Recall DMA address to BC
-                PUSH    BC              ; Replace on stack for later recall
-                CALL    setdma          ; Set DMA address from BC
-        ;; Drive set to 0, track set, sector set, DMA address set
-                CALL    read
-                CP      00h             ; Any errors?
-                JP      NZ,wboot        ; Retry the entire boot if an error occurs
-        ;; No error, move to next sector
-                POP     HL              ; Recall DMA address
-                LD      DE,128          ; DMA = DMA + 128
-                ADD     HL,DE           ; New DMA address is in HL
-                POP     DE              ; Recall sector address
-                POP     BC              ; Recall number of sectors remaining,
-                                        ; and current track
-                DEC     B               ; sectors = sectors - 1
-                JP      Z,gocpm         ; Transfer to CP/M if all have been loaded
-        ;; More sectors remain to load, check for track change
-                INC     D
-                LD      A,D             ; sector = 33?, if so, change tracks
-                CP      33
-                JP      C,load1         ; Carry generated if sector < 33
-        ;; End of current track, go to next track
-                LD      D,1             ; Begin with first sector of next track
-                INC     C               ; track = track + 1
-        ;; Save register state, and change tracks
-                PUSH    BC
-                PUSH    DE
-                PUSH    HL
-                LD      B,0
-                CALL    settrk          ; Track address set from register BC
-                POP     HL
-                POP     DE
-                POP     BC
-                JP      load1           ; For another sector
+        ;; Fall through...
 
 gocpm:          LD      A,$C3           ; C3 is a jmp instruction
                 LD      (0),A           ; For jmp to wboot
