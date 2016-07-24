@@ -6,3 +6,4 @@
 *.dcm
 *cache.lib
 out/
+thirdparty/

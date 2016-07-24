@@ -5,12 +5,35 @@
 -- then run the generation tool to create the disk image.
 
 example = {
-  name = "out/test.dsk",
+  name = "cpm.dsk",
   files = {
-    { file = "out/loader.s", raw_offset = 0 },
-    { file = "out/cpm22.s",  raw_offset = 512 }
+    { file = "loader.s", raw_offset = 0 },
+    { file = "cpm22.s",  raw_offset = 512 },
+    { file = "../thirdparty/cpm22/ASM.COM" },
+    { file = "../thirdparty/cpm22/BIOS.ASM" },
+    { file = "../thirdparty/cpm22/CPM.SYS" },
+    { file = "../thirdparty/cpm22/DDT.COM" },
+    { file = "../thirdparty/cpm22/DEBLOCK.ASM" },
+    { file = "../thirdparty/cpm22/DISKDEF.LIB" },
+    { file = "../thirdparty/cpm22/DSKMAINT.COM" },
+    { file = "../thirdparty/cpm22/DUMP.ASM" },
+    { file = "../thirdparty/cpm22/DUMP.COM" },
+    { file = "../thirdparty/cpm22/ED.COM" },
+    { file = "../thirdparty/cpm22/LOAD.COM" },
+    { file = "../thirdparty/cpm22/PIP.COM" },
+    { file = "../thirdparty/cpm22/READ.ME" },
+    { file = "../thirdparty/cpm22/STAT.COM" },
+    { file = "../thirdparty/cpm22/SUBMIT.COM" },
+    { file = "../thirdparty/cpm22/XSUB.COM" },
   }
 }
+
+local sector_size = 128
+local dir_entry_size = 32
+
+function nameify(s, n)
+  return (s:upper() .. string.rep(" ", n)):sub(1, n)
+end
 
 -- Generate the disk structure
 function write_disk(d)
@@ -25,6 +48,8 @@ function write_disk(d)
 
   local fout = empty_disk(d)
 
+  local offset = d.dir_blocks
+
   for _, f in ipairs(d.files) do
     print(f.file)
     if f.raw_offset ~= nil then
@@ -33,9 +58,44 @@ function write_disk(d)
       fout:write(fin:read("*all"))
       fin:close()
     else
-      assert(false, "NYI: Non-raw disks")
+      fout:seek("set", (d.reserved_blocks + offset) * d.block_size)
+      local fin = assert(io.open(f.file, "rb"))
+      local data = fin:read(f.length or "*all")
+      fout:write(data)
+      fin:close()
+      f.location = offset
+      f.length = math.ceil(data:len() / sector_size)
+      offset = offset + math.ceil(data:len() / d.block_size)
     end
   end
+
+  assert(d.reserved_blocks + offset < d.total_blocks,
+         "Not enough space for data")
+
+  fout:seek("set", d.reserved_blocks * d.block_size)
+  local nul = string.char(0)
+  for _, f in ipairs(d.files) do
+    if f.raw_offset == nil then
+      -- TODO: Users, flags, long files.
+      local len = string.char(f.length)
+      -- TODO: Custom file names
+      local lhs, rhs = f.file:match("([^/]*)[.]([^/]*)$")
+      lhs = nameify(lhs, 8)
+      rhs = nameify(rhs, 3)
+      local entry = nul .. lhs .. rhs .. nul .. nul .. nul .. len
+      local blocks = ""
+      for i = 0,15 do
+        -- Blocks were written contiguously, so put entries in for blocks
+        -- that contain stuff.
+        local block = i * d.sectors_per_block < f.length
+                      and string.char(f.location + i)
+                      or string.char(0)
+        blocks = blocks .. block
+      end
+      fout:write(entry .. blocks)
+    end
+  end
+  -- TODO: Check table isn't full
 
   fout:close()
 end
@@ -47,9 +107,6 @@ function configure_disk(d)
       d[k] = v
     end
   end
-
-  local sector_size = 128
-  local dir_entry_size = 32
 
   -- Set some defaults.
   set_if_nil("block_size", 1024)

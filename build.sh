@@ -2,6 +2,15 @@
 
 set -e
 
+# Fetch extra data
+
+if [ ! -d thirdparty ]
+then
+  mkdir -p thirdparty/cpm22
+  curl http://www.cpm.z80.de/download/cpm22-b.zip -o thirdparty/cpm22-b.zip
+  unzip thirdparty/cpm22-b.zip -d thirdparty/cpm22
+fi
+
 mkdir -p out
 
 # Compile source
@@ -35,10 +44,13 @@ lua ../tools/uninterleave.lua -o appleiicpm_raw.dsk ../images/appleiicpm.dsk
 lua ../tools/build_disk.lua -b loader.s -c cpm22.s appleiicpm_raw.dsk \
   -o sdcard.dsk
 
+# Test proof-of-concept...
+lua ../tools/disk_builder.lua
+
 # Then, you can place the image on an SD card using something like the
 # following:
 #
-# sudo dd if=sdcard.dsk of=$DEV bs=512 && diskutil eject $DEV
+# sudo dd if=XXXX.dsk of=$DEV bs=512 && diskutil eject $DEV
 #
 # NB: IF YOU USE THE WRONG DEVICE, YOU COULD DESTORY A FILESYSTEM AND
 # YOUR DATA ON IT. Be careful.
