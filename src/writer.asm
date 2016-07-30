@@ -26,6 +26,7 @@ write_block:
             call send_byte
             ; Write data packet.
             ld c,$fe
+            call send_byte
             ld de, data
             call write256
             call write256
