@@ -85,7 +85,7 @@ prmsg:          LD      C,(HL)
 signon:         DEFM    $0C, 'CP/M-80 Version 2.2c For the Dirac SBC'
                 DEFM    $0D, $0A, '$'
 
-        ;; Warm boot code taken from the skeleton BIOS.
+        ;; Warm boot code based on the skeleton BIOS.
 wboot:  ;; Simplest case is to read the disk until all sectors loaded
                 LD      SP,$0080        ; Use space below buffer for stack
 
@@ -131,7 +131,7 @@ load1:
 
 gocpm:          LD      A,$C3           ; C3 is a jmp instruction
                 LD      (0),A           ; For jmp to wboot
-                LD      HL,(WBOOT)      ; wboot entry point
+                LD      HL,WBOOT        ; wboot entry point
                 LD      (1),HL          ; Set address field for jmp at 0
 
                 LD      (5),A           ; For jmp to BDOS
