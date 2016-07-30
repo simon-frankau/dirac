@@ -28,6 +28,8 @@ example = {
   }
 }
 
+-- TODO: Only supports < 256 blocks on disk
+
 local sector_size = 128
 local dir_entry_size = 32
 
@@ -73,26 +75,28 @@ function write_disk(d)
          "Not enough space for data")
 
   fout:seek("set", d.reserved_blocks * d.block_size)
-  local nul = string.char(0)
+  assert(d.extent_mask == 0, "Only support extent_mask == 0 now")
   for _, f in ipairs(d.files) do
     if f.raw_offset == nil then
       -- TODO: Users, flags, long files.
-      local len = string.char(f.length)
       -- TODO: Custom file names
       local lhs, rhs = f.file:match("([^/]*)[.]([^/]*)$")
       lhs = nameify(lhs, 8)
       rhs = nameify(rhs, 3)
-      local entry = nul .. lhs .. rhs .. nul .. nul .. nul .. len
-      local blocks = ""
-      for i = 0,15 do
-        -- Blocks were written contiguously, so put entries in for blocks
-        -- that contain stuff.
-        local block = i * d.sectors_per_block < f.length
-                      and string.char(f.location + i)
-                      or string.char(0)
-        blocks = blocks .. block
+      if f.length == 0 then
+        -- Special case
+        write_dir_entry(d, fout, lhs .. rhs, 0, 0)
+      else
+        local len = f.length
+        local loc = f.location
+        local ext = 0
+        while len > 0 do
+          write_dir_entry(d, fout, lhs .. rhs, len, loc, ext)
+          len = len - 16 * d.sectors_per_block
+          loc = loc + 16
+          ext = ext + 1
+        end
       end
-      fout:write(entry .. blocks)
     end
   end
   -- TODO: Check table isn't full
@@ -114,6 +118,7 @@ function configure_disk(d)
   set_if_nil("tracks", 35)
   set_if_nil("reserved_tracks", 3)
   set_if_nil("dir_entries", 48)
+  set_if_nil("extent_mask", 0)
 
   -- Derive useful values
   set_if_nil("sectors_per_block", d.block_size / sector_size)
@@ -130,6 +135,27 @@ function empty_disk(d)
   local empty_block = string.char(0xE5):rep(d.block_size * d.total_blocks)
   fout:write(empty_block)
   return fout
+end
+
+local nul = string.char(0)
+
+-- Write a single line directory entry.
+function write_dir_entry(d, f, name, length, loc, ext)
+  local len = string.char(math.min(length, 0x80))
+  local ex = string.char(ext % 32)
+  local s1 = nul
+  local s2 = string.char(math.floor(ext / 32))
+  local entry = nul .. name .. ex .. s1 .. s2 .. len
+  local blocks = ""
+  for i = 0,15 do
+    -- Blocks were written contiguously, so put entries in for blocks
+    -- that contain stuff.
+    local block = i * d.sectors_per_block < length
+                  and string.char(loc + i)
+                  or string.char(0)
+    blocks = blocks .. block
+  end
+  f:write(entry .. blocks)
 end
 
 write_disk(example)
