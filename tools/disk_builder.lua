@@ -25,6 +25,7 @@ example = {
     { file = "../thirdparty/cpm22/STAT.COM" },
     { file = "../thirdparty/cpm22/SUBMIT.COM" },
     { file = "../thirdparty/cpm22/XSUB.COM" },
+    { file = "writer.com" },
   }
 }
 
