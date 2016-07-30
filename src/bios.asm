@@ -431,30 +431,49 @@ writehst:
         ;; hstsec = host sect #. Write "hstsiz" bytes
         ;; from hstbuf and return error flag in erflag.
         ;; Return erflag non-zero if error
-                LD      A,1
-                LD      (erflag),A
+                CALL    get_sd_addr
+        ;; Disk offset now in DEHL. Do the write
+                ; Send CMD24 - Write single block
+                LD      C,$40 + 24      ; CMD24
+                CALL    send_cmd
+                ; Exit if failed...
+                CP      $00
+                RET     NZ
+                ; Pause for a byte
+                LD      C,$FF
+                CALL    send_byte
+                ; Write data packet.
+                LD      C,$FE
+                CALL    send_byte
+                LD      DE,hstbuf
+                CALL    write256
+                CALL    write256
+                LD      C,$00
+                CALL    send_byte
+                CALL    send_byte
+                ; Look for a data response
+                CALL    find_resp
+                ; TODO Error handling
+                ; A & $f0 == $20 if all's well
+                ; And wait for busy to complete
+wbusy:          CALL    recv_byte
+                OR      A
+                JP      Z,wbusy
+                RET
+
+write256:       LD      B,$00
+w256:           LD      A,(DE)
+                LD      C,A
+                CALL    send_byte
+                INC     DE
+                DJNZ    w256
                 RET
 
 readhst:
         ;; hstdsk = host disk #, hsttrk = host track #,
         ;; hstsec = host sect #. Read "hstsiz" bytes
         ;; into hstbuf and return error flag in erflag.
-
-        ;; Each track is 4K, so offset the track number by 4 bits.
-                LD      HL,(hsttrk)
-                ADD     HL,HL
-                ADD     HL,HL
-                ADD     HL,HL
-                ADD     HL,HL
-        ;; DE contains the top end of the address...
-                LD      D,0
-                LD      E,H
-        ;; And HL contains the bottom end.
-                LD      A,(hstsec)
-                ADD     A,A
-                ADD     A,L
-                LD      H,A
-                LD      L,0
+                CALL    get_sd_addr
         ;; Disk offset now in DEHL. Do the read
                 ; Send CMD17 - Single block read
                 LD      C,$40 + 17      ; CMD17
@@ -484,6 +503,25 @@ r256:           CALL    recv_byte
                 LD      (de),a
                 INC     DE
                 DJNZ    r256
+                RET
+
+        ;; Get the address for the write into DEHL.
+get_sd_addr:
+        ;; Each track is 4K, so offset the track number by 4 bits.
+                LD      HL,(hsttrk)
+                ADD     HL,HL
+                ADD     HL,HL
+                ADD     HL,HL
+                ADD     HL,HL
+        ;; DE contains the top end of the address...
+                LD      D,0
+                LD      E,H
+        ;; And HL contains the bottom end.
+                LD      A,(hstsec)
+                ADD     A,A
+                ADD     A,L
+                LD      H,A
+                LD      L,0
                 RET
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
