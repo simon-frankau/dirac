@@ -245,6 +245,74 @@ read:           XOR     A
                 LD      (wrtype),A      ; Treat as unalloc
                 JP      rwoper          ; To perform the read
 
+write:
+                XOR     A               ; 0 to accumulator
+                LD      (readop),A      ; Not a read operation
+                LD      A,C             ; Write type in C
+                LD      (wrtype),A
+                CP      wrual           ; Write unallocated?
+                JP      NZ,chkuna       ; Check for unalloc
+
+        ;; Write to unallocated, set parameters
+                LD      A,blksiz/128    ; Next unalloc recs
+                LD      (unacnt),A
+                LD      A,(sekdsk)      ; Disk to seek
+                LD      (unadsk),A      ; unadsk = sekdsk
+                LD      HL,(sektrk)
+                LD      (unatrk),HL     ; unatrk = sectrk
+                LD      A,(seksec)
+                LD      (unasec),A      ; unasec = seksec
+
+chkuna:
+        ;; Check for write to unallocated sector
+                LD      A,(unacnt)      ; Any unalloc remain?
+                OR      A
+                JP      Z,alloc         ; Skip if not
+
+        ;; More unallocated records remain
+                DEC     A               ; unacnt = unacnt-1
+                LD      (unacnt),A
+                LD      A,(sekdsk)      ; Same disk?
+                LD      HL,unadsk
+                CP      (HL)            ; sekdsk = unadsk?
+                JP      NZ,alloc        ; Skip if not
+
+        ;; Disks are the same
+                LD      HL,unatrk
+                CALL    sektrkcmp       ; sektrk = unatrk?
+                JP      NZ,alloc        ; Skip if not
+
+        ;; Tracks are the same
+                LD      A,(seksec)      ; Same sector?
+                LD      HL,unasec
+                CP      (HL)            ; seksec = unasec?
+                JP      NZ,alloc        ; Skip if not
+
+        ;; Match, move to next sector for future ref
+                INC     (HL)            ; unasec = unasec+1
+                LD      A,(HL)          ; End of track?
+                CP      cpmspt          ; Count CP/M sectors
+                JP      C,noovf         ; Skip if no overflow
+
+        ;; Overflow to next track
+                LD      (HL),0          ; unasec = 0
+                LD      HL,(unatrk)
+                INC     HL
+                LD      (unatrk),HL     ; unatrk = unatrk + 1
+
+noovf:
+        ; Match found, mark as unnecessary read
+                XOR     A               ; 0 to accumulator
+                LD      (rsflag),A      ; rsflag = 0
+                JP      rwoper          ; To perform the write
+
+alloc:
+        ; Not an unallocated record, requires pre-read
+                XOR     A               ; 0 to accum
+                LD      (unacnt),A      ; unacnt = 0
+                INC     A               ; 1 to accum
+                LD      (rsflag),A      ; rsflag = 1
+
         ;; Enter here to perform the read/write
 rwoper:         XOR     A               ; Zero to accum
                 LD      (erflag),A      ; No errors (yet)
@@ -363,6 +431,8 @@ writehst:
         ;; hstsec = host sect #. Write "hstsiz" bytes
         ;; from hstbuf and return error flag in erflag.
         ;; Return erflag non-zero if error
+                LD      A,1
+                LD      (erflag),A
                 RET
 
 readhst:
@@ -487,10 +557,6 @@ rc_loop:    ld a,$01            ; CS low, data high, -ive clk edge to shift.
             ld a,c
             cpl                 ; Data is inverted when it hits us.
             ret
-
-        ;; TODO: Currently, just silently fail.
-write:          LD      A,0
-                RET
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Uninitialised data
