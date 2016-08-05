@@ -36,16 +36,15 @@ lua ../tools/build_rom.lua -o monitor.bin monitor.s:0x0000
 lua ../tools/build_hex.lua -o example.txt example.s
 lua ../tools/build_hex.lua -o loader.txt  loader.s -t 1000
 
-# Build disk image
-
+# Convert disk image
 lua ../tools/uninterleave.lua -o appleiicpm_raw.dsk ../images/appleiicpm.dsk
-# Extract the image contents if you really want...
-#mkdir -p out
-#lua ../tools/extract.lua
 lua ../tools/build_disk.lua -b loader.s -c cpm22.s appleiicpm_raw.dsk \
   -o sdcard.dsk
 
-# Test proof-of-concept...
+# Test proof-of-concept - building of disk images, unpacking, etc.
+mkdir -p unpack
+mkdir -p unpack_old
+mkdir -p unpack_large
 lua ../tools/disk_builder.lua
 
 # Then, you can place the image on an SD card using something like the
