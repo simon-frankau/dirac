@@ -25,11 +25,36 @@ example = {
     { file = "../thirdparty/cpm22/STAT.COM" },
     { file = "../thirdparty/cpm22/SUBMIT.COM" },
     { file = "../thirdparty/cpm22/XSUB.COM" },
-    { file = "writer.com" },
   }
 }
 
--- TODO: Only supports < 256 blocks on disk
+-- And a variant of 'example' with more blocks and larger block size.
+-- Textually copied to avoid deep-copy issues.
+example2 = {
+  name = "cpmL.dsk",
+  files = {
+    { file = "loader.s", raw_offset = 0 },
+    { file = "cpm22.s",  raw_offset = 512 },
+    { file = "../thirdparty/cpm22/ASM.COM" },
+    { file = "../thirdparty/cpm22/BIOS.ASM" },
+    { file = "../thirdparty/cpm22/CPM.SYS" },
+    { file = "../thirdparty/cpm22/DDT.COM" },
+    { file = "../thirdparty/cpm22/DEBLOCK.ASM" },
+    { file = "../thirdparty/cpm22/DISKDEF.LIB" },
+    { file = "../thirdparty/cpm22/DSKMAINT.COM" },
+    { file = "../thirdparty/cpm22/DUMP.ASM" },
+    { file = "../thirdparty/cpm22/DUMP.COM" },
+    { file = "../thirdparty/cpm22/ED.COM" },
+    { file = "../thirdparty/cpm22/LOAD.COM" },
+    { file = "../thirdparty/cpm22/PIP.COM" },
+    { file = "../thirdparty/cpm22/READ.ME" },
+    { file = "../thirdparty/cpm22/STAT.COM" },
+    { file = "../thirdparty/cpm22/SUBMIT.COM" },
+    { file = "../thirdparty/cpm22/XSUB.COM" },
+  },
+  tracks = 400,
+  block_size = 4096
+}
 
 local sector_size = 128
 local dir_entry_size = 32
@@ -76,7 +101,6 @@ function write_disk(d)
          "Not enough space for data")
 
   fout:seek("set", d.reserved_blocks * d.block_size)
-  assert(d.extent_mask == 0, "Only support extent_mask == 0 now")
   for _, f in ipairs(d.files) do
     if f.raw_offset == nil then
       -- TODO: Users, flags, long files.
@@ -93,8 +117,8 @@ function write_disk(d)
         local ext = 0
         while len > 0 do
           write_dir_entry(d, fout, lhs .. rhs, len, loc, ext)
-          len = len - 16 * d.sectors_per_block
-          loc = loc + 16
+          len = len - (d.extent_size / 128)
+          loc = loc + d.blocks_per_extent
           ext = ext + 1
         end
       end
@@ -119,7 +143,6 @@ function configure_disk(d)
   set_if_nil("tracks", 35)
   set_if_nil("reserved_tracks", 3)
   set_if_nil("dir_entries", 48)
-  set_if_nil("extent_mask", 0)
 
   -- Derive useful values
   set_if_nil("sectors_per_block", d.block_size / sector_size)
@@ -128,6 +151,13 @@ function configure_disk(d)
   set_if_nil("dir_blocks", math.ceil(d.dir_entries * dir_entry_size /
                                      d.block_size))
   set_if_nil("total_blocks", d.tracks * d.blocks_per_track)
+  set_if_nil("large_disk", d.total_blocks - d.reserved_tracks > 256)
+  set_if_nil("blocks_per_extent", d.large_disk and 8 or 16)
+  set_if_nil("extent_size", d.block_size * d.blocks_per_extent)
+  set_if_nil("extent_mask",  d.extent_size / 16384)
+
+  assert(d.extent_size >= 16384,
+         "Block size must be > 1024 if total blocks > 256")
 end
 
 -- Actually write out the populated disk image.
@@ -142,21 +172,44 @@ local nul = string.char(0)
 
 -- Write a single line directory entry.
 function write_dir_entry(d, f, name, length, loc, ext)
-  local len = string.char(math.min(length, 0x80))
-  local ex = string.char(ext % 32)
+  local full = length >= d.extent_mask * 0x80
+  -- Glue together length and extent id...
+  local len_low = full and 0x80 or (length % 0x80)
+  local len_high = full and (d.extent_mask - 1) or math.floor(length / 0x80)
+  local high_part = len_high + d.extent_mask * ext
+  -- And then split this across the fields...
+  local ex = string.char(high_part % 32)
   local s1 = nul
-  local s2 = string.char(math.floor(ext / 32))
-  local entry = nul .. name .. ex .. s1 .. s2 .. len
+  local s2 = string.char(math.floor(high_part / 32))
+  local rc = string.char(len_low)
+  local entry = nul .. name .. ex .. s1 .. s2 .. rc
   local blocks = ""
-  for i = 0,15 do
-    -- Blocks were written contiguously, so put entries in for blocks
-    -- that contain stuff.
-    local block = i * d.sectors_per_block < length
-                  and string.char(loc + i)
-                  or string.char(0)
-    blocks = blocks .. block
+  if d.large_disk then
+    -- Double byte blocks, 8 per extent.
+    for i = 0,7 do
+      -- Blocks were written contiguously, so put entries in for blocks
+      -- that contain stuff.
+      local block_l = i * d.sectors_per_block < length
+                      and string.char((loc + i) % 256)
+                      or string.char(0)
+      local block_h = i * d.sectors_per_block < length
+                      and string.char(math.floor((loc + i) / 256))
+                      or string.char(0)
+      blocks = blocks .. block_l .. block_h
+    end
+  else
+    -- Single byte blocks, 16 per extent.
+    for i = 0,15 do
+      -- Blocks were written contiguously, so put entries in for blocks
+      -- that contain stuff.
+      local block = i * d.sectors_per_block < length
+                    and string.char(loc + i)
+                    or string.char(0)
+      blocks = blocks .. block
+    end
   end
   f:write(entry .. blocks)
 end
 
 write_disk(example)
+write_disk(example2)
