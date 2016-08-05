@@ -53,8 +53,7 @@ example2 = {
     { file = "../thirdparty/cpm22/XSUB.COM" },
   },
   tracks = 400,
---  block_size = 4096
-  block_size = 2048 -- Extractor does not yet support large blocks
+  block_size = 4096
 }
 
 local sector_size = 128
@@ -216,6 +215,7 @@ function read_disk(d)
   configure_disk(d)
   local fin = assert(io.open(d.name, "rb"))
   fin:seek("set", d.reserved_blocks * d.block_size)
+  d.seen = {}
   for i = 1, d.dir_entries do
     read_entry(d, fin, i)
   end
@@ -248,26 +248,32 @@ function read_entry(d, fin, i)
   local rc = entry:byte(16)
   local map = entry:sub(17,32)
   print(string.format("%s %11s %s%s%s", type_str, filename, read_only, hidden, archive))
-  if ex ~= 0 or s2 ~= 0 then
-    -- FIXME!
-    print "Hmmm. Long. Dunno."
-  end
-  write_file(d, fin, filename, ex, rc, map)
+  write_file(d, fin, filename, ex, s2, rc, map)
 end
 
 function block_to_offset(d, block)
   return d.block_size * (d.reserved_blocks + block)
 end
 
-function write_file(d, fin, filename, extent, rc, map)
+function write_file(d, fin, filename, ex, s2, rc, map)
   local saved = fin:seek()
+  local full_len = 32 * s2 + ex
+  local extent = math.floor(full_len / d.extent_mask)
+  rc = rc + 0x80 * (full_len % d.extent_mask)
+
   -- We deal with multi-extent files by just opening append and seeking.
-  local fout = assert(io.open(d.prefix .. "/" .. filename, "ab"))
+  local mode = "ab"
+  -- Create file when we see the first extent.
+  if not d.seen[filename] then
+    mode = "wb"
+    d.seen[filename] = true
+  end
+  local fout = assert(io.open(d.prefix .. "/" .. filename, mode))
   fout:seek("set", extent * d.extent_size)
   if not d.large_disk then
     for sec in map:gmatch(".") do
       -- Read sectors, write sectors
-      local toread = rc > d.sectors_per_block and d.sectors_per_block or rc
+      local toread = math.min(rc, d.sectors_per_block)
       toread = toread * sector_size
       fin:seek("set", block_to_offset(d, sec:byte()))
       fout:write(fin:read(toread))
@@ -280,7 +286,7 @@ function write_file(d, fin, filename, extent, rc, map)
   else
     for sec in map:gmatch("..") do
       -- Read sectors, write sectors
-      local toread = rc > d.sectors_per_block and d.sectors_per_block or rc
+      local toread = math.min(rc, d.sectors_per_block)
       toread = toread * sector_size
       fin:seek("set", block_to_offset(d, sec:byte(1) + 256 * sec:byte(2)))
       fout:write(fin:read(toread))
@@ -302,7 +308,7 @@ write_disk(example2)
 read_disk {
   name = 'cpmL.dsk',
   prefix = 'unpack_large',
-  block_size = 2048,
+  block_size = 4096,
   large_disk = true,
 }
 
