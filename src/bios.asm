@@ -13,7 +13,7 @@ ndisks:         EQU     4           ; 4 drives
 nsects:         EQU     (BOOT - CBASE + 511) / 512
 
         ;; Constants for disk sector blocking.
-blksiz          EQU     1024            ; CP/M allocation size
+blksiz          EQU     4096            ; CP/M allocation size
 hstsiz          EQU     512             ; Host disk sector size
 hstspt          EQU     8               ; Host disk sectors/trk
 hstblk          EQU     hstsiz/128      ; CP/M sects/host buff
@@ -25,7 +25,7 @@ wrdir           EQU     1               ; Write to directory
 wrual           EQU     2               ; Write to unallocateds
 
         ;; Number of blocks on the drive.
-dsm:            EQU     255         ; Actually 16-bit
+dsm:            EQU     4095
 alv:            EQU     (dsm + 1) / 8
 
         ;; Jump vector for individual routines
@@ -51,18 +51,16 @@ SECTRN:         JP      sectran
         ;;              XLT   0000  0000  0000  DIRBF DPB   CSV   ALV
 dpbase:         DEFW    $0000,$0000,$0000,$0000,dirbf,dpblk,$0000,all00
                 DEFW    $0000,$0000,$0000,$0000,dirbf,dpblk,$0000,all01
-                DEFW    $0000,$0000,$0000,$0000,dirbf,dpblk,$0000,all02
-                DEFW    $0000,$0000,$0000,$0000,dirbf,dpblk,$0000,all03
 
-dpblk:  ;; Disk parameter block, common to all disks.
+dpblk:  ;; Disk parameter block, for larger disk (16M, 4K blocks)
                 DEFW    32              ; Sectors per track
-                DEFB    3               ; Block shift factor
-                DEFB    7               ; Block mask
-                DEFB    0               ; Null mask
-                DEFW    127             ; Disk size - 1
-                DEFW    47              ; Directory max
-                DEFB    192             ; Alloc 0
-                DEFB    0               ; Alloc 1
+                DEFB    5               ; Block shift factor
+                DEFB    31              ; Block mask
+                DEFB    1               ; Extent mask
+                DEFW    4095 - 3        ; Disk size - 1 (exclude reserved)
+                DEFW    1023            ; Directory max
+                DEFB    $FF             ; Alloc 0
+                DEFB    $00             ; Alloc 1
                 DEFW    0               ; Check size
                 DEFW    3               ; Track offset
 
@@ -514,7 +512,8 @@ get_sd_addr:
                 ADD     HL,HL
                 ADD     HL,HL
         ;; DE contains the top end of the address...
-                LD      D,0
+                LD      A,(hstdsk)
+                LD      D,A
                 LD      E,H
         ;; And HL contains the bottom end.
                 LD      A,(hstsec)
@@ -629,5 +628,3 @@ dirbf:          DEFS    $80,$00
 
 all00:          DEFS    alv,$00
 all01:          DEFS    alv,$00
-all02:          DEFS    alv,$00
-all03:          DEFS    alv,$00

@@ -31,29 +31,13 @@ example = {
 -- And a variant of 'example' with more blocks and larger block size.
 -- Textually copied to avoid deep-copy issues.
 example2 = {
-  name = "cpmL.dsk",
+  name = "games.dsk",
   files = {
     { file = "loader.s", raw_offset = 0 },
     { file = "cpm22.s",  raw_offset = 512 },
-    { file = "../thirdparty/cpm22/ASM.COM" },
-    { file = "../thirdparty/cpm22/BIOS.ASM" },
-    { file = "../thirdparty/cpm22/CPM.SYS" },
-    { file = "../thirdparty/cpm22/DDT.COM" },
-    { file = "../thirdparty/cpm22/DEBLOCK.ASM" },
-    { file = "../thirdparty/cpm22/DISKDEF.LIB" },
-    { file = "../thirdparty/cpm22/DSKMAINT.COM" },
-    { file = "../thirdparty/cpm22/DUMP.ASM" },
-    { file = "../thirdparty/cpm22/DUMP.COM" },
-    { file = "../thirdparty/cpm22/ED.COM" },
-    { file = "../thirdparty/cpm22/LOAD.COM" },
-    { file = "../thirdparty/cpm22/PIP.COM" },
-    { file = "../thirdparty/cpm22/READ.ME" },
-    { file = "../thirdparty/cpm22/STAT.COM" },
-    { file = "../thirdparty/cpm22/SUBMIT.COM" },
-    { file = "../thirdparty/cpm22/XSUB.COM" },
-  },
-  tracks = 400,
-  block_size = 4096
+    { file = "../thirdparty/infocom/HITCH.COM" },
+    { file = "../thirdparty/infocom/HITCHHIK.DAT" },
+  }
 }
 
 local sector_size = 128
@@ -138,11 +122,11 @@ function configure_disk(d)
   end
 
   -- Set some defaults.
-  set_if_nil("block_size", 1024)
+  set_if_nil("block_size", 4096)
   set_if_nil("sectors", 32)
-  set_if_nil("tracks", 35)
+  set_if_nil("tracks", 4096)
   set_if_nil("reserved_tracks", 3)
-  set_if_nil("dir_entries", 48)
+  set_if_nil("dir_entries", 1024)
 
   -- Derive useful values
   set_if_nil("sectors_per_block", d.block_size / sector_size)
@@ -306,22 +290,19 @@ write_disk(example)
 write_disk(example2)
 
 read_disk {
-  name = 'cpmL.dsk',
-  prefix = 'unpack_large',
-  block_size = 4096,
-  large_disk = true,
+  name = 'games.dsk',
+  prefix = 'unpack_games',
 }
 
 read_disk {
   name = 'cpm.dsk',
-  prefix = 'unpack',
-  block_size = 1024,
-  large_disk = false,
+  prefix = 'unpack_cpm',
 }
 
 read_disk {
   name = 'sdcard.dsk',
   prefix = 'unpack_old',
   block_size = 1024,
-  large_disk = false,
+  tracks = 35,
+  dir_entries = 48,
 }

@@ -9,6 +9,10 @@ then
   mkdir -p thirdparty/cpm22
   curl http://www.cpm.z80.de/download/cpm22-b.zip -o thirdparty/cpm22-b.zip
   unzip thirdparty/cpm22-b.zip -d thirdparty/cpm22
+
+  mkdir -p thirdparty/infocom
+  curl http://www.z80.eu/downloads/hitchhiker.zip -o thirdparty/hitchhiker.zip
+  unzip thirdparty/hitchhiker.zip -d thirdparty/infocom
 fi
 
 mkdir -p out
@@ -42,9 +46,9 @@ lua ../tools/build_disk.lua -b loader.s -c cpm22.s appleiicpm_raw.dsk \
   -o sdcard.dsk
 
 # Test proof-of-concept - building of disk images, unpacking, etc.
-mkdir -p unpack
+mkdir -p unpack_cpm
+mkdir -p unpack_games
 mkdir -p unpack_old
-mkdir -p unpack_large
 lua ../tools/disk_builder.lua
 
 # Then, you can place the image on an SD card using something like the
