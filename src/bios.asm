@@ -526,74 +526,74 @@ get_sd_addr:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Command-sending routines
 
-            ; Send a command, command in C, args in DE, HL.
-send_cmd:   push bc
-            ; Wait until receiver's ready.
-wait_rdy:   call recv_byte
-            cp $ff
-            jp nz,wait_rdy
-            pop bc
-            ; Send command.
-            call send_byte
-            ld c,d
-            call send_byte
-            ld c,e
-            call send_byte
-            ld c,h
-            call send_byte
-            ld c,l
-            call send_byte
-            ld c,1
-            call send_byte
-            call find_resp
-            ret
+                ; Send a command, command in C, args in DE, HL.
+send_cmd:       PUSH    BC
+                ; Wait until receiver's ready.
+wait_rdy:       CALL    recv_byte
+                CP      $FF
+                JP      NZ,wait_rdy
+                POP     BC
+                ; SEND COMMAND.
+                CALL    send_byte
+                LD      C,D
+                CALL    send_byte
+                LD      C,E
+                CALL    send_byte
+                LD      C,H
+                CALL    send_byte
+                LD      C,L
+                CALL    send_byte
+                LD      C,1
+                CALL    send_byte
+                CALL    find_resp
+                RET
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Low-level bit-twiddling SD card I/O
 ;;
 
-            ; Byte to send in C
-            ; Modifies A.
-send_byte:  scf
-            rl c
-sb_loop:    ld a,0              ; CS low, clock low.
-            rla
-            out ($30),a
-            xor a,$2            ; Flip clock bit.
-            rl c
-            out ($30),a         ; Doesn't affect NZ.
-            jp nz,sb_loop
-            ret
+                ; Byte to send in C
+                ; Modifies A.
+send_byte:      SCF
+                RL      C
+sb_loop:        LD      A,0         ; CS low, clock low.
+                RLA
+                OUT     ($30),A
+                XOR     A,$2        ; Flip clock bit.
+                RL      C
+                OUT     ($30),A     ; Doesn't affect NZ.
+                JP      NZ,sb_loop
+                RET
 
-            ; Search for the start of a response. This is a 0
-            ; bit from the SD card, which is inverted by the time
-            ; it hits our I/O port.
-            ;
-            ; TODO: Should arrive within 16 cycles. Time out, if needed.
-find_resp:  ld a,$01            ; CS low, data high, -ive clk edge to shift.
-            out ($30),a
-            in a,($30)
-            rra                 ; Next bit saved in carry flag...
-            ld a,$03            ; CS low, data high, +ive clk edge to latch.
-            out ($30),a
-            jp nc,find_resp     ; Loop if CD card sent 0.
-            ; Received a 1. Let's read the rest of the byte.
-            ld c,$03
-            jp rc_loop
+                ; Search for the start of a response. This is a 0
+                ; bit from the SD card, which is inverted by the time
+                ; it hits our I/O port.
+                ;
+                ; TODO: Should arrive within 16 cycles. Time out, if needed.
+find_resp:      LD      A,$01       ; CS low, data high, -ive clk edge - shift
+                OUT     ($30),A
+                IN      A,($30)
+                RRA                 ; Next bit saved in carry flag...
+                LD      A,$03       ; CS low, data high, +ive clk edge - latch
+                OUT     ($30),A
+                JP      NC,find_resp    ; Loop if SD card sent 0.
+                ; Received a 1. Let's read the rest of the byte.
+                LD      C,$03
+                JP      rc_loop
 
-            ; Read a byte into A. Modifies C.
-recv_byte:  ld c,$01
-rc_loop:    ld a,$01            ; CS low, data high, -ive clk edge to shift.
-            out ($30),a
-            in a,($30)
-            rra                 ; Next bit saved in carry flag...
-            ld a,$03            ; CS low, data high, +ive clk edge to latch.
-            out ($30),a
-            rl c                ; And carry flag rotated into C.
-            jp nc,rc_loop
-            ld a,c
-            cpl                 ; Data is inverted when it hits us.
-            ret
+                ; Read a byte into A. Modifies C.
+recv_byte:      LD      C,$01
+rc_loop:        LD      A,$01       ; CS low, data high, -ive clk edge - shift
+                OUT     ($30),A
+                IN      A,($30)
+                RRA                 ; Next bit saved in carry flag...
+                LD      A,$03       ; CS low, data high, +ive clk edge - latch
+                OUT     ($30),A
+                RL      C           ; And carry flag rotated into C.
+                JP      NC,rc_loop
+                LD      A,C
+                CPL                 ; Data is inverted when it hits us.
+                RET
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Uninitialised data
