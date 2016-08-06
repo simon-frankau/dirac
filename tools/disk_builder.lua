@@ -298,11 +298,3 @@ read_disk {
   name = 'cpm.dsk',
   prefix = 'unpack_cpm',
 }
-
-read_disk {
-  name = 'sdcard.dsk',
-  prefix = 'unpack_old',
-  block_size = 1024,
-  tracks = 35,
-  dir_entries = 48,
-}

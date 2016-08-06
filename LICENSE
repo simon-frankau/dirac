@@ -1,6 +1,5 @@
 The file src/cpm22.asm is historical CP/M source imported into this
-repo in order to run CP/M, and has its own copyright.
-images/appleiicpm.dsk is a similar historical disk image. README.md
+repo in order to run CP/M, and has its own copyright. README.md
 contains more details. Everything else is by me, under the MIT
 License:
 

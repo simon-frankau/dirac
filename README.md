@@ -77,6 +77,8 @@ it'll power itself from the USB port, and I can talk to the monitor at
 I have code to use the SD card interface in read-only mode, and have a
 basic CP/M port running.
 
+It will run Infocom's Hitchhiker's Guide To The Galaxy.
+
 Where did the CP/M parts come from?
 -----------------------------------
 
@@ -86,8 +88,10 @@ http://www.cpm.z80.de/download/cpm2-asm.zip
 (I had disassembled a working CP/M image myself, but this comes with
 comments and produces the same results so... why not?)
 
-images/appleiicpm.dsk is taken from http://schorn.ch/cpm/zip/cpm2.zip,
-as a relatively arbitrary easy-to-reverse-engineer disk image.
+I previously used images/appleiicpm.dsk, which is taken from
+http://schorn.ch/cpm/zip/cpm2.zip, as a relatively arbitrary
+easy-to-reverse-engineer disk image. I've switched to building my own
+disk images.
 
 What do I need?
 ---------------
