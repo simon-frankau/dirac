@@ -48,9 +48,10 @@ PRSTAT:         JP      listst
 SECTRN:         JP      sectran
 
         ;; Disk parameter headers
-        ;;              XLT   0000  0000  0000  DIRBF DPB   CSV   ALV
-dpbase:         DEFW    $0000,$0000,$0000,$0000,dirbf,dpblk,$0000,all00
-                DEFW    $0000,$0000,$0000,$0000,dirbf,dpblk,$0000,all01
+        ;;              XLT   0000  0000  0000  DIRBF DPB     CSV   ALV
+dpbase:         DEFW    $0000,$0000,$0000,$0000,dirbf,dpblk,  $0000,all00
+                DEFW    $0000,$0000,$0000,$0000,dirbf,dpblk,  $0000,all01
+dpbase_ram:     DEFW    $0000,$0000,$0000,$0000,dirbf,ram_blk,$0000,all02
 
 dpblk:  ;; Disk parameter block, for larger disk (16M, 4K blocks)
                 DEFW    32              ; Sectors per track
@@ -64,12 +65,25 @@ dpblk:  ;; Disk parameter block, for larger disk (16M, 4K blocks)
                 DEFW    0               ; Check size
                 DEFW    3               ; Track offset
 
+ram_blk: ;; Disk parameter block, for RAM disk - 64K, 1K blocks
+                DEFW    32              ; Sectors per track
+                DEFB    3               ; Block shift factor
+                DEFB    7               ; Block mask
+                DEFB    0               ; Extent mask
+                DEFW    63              ; Disk size - 1 (exclude reserved)
+                DEFW    31              ; Directory max
+                DEFB    $80             ; Alloc 0
+                DEFB    $00             ; Alloc 1
+                DEFW    0               ; Check size
+                DEFW    0               ; Track offset
+
 boot:           XOR     A
                 LD      (iobyte),A
                 LD      (cdisk),A
                 LD      SP,$0080
                 LD      HL,signon
                 CALL    prmsg
+                CALL    ram_init
                 JR      wboot
 
 prmsg:          LD      C,(HL)
@@ -108,7 +122,7 @@ load1:
                 CALL    readhst
                 LD      A,(erflag)
                 OR      A
-                JP      NZ,wboot
+                JR      NZ,wboot
                 POP     DE
                 LD      BC,512
                 LD      HL,hstbuf
@@ -208,8 +222,10 @@ home:           LD      BC,0            ; Actually go to track 0!
 seldsk:         LD      HL,$0000        ; Error return code
                 LD      A,C
                 LD      (sekdsk),A
-                CP      4               ; Must be between 0 and 3
-                RET     NC              ; No carry if 4, 5,...
+                CP      'M' - 'A'
+                JR      Z,seldsk_ram
+                CP      2               ; Must be between 0 and 1
+                RET     NC              ; No carry if 2, 3, 4, 5,...
                                         ; Disk number is in the proper range
         ;; Load disk parameter block address into HL
                 LD      A,(sekdsk)
@@ -223,7 +239,10 @@ seldsk:         LD      HL,$0000        ; Error return code
                 ADD     HL,DE
                 RET
 
-        ;; TODO: Track can be BC (16-bit?)
+        ;; Select RAM disk
+seldsk_ram:     LD      HL,dpbase_ram
+                RET
+
 settrk:         LD      (sektrk),BC
                 RET
 
@@ -234,7 +253,10 @@ setsec:         LD      A,C
 setdma:         LD      (dmaadr),BC
                 RET
 
-read:           XOR     A
+read:           LD      A,(sekdsk)
+                CP      'M' - 'A'
+                JP      Z,read_ram
+                XOR     A
                 LD      (unacnt),A
                 LD      A,1
                 LD      (readop),A      ; Read operation
@@ -243,7 +265,9 @@ read:           XOR     A
                 LD      (wrtype),A      ; Treat as unalloc
                 JP      rwoper          ; To perform the read
 
-write:
+write:          LD      A,(sekdsk)
+                CP      'M' - 'A'
+                JP      Z,write_ram
                 XOR     A               ; 0 to accumulator
                 LD      (readop),A      ; Not a read operation
                 LD      A,C             ; Write type in C
@@ -456,7 +480,7 @@ writehst:
                 ; And wait for busy to complete
 wbusy:          CALL    recv_byte
                 OR      A
-                JP      Z,wbusy
+                JR      Z,wbusy
                 RET
 
 write256:       LD      B,$00
@@ -482,7 +506,7 @@ readhst:
                 ; Expect data token.
 data_tok:       CALL    recv_byte
                 CP      $FF
-                JP      Z,data_tok
+                JR      Z,data_tok
                 CP      $FE
                 RET     NZ
                 ; DE contains destination address.
@@ -531,9 +555,9 @@ send_cmd:       PUSH    BC
                 ; Wait until receiver's ready.
 wait_rdy:       CALL    recv_byte
                 CP      $FF
-                JP      NZ,wait_rdy
+                JR      NZ,wait_rdy
                 POP     BC
-                ; SEND COMMAND.
+                ; Send command.
                 CALL    send_byte
                 LD      C,D
                 CALL    send_byte
@@ -562,7 +586,7 @@ sb_loop:        LD      A,0         ; CS low, clock low.
                 XOR     A,$2        ; Flip clock bit.
                 RL      C
                 OUT     ($30),A     ; Doesn't affect NZ.
-                JP      NZ,sb_loop
+                JR      NZ,sb_loop
                 RET
 
                 ; Search for the start of a response. This is a 0
@@ -576,10 +600,10 @@ find_resp:      LD      A,$01       ; CS low, data high, -ive clk edge - shift
                 RRA                 ; Next bit saved in carry flag...
                 LD      A,$03       ; CS low, data high, +ive clk edge - latch
                 OUT     ($30),A
-                JP      NC,find_resp    ; Loop if SD card sent 0.
+                JR      NC,find_resp    ; Loop if SD card sent 0.
                 ; Received a 1. Let's read the rest of the byte.
                 LD      C,$03
-                JP      rc_loop
+                JR      rc_loop
 
                 ; Read a byte into A. Modifies C.
 recv_byte:      LD      C,$01
@@ -590,9 +614,74 @@ rc_loop:        LD      A,$01       ; CS low, data high, -ive clk edge - shift
                 LD      A,$03       ; CS low, data high, +ive clk edge - latch
                 OUT     ($30),A
                 RL      C           ; And carry flag rotated into C.
-                JP      NC,rc_loop
+                JR      NC,rc_loop
                 LD      A,C
                 CPL                 ; Data is inverted when it hits us.
+                RET
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; RAM disk routines
+
+        ;; TODO: Interrupts?
+
+        ;; Initialise RAM disk
+ram_init:       ; Map page containing directories into $0000
+                LD      BC,$0000
+                LD      A,$D0
+                OUT     (BC),A
+                ; LDIR to clear the page
+                LD      A,$E5
+                LD      (0),A
+                LD      BC,$0FFF
+                LD      DE,1
+                LD      HL,0
+                JR      ram_done
+
+read_ram:       CALL    ram_prep
+                JR      ram_done
+                RET
+
+write_ram:      CALL    ram_prep
+                EX      DE,HL
+                JR      ram_done
+
+        ;; Prepare for a RAM disk op. Returns BC,DE,HL set up for an LDIR read.
+ram_prep:       LD      DE,(dmaadr)
+        ;; Need to load BC with $0000 or $4000, depending on DE.
+                LD      BC,$4000    ; Default to high page
+                LD      A,D
+                CP      $10
+                JR      C,rp2       ; Jump if dmaadr < $1000
+                XOR     A
+                LD      B,A         ; High buffer, so map to low page.
+rp2:            LD      A,(sektrk)
+                ADD     $D0         ; Pages D0-DF for RAM disk
+                OUT     (BC),A      ; And map the page
+        ;; Appropriate has been page mapped in at BC
+                LD      A,(seksec)
+                RRCA                ; Rotated value
+                LD      H,A         ; Save all bits to H
+                AND     $80         ; Keep top bit in L
+                LD      L,A
+                XOR     H           ; And then knock out top bit in H
+                LD      H,A
+                ADD     HL,BC       ; Add base to this offset
+        ;; Disk address in HL
+                LD      BC,$80
+        ;; BC, DE and HL set up.
+                RET
+
+        ;; Perform the copy, and tidy up
+ram_done:       LDIR
+        ;; Restore both possible places that may have been changed.
+                LD      BC,$0000
+                LD      A,$C0
+                OUT     (BC),A
+                LD      BC,$4000
+                LD      A,$C4
+                OUT     (BC),A
+        ;; Success!
+                XOR     A
                 RET
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -628,3 +717,4 @@ dirbf:          DEFS    $80,$00
 
 all00:          DEFS    alv,$00
 all01:          DEFS    alv,$00
+all02:          DEFS    8,$00           ; RAM disk only has 64 blocks
