@@ -49,7 +49,8 @@ Miscellaneous notes
   clock the SIO, and TO2 and TO3 are chained so that you can get a
   clock suited to a clock interrupt. The SIO output is TTL, so you can
   feed it into a USB serial adapter, or a level converter for
-  traditional RS232.
+  traditional RS232. There are two ports, so in my implementation I
+  have one of each.
 
 * An SD card interface is implemented using the parallel ports.
 

@@ -26,12 +26,12 @@ let alone an FPGA or high-power modern microcontroller to cheat.
 
 However, the non-volatile storage is EEPROM rather than EPROM, and I'm
 just using a great big SRAM, rather than bothering with the pain of
-DRAM. Serial I/O uses a proper Z80 SIO, but that connects to a TTL
-serial to USB dongle, rather than RS-232 proper. After a false start,
-I use an oscillator package, rather than a raw crystal. Mass storage
-is an SD card, via a break-out board. I see little reason to cause
-myself a lot of pain of using a more difficult and less available form
-of storage!
+DRAM. Serial I/O uses a proper Z80 SIO, but one ports connects to a
+TTL serial to USB dongle, rather than RS-232 proper (the second port
+does real RS232). After a false start, I use an oscillator package,
+rather than a raw crystal. Mass storage is an SD card, via a break-out
+board. I see little reason to cause myself a lot of pain of using a
+more difficult and less available form of storage!
 
 (Having said that, recreating old-school floppy drive control sounds
 like a fun project in itself...)

@@ -989,11 +989,7 @@ F 3 "" H 11350 5000 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 NoConn ~ 11150 6050
-NoConn ~ 11150 5850
-NoConn ~ 11150 5750
 NoConn ~ 11150 5950
-NoConn ~ 11150 5250
-NoConn ~ 11150 5150
 NoConn ~ 11150 5450
 NoConn ~ 11150 5550
 Text Label 9050 5250 0    60   Italic 12
@@ -2482,4 +2478,75 @@ Wire Wire Line
 	14600 8400 14300 8400
 Text Label 14300 8400 0    60   Italic 12
 nss5
+$Comp
+L CONN_01X06 P?
+U 1 1 57BA2236
+P 10900 7550
+F 0 "P?" H 10900 7900 50  0000 C CNN
+F 1 "CONN_01X06" V 11000 7550 50  0000 C CNN
+F 2 "" H 10900 7550 50  0000 C CNN
+F 3 "" H 10900 7550 50  0000 C CNN
+	1    10900 7550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10700 7300 10200 7300
+$Comp
+L VCC #PWR?
+U 1 1 57BA27E4
+P 10200 7300
+F 0 "#PWR?" H 10200 7400 30  0001 C CNN
+F 1 "VCC" H 10200 7400 30  0000 C CNN
+F 2 "" H 10200 7300 60  0000 C CNN
+F 3 "" H 10200 7300 60  0000 C CNN
+	1    10200 7300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10700 7600 10200 7600
+$Comp
+L GND-RESCUE-z80-schematics #PWR?
+U 1 1 57BA2A97
+P 10200 7650
+F 0 "#PWR?" H 10200 7650 30  0001 C CNN
+F 1 "GND" H 10200 7580 30  0001 C CNN
+F 2 "" H 10200 7650 60  0000 C CNN
+F 3 "" H 10200 7650 60  0000 C CNN
+	1    10200 7650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10200 7600 10200 7650
+Wire Wire Line
+	11150 5150 11350 5150
+Text Label 11350 5150 2    60   Italic 12
+txd2
+Wire Wire Line
+	11150 5250 11350 5250
+Text Label 11350 5250 2    60   Italic 12
+rxd2
+Wire Wire Line
+	10700 7400 10300 7400
+Text Label 10300 7400 0    60   Italic 12
+rxd2
+Wire Wire Line
+	10700 7500 10300 7500
+Text Label 10300 7500 0    60   Italic 12
+txd2
+Wire Wire Line
+	11150 5750 11350 5750
+Wire Wire Line
+	11150 5850 11350 5850
+Text Label 11350 5750 2    60   Italic 12
+/cts2
+Text Label 11350 5850 2    60   Italic 12
+/rts2
+Wire Wire Line
+	10700 7700 10300 7700
+Text Label 10300 7700 0    60   Italic 12
+/cts2
+Wire Wire Line
+	10700 7800 10300 7800
+Text Label 10300 7800 0    60   Italic 12
+/rts2
 $EndSCHEMATC
