@@ -1,5 +1,7 @@
 # SD card breakout board schematics
 
+[Schematic](./sdcard.pdf)
+
 ## What's this?
 
 These are my reverse-engineered schematics for the SD card breakout
