@@ -1,4 +1,4 @@
 (sym_lib_table
-  (version 0)
-  (lib (name "z80-schematics-rescue")(type "Legacy")(uri "${KIPRJMOD}/z80-schematics-rescue.lib")(options "")(descr ""))
+  (version 7)
+  (lib (name "z80-schematics-rescue")(type "KiCad")(uri "${KIPRJMOD}/z80-schematics-rescue.kicad_sym")(options "")(descr ""))
 )
