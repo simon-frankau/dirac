@@ -1,6 +1,8 @@
 Dirac's Hardware
 ================
 
+[Schematics](./z80-schematics.pdf)
+
 The schematics in this directory are in Kicad format. I previously
 used Eagle, but it seems a good idea to support Open Source. I'm
 clearly still learning it, so please forgive the worst
