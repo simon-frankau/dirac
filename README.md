@@ -60,10 +60,10 @@ Children. They're lovely, but they don't mix well with soldering irons!
 What's here?
 ------------
 
-* **schematics** covers the hardware
-* **src** contains the assembly source to program it with
-* **tools** contains the tools to do the required translations to make
-    workable images
+* **[schematics](./schematics/README.md)** covers the hardware
+* **[src](./src)** contains the assembly source to program it with
+* **[tools](./tools)** contains the tools to do the required
+    translations to make workable images
 
 What's the current state?
 -------------------------
